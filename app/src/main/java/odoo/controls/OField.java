@@ -399,6 +399,7 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
         return mField_name;
     }
 
+
     // EditText control (TextView, EditText)
     private View initTextControl() {
         setOrientation(VERTICAL);

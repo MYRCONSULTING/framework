@@ -2,9 +2,9 @@
 <resources>
 
     <!-- Fonts -->
-    <string name="font_normal">sans-serif</string>
-    <string name="font_light">sans-serif-light</string>
-    <string name="font_condensed">sans-serif-condensed</string>
+    <string name="font_normal" translatable="false">sans-serif</string>
+    <string name="font_light" translatable="false">sans-serif-light</string>
+    <string name="font_condensed" translatable="false">sans-serif-condensed</string>
 
     <!-- Text colors -->
     <color name="body_text_1">#de000000</color>

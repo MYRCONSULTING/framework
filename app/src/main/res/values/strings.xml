@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Odoo</string>
     <string name="sync_label_customers">Customers</string>
+    <string name="sync_label_supplier">Suppliers</string>
+    <string name="sync_label_companies">Companies</string>
     <string name="toast_information_saved">Information Saved</string>
     <string name="toast_image_size_too_large">Image size too large !</string>
     <string name="label_no_customer_found">No Customer Found !</string>
@@ -16,4 +18,36 @@
     <string name="toast_permission_download_storage_help">Storage permission required to store downloaded files on sdcard of your phone. Please grant permission for use this feature</string>
     <string name="confirm_are_you_sure_want_to_delete">Are you sure want to delete ?</string>
     <string name="toast_record_deleted">Record deleted</string>
+    <string name="label_phone">Phone</string>
+    <string name="label_is_company">Is Company</string>
+    <string name="label_website">Website</string>
+    <string name="label_email">E mail</string>
+    <string name="label_mobile">Mobile</string>
+    <string name="main_elem_list_state">State</string>
+    <string name="label_internal_note">Internal Note</string>
+    <string name="label_function">Function</string>
+    <string name="label_hour">Hour :</string>
+    <string name="label_inbox">Inbox</string>
+    <string name="label_street">Street</string>
+    <string name="label_street2">Street 2</string>
+    <string name="label_city">City</string>
+    <string name="label_zip_code">Zip code</string>
+    <string name="headerComment">Commen</string>
+    <string name="label_country">Country</string>
+    <string name="descr_elem_list_name">Name</string>
+    <string name="label_create_new">New</string>
+    <string name="user_login">USER LOGIN</string>
+    <string name="SERVER_URL">SERVER URL</string>
+    <string name="DATABASE">DATABASE</string>
+    <string name="ODOO_VERSION">ODOO VERSION</string>
+    <string name="TIMEZONE">TIMEZONE</string>
+    <string name="title_sync_settings">Sync Settings</string>
+    <string name="label_enable_or_disable_data_sync">Enable or disable data synchronization</string>
+    <string name="label_set_notification_ringtone">Set notification ring tone</string>
+    <string name="notification_ringtone">Notification ring tone</string>
+    <string name="title_sync_interval">Sync interval</string>
+    <string name="label_define_sync_interval">Define how often synchronization will be performed</string>
+    <string name="label_data_sync_limit">Data Sync Limit</string>
+    <string name="label_define_date_data_sync">Define how old data to be synchronized</string>
+
 </resources>

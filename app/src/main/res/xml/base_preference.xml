@@ -3,41 +3,41 @@
 
     <PreferenceCategory
         android:key="account_sync_settings"
-        android:title="Sync Settings">
+        android:title="@string/title_sync_settings">
         <PreferenceScreen
             android:key="account_settings"
-            android:summary="Enable or disable data synchronization"
-            android:title="Sync Settings">
+            android:summary="@string/label_enable_or_disable_data_sync"
+            android:title="@string/title_sync_settings">
             <intent android:action="android.settings.SYNC_SETTINGS" />
         </PreferenceScreen>
         <RingtonePreference
             android:key="notification_ringtone"
-            android:title="Notification ring tone"
+            android:title="@string/notification_ringtone"
             android:ringtoneType="notification"
             android:defaultValue="@string/notification_default_ring_tone"
-            android:summary="Set notification ring tone" />
+            android:summary="@string/label_set_notification_ringtone" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="sync_interval_settings"
-        android:title="Sync interval">
+        android:title="@string/title_sync_interval">
         <ListPreference
             android:defaultValue="1440"
             android:entries="@array/syncInterval"
             android:entryValues="@array/syncIntervalValues"
             android:key="sync_interval"
-            android:summary="Define how often synchronization will be performed"
-            android:title="Sync interval" />
+            android:summary="@string/label_define_sync_interval"
+            android:title="@string/title_sync_interval" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="sync_data_limit_settings"
-        android:title="Data Sync Limit">
+        android:title="@string/label_data_sync_limit">
         <ListPreference
             android:defaultValue="60"
             android:entries="@array/syncDataLimit"
             android:entryValues="@array/syncDataLimitValues"
             android:key="sync_data_limit"
-            android:summary="Define how old data to be synchronized"
-            android:title="Sync data limit" />
+            android:summary="@string/label_define_date_data_sync"
+            android:title="@string/label_data_sync_limit" />
     </PreferenceCategory>
 
 

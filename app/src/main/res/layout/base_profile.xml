@@ -78,7 +78,7 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:controlLabel="Name"
+                    app:controlLabel="@string/descr_elem_list_name"
                     app:fieldLabelColor="@color/theme_primary"
                     app:fieldName="name"
                     app:fieldTextSize="@dimen/text_size_xmedium"
@@ -87,7 +87,7 @@
                 <odoo.controls.OField
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:controlLabel="USER LOGIN"
+                    app:controlLabel="@string/user_login"
                     app:fieldLabelColor="@color/theme_primary"
                     app:fieldName="user_login"
                     app:fieldTextSize="@dimen/text_size_xmedium"
@@ -96,7 +96,7 @@
                 <odoo.controls.OField
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:controlLabel="SERVER URL"
+                    app:controlLabel="@string/SERVER_URL"
                     app:fieldLabelColor="@color/theme_primary"
                     app:fieldName="server_url"
                     app:fieldTextSize="@dimen/text_size_xmedium"
@@ -105,7 +105,7 @@
                 <odoo.controls.OField
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:controlLabel="DATABASE"
+                    app:controlLabel="@string/DATABASE"
                     app:fieldLabelColor="@color/theme_primary"
                     app:fieldName="database"
                     app:fieldTextSize="@dimen/text_size_xmedium"
@@ -114,7 +114,7 @@
                 <odoo.controls.OField
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:controlLabel="ODOO VERSION"
+                    app:controlLabel="@string/ODOO_VERSION"
                     app:fieldLabelColor="@color/theme_primary"
                     app:fieldName="version"
                     app:fieldTextSize="@dimen/text_size_xmedium"
