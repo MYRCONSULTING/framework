@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Odoo</string>
     <string name="sync_label_tasks">Tasks</string>
+    <string name="sync_label_project">Projects</string>
     <string name="sync_label_customers">Customers</string>
     <string name="sync_label_supplier">Suppliers</string>
     <string name="sync_label_companies">Companies</string>
@@ -9,6 +10,7 @@
     <string name="toast_image_size_too_large">Image size too large !</string>
     <string name="label_no_customer_found">No Customer Found !</string>
     <string name="label_no_tasks_found">No Tasks Found !</string>
+    <string name="label_no_project_found">No Project Found !</string>
     <string name="message_to">Message to %s</string>
     <string name="add_internal_note">Add and internal note</string>
     <string name="internal_note_hint">Add an internal note that will not be sent to the followers</string>

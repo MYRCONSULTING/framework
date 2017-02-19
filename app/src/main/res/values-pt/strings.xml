@@ -128,4 +128,5 @@
     <string name="label_define_date_data_sync">Definir a idade dos dados a serem sincronizados</string>
     <string name="sync_label_tasks">Tarefas</string>
     <string name="label_no_tasks_found">Não se encontrarão tarefas</string>
+    <string name="label_no_project_found"></string>
 </resources>

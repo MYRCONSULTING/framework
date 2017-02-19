@@ -105,6 +105,7 @@
             android:label="Project Tasks"
             android:multiprocess="true" />
 
+
         <service android:name=".addons.projects.services.ProjectSyncService"
             android:exported="true"
             android:process=":sync_tasks">
@@ -117,8 +118,30 @@
                 android:resource="@xml/task_sync_adapter" />
         </service>
 
+        <provider
+            android:name="com.odoo.addons.projects.providers.ProjectProjectProvider"
+            android:authorities="com.odoo.addons.projects.project_project"
+            android:label="Project Project"
+            android:multiprocess="true" />
+
+        <service android:name=".addons.projects.services.ProjectProjectSyncService"
+            android:exported="true"
+            android:process=":sync_tasks">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/project_sync_adapter" />
+        </service>
+
         <activity
             android:name="com.odoo.addons.customers.CustomerDetails"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name="com.odoo.addons.projects.Tasks"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
