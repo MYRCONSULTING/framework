@@ -126,4 +126,6 @@
     <string name="label_define_sync_interval">Definir com que frequência a sincronização será realizada</string>
     <string name="label_data_sync_limit">Limite de sincronização de dados</string>
     <string name="label_define_date_data_sync">Definir a idade dos dados a serem sincronizados</string>
+    <string name="sync_label_tasks">Tarefas</string>
+    <string name="label_no_tasks_found">Não se encontrarão tarefas</string>
 </resources>

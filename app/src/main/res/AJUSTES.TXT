@@ -1,0 +1,5 @@
+1.- Para poder permitir que solo cualquier usuario pueda alterar lo que ha creado con excepción del admin
+    Ajustar las reglas de registro para
+    "Project Tasks only for owner"
+    con la siguiente definición "[('user_id','=',user.id)]"
+    y como global
