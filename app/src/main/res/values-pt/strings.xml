@@ -94,10 +94,6 @@
     <string name="label_accounts_settings">Odoo</string>
     <string name="label_be_patient_we_are_configuring_account_update">Seja paciente, Estamos configurando suas atualizações de conta</string>
     <string name="label_city">Cidade</string>
-    <string name="label_function">Função</string>
-    <string name="label_hour">Houra</string>
-    <string name="label_inbox">Entrada</string>
-    <string name="label_internal_note">Nota interna</string>
     <string name="label_mobile">Celular</string>
     <string name="label_odoo_developer_mode">Modo de desenvolvedor</string>
     <string name="label_odoo_mobile_on_github">Odoo Mobile on GitHub</string>
@@ -117,7 +113,6 @@
     <string name="SERVER_URL">Endereco do Servidor</string>
     <string name="DATABASE">BANCO DE DADOS</string>
     <string name="ODOO_VERSION">VERSAO ODOO</string>
-    <string name="TIMEZONE">FUSO HORÁRIO</string>
     <string name="title_sync_settings">Definições de Sincronização</string>
     <string name="label_enable_or_disable_data_sync">Ativar ou desativar a sincronização de dados</string>
     <string name="label_set_notification_ringtone">Definir toque de notificação</string>
@@ -127,6 +122,5 @@
     <string name="label_data_sync_limit">Limite de sincronização de dados</string>
     <string name="label_define_date_data_sync">Definir a idade dos dados a serem sincronizados</string>
     <string name="sync_label_tasks">Tarefas</string>
-    <string name="label_no_tasks_found">Não se encontrarão tarefas</string>
     <string name="label_no_project_found"></string>
 </resources>

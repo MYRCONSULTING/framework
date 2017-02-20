@@ -9,7 +9,6 @@
     <string name="toast_information_saved">Information Saved</string>
     <string name="toast_image_size_too_large">Image size too large !</string>
     <string name="label_no_customer_found">No Customer Found !</string>
-    <string name="label_no_tasks_found">No Tasks Found !</string>
     <string name="label_no_project_found">No Project Found !</string>
     <string name="message_to">Message to %s</string>
     <string name="add_internal_note">Add and internal note</string>
@@ -28,10 +27,6 @@
     <string name="label_email">E mail</string>
     <string name="label_mobile">Mobile</string>
     <string name="main_elem_list_state">State</string>
-    <string name="label_internal_note">Internal Note</string>
-    <string name="label_function">Function</string>
-    <string name="label_hour">Hour :</string>
-    <string name="label_inbox">Inbox</string>
     <string name="label_street">Street</string>
     <string name="label_street2">Street 2</string>
     <string name="label_city">City</string>
@@ -44,7 +39,6 @@
     <string name="SERVER_URL">SERVER URL</string>
     <string name="DATABASE">DATABASE</string>
     <string name="ODOO_VERSION">ODOO VERSION</string>
-    <string name="TIMEZONE">TIMEZONE</string>
     <string name="title_sync_settings">Sync Settings</string>
     <string name="label_enable_or_disable_data_sync">Enable or disable data synchronization</string>
     <string name="label_set_notification_ringtone">Set notification ring tone</string>

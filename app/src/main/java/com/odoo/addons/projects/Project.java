@@ -1,6 +1,7 @@
 package com.odoo.addons.projects;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -200,7 +201,7 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
         if (row != null) {
             data = row.getPrimaryBundleData();
         }
-        IntentUtils.startActivity(getActivity(), Tasks.class, data);
+        startFragment(new Tasks(), true, data);
     }
 
     @Override

@@ -49,6 +49,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     private ListView listView;
     private OCursorListAdapter mAdapter = null;
     private boolean syncRequested = false;
+    private Bundle extra = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -63,6 +64,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         super.onViewCreated(view, savedInstanceState);
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
+        extra = getArguments();
         listView = (ListView) mView.findViewById(R.id.listview);
         mAdapter = new OCursorListAdapter(getActivity(), null, android.R.layout.simple_list_item_1);
         mAdapter.setOnViewBindListener(this);
@@ -72,7 +74,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         listView.setOnItemClickListener(this);
         //setHasSyncStatusObserver(TAG, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(extra.getInt("_id"), extra, this);
 
     }
 
@@ -82,8 +84,22 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), db().uri(), null, null, null, null);
+    public Loader<Cursor> onCreateLoader(int id, Bundle data) {
+        String where = "project_id = ?";
+        List<String> args = new ArrayList<>();
+        if (id > 0)
+            args.add(String.valueOf(id));
+        if (data!= null)
+           // args.add(data.get("id").toString());
+
+        if (mCurFilter != null) {
+            where += " and name like ? ";
+            args.add(mCurFilter + "%");
+        }
+        String selection = (args.size() > 0) ? where : null;
+        String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
+        return new CursorLoader(getActivity(), db().uri(),
+                null, selection, selectionArgs, "name");
     }
 
     @Override
@@ -108,7 +124,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                     OControls.setVisible(mView, R.id.data_list_no_item);
                     setHasSwipeRefreshView(mView, R.id.data_list_no_item, Tasks.this);
                     OControls.setImage(mView, R.id.icon, R.drawable.ic_action_notes_content);
-                    OControls.setText(mView, R.id.title, _s(R.string.label_no_tasks_found));
+                    OControls.setText(mView, R.id.title, _s(R.string.label_no_project_found));
                     OControls.setText(mView, R.id.subTitle, "");
                 }
             }, 500);
@@ -141,7 +157,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     @Override
     public void onStatusChange(Boolean refreshing) {
         // Sync Status
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
     }
 
     @Override
@@ -176,7 +192,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     @Override
     public boolean onSearchViewTextChange(String newFilter) {
         mCurFilter = newFilter;
-        getLoaderManager().restartLoader(0, null, this);
+        //getLoaderManager().restartLoader(0, null, this);
         return true;
     }
 
@@ -199,7 +215,6 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         if (row != null) {
             data = row.getPrimaryBundleData();
         }
-        //data.putString(CustomerDetails.KEY_PARTNER_TYPE, mType.toString());
         IntentUtils.startActivity(getActivity(), TasksDetails.class, data);
     }
 
@@ -209,5 +224,3 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         loadActivity(row);
     }
 }
-
-
