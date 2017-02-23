@@ -3,6 +3,7 @@ package com.odoo.addons.projects;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager;
@@ -28,6 +29,7 @@ import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
 import com.odoo.core.support.drawer.ODrawerItem;
 import com.odoo.core.support.list.OCursorListAdapter;
+import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OControls;
 import com.odoo.core.utils.OCursorUtils;
@@ -66,7 +68,7 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
         listView = (ListView) mView.findViewById(R.id.listview);
-        mAdapter = new OCursorListAdapter(getActivity(), null, android.R.layout.simple_list_item_1);
+        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.project_row_item);
         mAdapter.setOnViewBindListener(this);
         mAdapter.setHasSectionIndexers(true, "name");
         listView.setAdapter(mAdapter);
@@ -81,6 +83,13 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
         OControls.setText(view, android.R.id.text1, row.getString("name"));
+        Bitmap img;
+        if (row.getString("image_small").equals("false")) {
+            img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("name"));
+        } else {
+            img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image_small"));
+        }
+        OControls.setImage(view, R.id.image_small, img);
     }
 
     @Override
