@@ -23,7 +23,9 @@ import android.widget.Toast;
 import com.odoo.R;
 import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.base.addons.ir.IrModel;
 import com.odoo.core.orm.ODataRow;
+import com.odoo.core.support.OUser;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -53,6 +55,7 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
     private ListView listView;
     private OCursorListAdapter mAdapter = null;
     private boolean syncRequested = false;
+    public static final String EXTRA_KEY_PROJECT = "extra_key_project";
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -77,6 +80,8 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
         //setHasSyncStatusObserver(TAG, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(0, null, this);
+        setTitle("Proyectos");
+
 
     }
 
@@ -209,6 +214,7 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
         Bundle data = new Bundle();
         if (row != null) {
             data = row.getPrimaryBundleData();
+            data.putString(EXTRA_KEY_PROJECT,row.getString("name"));
         }
         startFragment(new Tasks(), true, data);
     }

@@ -5,10 +5,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,10 +56,12 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     private boolean syncRequested = false;
     private Bundle extra = null;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
         setHasSyncStatusObserver(KEY, this, db());
         return inflater.inflate(R.layout.common_listview, container, false);
     }
@@ -66,6 +71,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         super.onViewCreated(view, savedInstanceState);
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
+
         extra = getArguments();
         listView = (ListView) mView.findViewById(R.id.listview);
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.task_row_item);
@@ -77,6 +83,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         //setHasSyncStatusObserver(TAG, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(extra.getInt("_id"), extra, this);
+        setTitle(extra.getString("extra_key_project"));
 
     }
 

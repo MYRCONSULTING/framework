@@ -22,6 +22,7 @@ package com.odoo.base.addons.ir;
 import android.content.Context;
 import android.util.Log;
 
+import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
@@ -35,7 +36,7 @@ import java.util.Date;
 
 public class IrModel extends OModel {
     public static final String TAG = IrModel.class.getSimpleName();
-    OColumn name = new OColumn("Model Description", OVarchar.class).setSize(100);
+    OColumn name = new OColumn("Name", OVarchar.class).setSize(100);
     OColumn model = new OColumn("Model", OVarchar.class).setSize(100);
     OColumn state = new OColumn("State", OVarchar.class).setSize(64);
 
@@ -60,6 +61,18 @@ public class IrModel extends OModel {
         Log.i(TAG, "Model Sync Update : " + model.getModelName());
         OValues values = new OValues();
         values.put("model", model.getModelName());
+        //values.put("name", IrModel.class.getFields().toString());
+        //Log.i(TAG, "Modelo con nombre : " + model.getModelName());
+        //IrModel irModel = new IrModel(getContext(),getUser());
+        //ODataRow row = irModel.browse(2);
+       // Log.i(TAG, "Modelo con nombre 1 : " + irModel.browse(1).getString("name"));
+        //String stateLabel = irModel.getLabel("x_nombre_proyecto", row.getString("x_nombre_proyecto"));
+//        Log.i(TAG, "Modelo con nombre 16 : " + row.getAll());
+        //Log.i(TAG, "Modelo con nombre 11 : " + row.getAll());
+//        Log.i(TAG, "Modelo con nombre 2 : " + irModel.browse(2).getAll());
+//        Log.i(TAG, "Modelo con nombre 3 : " + irModel.browse(3).getAll());
+
+
         Date last_sync = ODateUtils.createDateObject(ODateUtils.getUTCDate(), ODateUtils.DEFAULT_FORMAT, true);
         Calendar cal = Calendar.getInstance();
         cal.setTime(last_sync);
