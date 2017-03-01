@@ -38,4 +38,5 @@ public class Addons extends AddonsHelper {
     OAddon customers = new OAddon(Customers.class).setDefault();
     OAddon tasks = new OAddon(Tasks.class);
     OAddon project = new OAddon(Project.class);
+    //OAddon survey = new OAddon(Project.class);
 }
