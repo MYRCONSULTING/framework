@@ -107,16 +107,11 @@ public class TasksDetails extends OdooCompatActivity
         if (extras.containsKey(EXTRA_KEY_SURVEY_TASK) && rowIdSurvey==null) {
             rowIdSurvey = extras.getString(EXTRA_KEY_SURVEY_TASK);
             SurveySurvey surveySurvey = new SurveySurvey(this, null);
-            /*
-            String sql = "SELECT _id, id, title FROM survey_survey WHERE _id = ?";
-            List<ODataRow> rowsSurvey = surveySurvey.query(sql, new String[]{String.valueOf(rowIdSurvey)});
-            Log.i(TAG, "Id Survey : " + rowIdSurvey);
-            */
             ODataRow rowSurvey = surveySurvey.browse(Integer.parseInt(rowIdSurvey));
             Log.i(TAG, "Id SurveySurvey Title : " + rowSurvey.get("title"));
             /// 2.- Recorre la cantidad de páginas de cada encuesta
             SurveyPage surveyPage = new SurveyPage(this, null);
-            List<ODataRow> rowSurveyPage = surveyPage.select(null,"survey_id = ?",new String[]{rowIdSurvey},"id asc");
+            List<ODataRow> rowSurveyPage = surveyPage.getSurveyPage(this,rowIdSurvey);
             for (ODataRow rowPage: rowSurveyPage){
                 Log.i(TAG, "Id SurveyPage Title : " + rowPage.get("title"));
                 //Log.i(TAG, "Id SurveyPage _Id   : " + rowPage.get("_id"));
@@ -124,8 +119,7 @@ public class TasksDetails extends OdooCompatActivity
 
                 /// 3.- Recorre la cantidad de Preguntas por página de cada encuesta
                 SurveyQuestion surveyQuestion = new SurveyQuestion(this,null);
-                List<ODataRow> rowSurveyQuestion = surveyQuestion.select(null,"survey_id = ? and page_id = ?",
-                                                    new String[]{rowIdSurvey,rowPage.get("_id").toString()},"id asc");
+                List<ODataRow> rowSurveyQuestion = surveyQuestion.getSurveyQuestion(this,rowIdSurvey,rowPage.get("_id").toString());
                 for (ODataRow row: rowSurveyQuestion){
                     Log.i(TAG, "Id SurveyQuestion Question : " + row.get("question"));
                     //Log.i(TAG, "Id SurveyQuestion _Id   : " + row.get("_id"));
