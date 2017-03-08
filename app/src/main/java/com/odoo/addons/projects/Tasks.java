@@ -55,6 +55,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     private OCursorListAdapter mAdapter = null;
     private boolean syncRequested = false;
     private Bundle extra = null;
+    public static final String EXTRA_KEY_SURVEY_TASK = "extra_key_survey_task";
 
 
     @Override
@@ -83,7 +84,10 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         //setHasSyncStatusObserver(TAG, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(extra.getInt("_id"), extra, this);
-        setTitle(extra.getString("extra_key_project"));
+        if (extra.getString("extra_key_project") == null || (extra.getString("extra_key_project").isEmpty()))
+            setTitle(extra.getString("extra_key_project"));
+        else
+            setTitle("Tareas");
 
     }
 
@@ -230,6 +234,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         Bundle data = new Bundle();
         if (row != null) {
             data = row.getPrimaryBundleData();
+            data.putString(EXTRA_KEY_SURVEY_TASK,row.getString("x_survey_id"));
         }
         IntentUtils.startActivity(getActivity(), TasksDetails.class, data);
     }

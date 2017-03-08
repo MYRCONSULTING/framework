@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,10 +37,15 @@ import com.odoo.R;
 import com.odoo.addons.customers.Customers;
 import com.odoo.addons.customers.utils.ShareUtil;
 import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.survey.models.SurveyPage;
+import com.odoo.addons.survey.models.SurveyQuestion;
+import com.odoo.addons.survey.models.SurveySurvey;
 import com.odoo.base.addons.ir.feature.OFileManager;
+import com.odoo.base.addons.res.ResCompany;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
+import com.odoo.core.orm.OO2MRecord;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.rpc.helper.OdooFields;
@@ -50,6 +56,8 @@ import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OStringColorUtil;
+
+import java.util.List;
 
 import odoo.controls.OField;
 import odoo.controls.OForm;
@@ -70,6 +78,7 @@ public class TasksDetails extends OdooCompatActivity
     private String newImage = null;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
+    public static final String EXTRA_KEY_SURVEY_TASK = "extra_key_survey_task";
 
 
     @Override
@@ -92,6 +101,38 @@ public class TasksDetails extends OdooCompatActivity
         app = (App) getApplicationContext();
         projectTask = new ProjectTask(this, null);
         extras = getIntent().getExtras();
+
+        //// 1.- Verifica la Encuesta que corresponde a la tarea seleccionada
+        String rowIdSurvey = null;
+        if (extras.containsKey(EXTRA_KEY_SURVEY_TASK) && rowIdSurvey==null) {
+            rowIdSurvey = extras.getString(EXTRA_KEY_SURVEY_TASK);
+            SurveySurvey surveySurvey = new SurveySurvey(this, null);
+            /*
+            String sql = "SELECT _id, id, title FROM survey_survey WHERE _id = ?";
+            List<ODataRow> rowsSurvey = surveySurvey.query(sql, new String[]{String.valueOf(rowIdSurvey)});
+            Log.i(TAG, "Id Survey : " + rowIdSurvey);
+            */
+            ODataRow rowSurvey = surveySurvey.browse(Integer.parseInt(rowIdSurvey));
+            Log.i(TAG, "Id SurveySurvey Title : " + rowSurvey.get("title"));
+            /// 2.- Recorre la cantidad de páginas de cada encuesta
+            SurveyPage surveyPage = new SurveyPage(this, null);
+            List<ODataRow> rowSurveyPage = surveyPage.select(null,"survey_id = ?",new String[]{rowIdSurvey},"id asc");
+            for (ODataRow rowPage: rowSurveyPage){
+                Log.i(TAG, "Id SurveyPage Title : " + rowPage.get("title"));
+                //Log.i(TAG, "Id SurveyPage _Id   : " + rowPage.get("_id"));
+                //Log.i(TAG, "Id SurveyPage  Id   : " + rowPage.get("id"));
+
+                /// 3.- Recorre la cantidad de Preguntas por página de cada encuesta
+                SurveyQuestion surveyQuestion = new SurveyQuestion(this,null);
+                List<ODataRow> rowSurveyQuestion = surveyQuestion.select(null,"survey_id = ? and page_id = ?",
+                                                    new String[]{rowIdSurvey,rowPage.get("_id").toString()},"id asc");
+                for (ODataRow row: rowSurveyQuestion){
+                    Log.i(TAG, "Id SurveyQuestion Question : " + row.get("question"));
+                    //Log.i(TAG, "Id SurveyQuestion _Id   : " + row.get("_id"));
+                    //Log.i(TAG, "Id SurveyQuestion  Id   : " + row.get("id"));
+                }
+            }
+        }
 
         if (!hasRecordInExtra())
             mEditMode = true;
