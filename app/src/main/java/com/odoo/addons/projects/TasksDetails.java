@@ -19,46 +19,44 @@
  */
 package com.odoo.addons.projects;
 
+
+
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.odoo.App;
 import com.odoo.R;
-import com.odoo.addons.customers.Customers;
 import com.odoo.addons.customers.utils.ShareUtil;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveyQuestion;
 import com.odoo.addons.survey.models.SurveySurvey;
 import com.odoo.base.addons.ir.feature.OFileManager;
-import com.odoo.base.addons.res.ResCompany;
-import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
-import com.odoo.core.orm.OO2MRecord;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
-import com.odoo.core.rpc.helper.OdooFields;
-import com.odoo.core.rpc.helper.utils.gson.OdooResult;
 import com.odoo.core.support.OdooCompatActivity;
-import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OStringColorUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import odoo.controls.OControlHelper;
 import odoo.controls.OField;
 import odoo.controls.OForm;
 
@@ -79,7 +77,23 @@ public class TasksDetails extends OdooCompatActivity
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
     public static final String EXTRA_KEY_SURVEY_TASK = "extra_key_survey_task";
+    private LinearLayout linearlayoutTask;
+    private float textSize = -1;
+    private int appearance = -1;
+    private int textColor = Color.BLUE;
 
+    /**
+     * The pager widget, which handles animation and allows swiping horizontally
+     * to access previous and next pages.
+     */
+    ViewPager pager = null;
+
+    /**
+     * The pager adapter, which provides the pages to the view pager widget.
+     */
+
+
+    private com.odoo.addons.survey.SurveySurvey surveySurvey;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +104,6 @@ public class TasksDetails extends OdooCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         fileManager = new OFileManager(this);
         if (toolbar != null)
             collapsingToolbarLayout.setTitle("");
@@ -102,35 +115,25 @@ public class TasksDetails extends OdooCompatActivity
         projectTask = new ProjectTask(this, null);
         extras = getIntent().getExtras();
 
-        //// 1.- Verifica la Encuesta que corresponde a la tarea seleccionada
-        String rowIdSurvey = null;
-        if (extras.containsKey(EXTRA_KEY_SURVEY_TASK) && rowIdSurvey==null) {
-            rowIdSurvey = extras.getString(EXTRA_KEY_SURVEY_TASK);
-            SurveySurvey surveySurvey = new SurveySurvey(this, null);
-            ODataRow rowSurvey = surveySurvey.browse(Integer.parseInt(rowIdSurvey));
-            Log.i(TAG, "Id SurveySurvey Title : " + rowSurvey.get("title"));
-            /// 2.- Recorre la cantidad de páginas de cada encuesta
-            SurveyPage surveyPage = new SurveyPage(this, null);
-            List<ODataRow> rowSurveyPage = surveyPage.getSurveyPage(this,rowIdSurvey);
-            for (ODataRow rowPage: rowSurveyPage){
-                Log.i(TAG, "Id SurveyPage Title : " + rowPage.get("title"));
-                //Log.i(TAG, "Id SurveyPage _Id   : " + rowPage.get("_id"));
-                //Log.i(TAG, "Id SurveyPage  Id   : " + rowPage.get("id"));
+        /////////////////////////////
 
-                /// 3.- Recorre la cantidad de Preguntas por página de cada encuesta
-                SurveyQuestion surveyQuestion = new SurveyQuestion(this,null);
-                List<ODataRow> rowSurveyQuestion = surveyQuestion.getSurveyQuestion(this,rowIdSurvey,rowPage.get("_id").toString());
-                for (ODataRow row: rowSurveyQuestion){
-                    Log.i(TAG, "Id SurveyQuestion Question : " + row.get("question"));
-                    //Log.i(TAG, "Id SurveyQuestion _Id   : " + row.get("_id"));
-                    //Log.i(TAG, "Id SurveyQuestion  Id   : " + row.get("id"));
-                }
-            }
-        }
+        OField oField = new OField(this);
+        oField.initControl();
+        oField.getId();
+        oField.setModel(ProjectTask.get(this,"project.task",null));
+        oField.setmField_name("date_deadline");
+        oField.setmLabel("Fecha final 12345678:");
+        oField.setmType(OField.FieldType.Date);
+        oField.setValue("2017-03-31");
+        oField.setIcon(R.drawable.ic_action_message);
+        oField.setResId(R.drawable.ic_action_message);
+        linearlayoutTask = (LinearLayout) findViewById(R.id.taskFormView);
+        linearlayoutTask.addView(oField);
 
         if (!hasRecordInExtra())
             mEditMode = true;
         setupToolbar();
+
     }
 
     private boolean hasRecordInExtra() {
@@ -150,7 +153,7 @@ public class TasksDetails extends OdooCompatActivity
         }
         if (edit) {
             if (!hasRecordInExtra()) {
-                collapsingToolbarLayout.setTitle(OResource.string(this,R.string.label_create_new));
+                collapsingToolbarLayout.setTitle(OResource.string(this, R.string.label_create_new));
             }
             mForm = (OForm) findViewById(R.id.taskFormEdit);
             findViewById(R.id.task_view_layout).setVisibility(View.GONE);
@@ -177,7 +180,7 @@ public class TasksDetails extends OdooCompatActivity
             mForm.setEditable(mEditMode);
             mForm.initForm(record);
             collapsingToolbarLayout.setTitle(record.getString("name"));
-            if (record.getInt("id") != 0 ) { // ALERTA
+            if (record.getInt("id") != 0) { // ALERTA
 
             }
         }
@@ -198,10 +201,73 @@ public class TasksDetails extends OdooCompatActivity
     private void checkControls() {
         findViewById(R.id.nameTask).setOnClickListener(this);
         findViewById(R.id.descriptionTask).setOnClickListener(this);
+        bindSurvey();
     }
 
+    private void bindSurvey(){
+        ArrayList<EditText> OFieldList = new ArrayList<EditText>();
+        List<ODataRow> rowSurveyQuestion = null;
+        //// 1.- Verifica la Encuesta que corresponde a la tarea seleccionada
+        String rowIdSurvey = null;
+        if (extras.containsKey(EXTRA_KEY_SURVEY_TASK) && rowIdSurvey == null) {
+            rowIdSurvey = extras.getString(EXTRA_KEY_SURVEY_TASK);
+            SurveySurvey surveySurvey = new SurveySurvey(this, null);
+            ODataRow rowSurvey = surveySurvey.browse(Integer.parseInt(rowIdSurvey));
+            Log.i(TAG, "Id SurveySurvey Title : " + rowSurvey.get("title"));
+            /// 2.- Recorre la cantidad de páginas de cada encuesta
+            SurveyPage surveyPage = new SurveyPage(this, null);
+            List<ODataRow> rowSurveyPage = surveyPage.getSurveyPage(this, rowIdSurvey);
+            for (ODataRow rowPage : rowSurveyPage) {
+                Log.i(TAG, "Id SurveyPage Title : " + rowPage.get("title"));
+                //Log.i(TAG, "Id SurveyPage _Id   : " + rowPage.get("_id"));
+                //Log.i(TAG, "Id SurveyPage  Id   : " + rowPage.get("id"));
+                /// 3.- Recorre la cantidad de Preguntas por página de cada encuesta
+                SurveyQuestion surveyQuestion = new SurveyQuestion(this, null);
+                rowSurveyQuestion = surveyQuestion.getSurveyQuestion(this, rowIdSurvey,
+                        rowPage.get("_id").toString());
+                for (ODataRow row : rowSurveyQuestion) {
+                    Log.i(TAG, "Id SurveyQuestion Question : " + row.get("question"));
+                    //Log.i(TAG, "Id SurveyQuestion _Id   : " + row.get("_id"));
+                    //Log.i(TAG, "Id SurveyQuestion  Id   : " + row.get("id"));
+
+                    OField oField = new OField(this);
+                    oField.setId(Integer.parseInt(row.get("_id").toString()));
+                    oField.setModel(SurveyQuestion.get(this,"survey.question",null));
+                    oField.setmLabel(row.get("question").toString());
+                    oField.setmField_name("question");
+                    oField.setmType(OField.FieldType.Text);
+                    oField.initControl();
+                    oField.setIcon(R.drawable.ic_action_message);
+                    oField.setResId(R.drawable.ic_action_message);
 
 
+                    ///////
+                    EditText txtBox;
+                    txtBox = new EditText(this);
+                    txtBox.setId(Integer.parseInt(row.get("_id").toString()));
+                    txtBox.setHint(row.get("question").toString());
+                    txtBox.setText(row.get("question").toString());
+                    txtBox.setTextAppearance(this,appearance);
+                    txtBox.setPadding(20, 10, 10, 10);
+
+                    txtBox.setTextColor(textColor);
+                    txtBox.setTypeface(OControlHelper.lightFont());
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                    txtBox.setLayoutParams(params);
+                    txtBox.setBackgroundColor(Color.TRANSPARENT);
+                    txtBox.setTextSize(textSize);
+                    ////////7
+
+                    OFieldList.add(txtBox);
+                }
+            }
+        }
+        linearlayoutTask = (LinearLayout) findViewById(R.id.taskFormEdit);
+        for(EditText f : OFieldList) {
+            linearlayoutTask.addView(f);
+        }
+    }
     private void setColor(int color) {
         mForm.setIconTintColor(color);
     }
@@ -304,4 +370,5 @@ public class TasksDetails extends OdooCompatActivity
             Toast.makeText(this, R.string.toast_image_size_too_large, Toast.LENGTH_LONG).show();
         }
     }
+
 }

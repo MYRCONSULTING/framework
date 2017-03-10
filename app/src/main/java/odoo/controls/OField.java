@@ -399,6 +399,21 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
         return mField_name;
     }
 
+    public void setmField_name(String mField_name) {
+        this.mField_name = mField_name;
+    }
+
+    public void setResId(int resId) {
+        this.resId = resId;
+    }
+
+    public void setmLabel(String mLabel) {
+        this.mLabel = mLabel;
+    }
+
+    public void setmType(FieldType mType) {
+        this.mType = mType;
+    }
 
     // EditText control (TextView, EditText)
     private View initTextControl() {

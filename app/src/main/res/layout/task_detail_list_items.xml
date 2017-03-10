@@ -6,6 +6,13 @@
     android:background="#fff"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        />
+
     <!--View Layout-->
     <LinearLayout
         android:id="@+id/task_view_layout"
@@ -26,6 +33,15 @@
                 android:layout_height="wrap_content"
                 app:fieldLabelColor="@color/theme_secondary"
                 app:fieldName="name"
+                app:controlLabel="@string/sync_label_tasks"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
+            <odoo.controls.OField
+                android:id="@+id/date_deadlineTask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="date_deadline"
                 app:controlLabel="@string/sync_label_tasks"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
                 app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
@@ -84,16 +100,21 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/default_8dp"
                     app:fieldName="description"
-                    app:controlLabel="@string/sync_label_tasks"
+                    app:controlLabel="@string/sync_label_tasks_description"
                     app:fieldTextAppearance="?android:textAppearanceLarge"
                     app:showIcon="false"
                     app:showLabel="true"></odoo.controls.OField>
 
                 <View style="@style/ViewSeparator" />
-
+                <!-- -->
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:visibility="visible"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
-        </odoo.controls.OForm>
 
+        </odoo.controls.OForm>
     </LinearLayout>
 </LinearLayout>

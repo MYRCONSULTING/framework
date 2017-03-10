@@ -5,13 +5,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +21,7 @@ import android.view.MenuItem;
 
 import com.odoo.R;
 import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.survey.SurveySurvey;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
@@ -46,7 +44,7 @@ import java.util.List;
 public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
         OCursorListAdapter.OnViewBindListener, IOnSearchViewChangeListener, View.OnClickListener,
-        AdapterView.OnItemClickListener {
+        AdapterView.OnItemClickListener , OCursorListAdapter.OnRowViewClickListener {
 
     public static final String KEY = Tasks.class.getSimpleName();
     private View mView;
@@ -56,13 +54,15 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     private boolean syncRequested = false;
     private Bundle extra = null;
     public static final String EXTRA_KEY_SURVEY_TASK = "extra_key_survey_task";
+    private Context mContext = null;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-
+        mContext = getActivity();
+        //scope = new AppScope(mContext);
         setHasSyncStatusObserver(KEY, this, db());
         return inflater.inflate(R.layout.common_listview, container, false);
     }
@@ -76,6 +76,8 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         extra = getArguments();
         listView = (ListView) mView.findViewById(R.id.listview);
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.task_row_item);
+        mAdapter.setOnRowViewClickListener(R.id.button1,this);
+        mAdapter.setOnRowViewClickListener(R.id.button2,this);
         mAdapter.setOnViewBindListener(this);
         mAdapter.setHasSectionIndexers(true, "name");
         listView.setAdapter(mAdapter);
@@ -237,11 +239,34 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
             data.putString(EXTRA_KEY_SURVEY_TASK,row.getString("x_survey_id"));
         }
         IntentUtils.startActivity(getActivity(), TasksDetails.class, data);
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
         loadActivity(row);
+    }
+
+    @Override
+    public void onRowViewClick(int position, Cursor cursor, View view,
+                               final View parent) {
+        if (inNetwork()) {
+            switch (view.getId()) {
+                case R.id.button1:
+
+                    startFragment(new SurveySurvey(), true, null);
+                    break;
+                case R.id.button2:
+                    Toast.makeText(getActivity(), _s(R.string.sync_label_tasks),
+                            Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            Toast.makeText(getActivity(), _s(R.string.sync_label_tasks),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

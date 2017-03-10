@@ -34,6 +34,7 @@
     <string name="headerComment">Commen</string>
     <string name="label_country">Country</string>
     <string name="descr_elem_list_name">Name</string>
+    <string name="sync_label_tasks_description">Description X1</string>
     <string name="label_create_new">New</string>
     <string name="user_login">USER LOGIN</string>
     <string name="SERVER_URL">SERVER URL</string>
