@@ -199,6 +199,26 @@
                 android:resource="@xml/survey_question_sync_adapter" />
         </service>
 
+        <!-- Sync Provider & Service Survey User Input  // -->
+
+        <provider
+            android:name="com.odoo.addons.survey.providers.SurveyUserInputProvider"
+            android:authorities="com.odoo.addons.survey.survey_user_input"
+            android:label="Survey User Input"
+            android:multiprocess="true" />
+
+        <service android:name=".addons.survey.services.SurveyUserInputSyncService"
+            android:exported="true"
+            android:process=":sync_survey_user_input">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/survey_user_input_sync_adapter" />
+        </service>
+
 
         <!-- Activity-->
         <activity

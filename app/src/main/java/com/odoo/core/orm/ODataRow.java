@@ -22,6 +22,7 @@ package com.odoo.core.orm;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.odoo.core.orm.fields.OColumn;
 
@@ -43,10 +44,15 @@ public class ODataRow implements Parcelable {
     }
 
     public Integer getInt(String key) {
-        if (_data.get(key).toString().equals("false"))
-            return 0;
-        else
-            return Integer.parseInt(_data.get(key).toString());
+        if (key!=null){
+            //Log.i(TAG, "Error de Sync   Key   >> " + key);
+            //Log.i(TAG, "Error de Sync   Value >> " + _data.get(key).toString());
+            if (_data.get(key).toString().equals("false"))
+                return 0;
+            else
+                return Integer.parseInt(_data.get(key).toString());
+        }
+        return 0;
     }
 
     public Float getFloat(String key) {

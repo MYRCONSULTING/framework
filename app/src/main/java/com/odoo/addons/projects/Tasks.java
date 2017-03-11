@@ -62,7 +62,6 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mContext = getActivity();
-        //scope = new AppScope(mContext);
         setHasSyncStatusObserver(KEY, this, db());
         return inflater.inflate(R.layout.common_listview, container, false);
     }
