@@ -39,7 +39,7 @@
                     android:id="@+id/taskFormEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/android_blue"
+                    android:background="@color/cardview_light_background"
                     android:orientation="vertical"
                     android:visibility="visible"
                     app:modelName="survey.question">
@@ -48,6 +48,15 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/parallax_view_edit"
                         android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/textViewQuestion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:fontFamily="@string/app_name"
+                            android:textSize="@dimen/default_20dp"
+                            android:textStyle="bold"
+                            />
 
                         <odoo.controls.OField
                             android:id="@+id/question"
@@ -55,7 +64,8 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="@dimen/default_8dp"
                             app:fieldName="question"
-                            app:controlLabel="@string/descr_elem_list_name"
+                            android:visibility="gone"
+                            app:controlLabel="@string/label_question"
                             app:fieldTextAppearance="?android:textAppearanceLarge"
                             app:showIcon="true"
                             app:showLabel="true"></odoo.controls.OField>
@@ -65,40 +75,54 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="@dimen/default_8dp"
                             app:fieldName="type"
-                            app:controlLabel="@string/sync_label_tasks_description"
+                            app:controlLabel="@string/label_question_type"
                             app:fieldTextAppearance="?android:textAppearanceLarge"
                             app:showIcon="false"
+                            android:visibility="gone"
                             app:showLabel="true"></odoo.controls.OField>
                         <EditText
                             android:id="@+id/editTextArea_UserInput"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:hint="Escreva que gostaria de nos dizer"
+                            android:hint="@string/hint_question"
                             android:inputType="text|textMultiLine"
+                            android:visibility="gone"
                             android:gravity="top"/>
                         <EditText
                             android:id="@+id/editText_UserInput"
                             android:layout_width="match_parent"
+                            android:hint="@string/hint_question"
                             android:inputType="text"
+                            android:visibility="gone"
                             android:layout_height="match_parent" />
                         <EditText
                             android:id="@+id/editTextNumerical_UserInput"
                             android:layout_width="match_parent"
                             android:inputType="numberDecimal"
+                            android:hint="@string/hint_question"
+                            android:visibility="gone"
                             android:layout_height="match_parent" />
                         <EditText
                             android:id="@+id/editTextDateTime_UserInput"
                             android:layout_width="match_parent"
                             android:inputType="datetime"
+                            android:hint="@string/hint_question"
+                            android:visibility="gone"
                             android:layout_height="match_parent" />
                         <Spinner
                             android:id="@+id/simpleChoice_UserInput"
                             android:layout_width="match_parent"
+                            android:hint="@string/hint_question"
+                            android:visibility="gone"
                             android:layout_height="wrap_content" />
                         <CheckBox
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:hint="@string/hint_question"
+                            android:visibility="gone"/>
+                        <!--
                         <View style="@style/ViewSeparator" />
+                        -->
                     </LinearLayout>
                 </odoo.controls.OForm>
 

@@ -174,6 +174,7 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
         Bundle data = new Bundle();
         if (row != null) {
             data = row.getPrimaryBundleData();
+            data.putInt("id_task",extra.getInt("id_task"));
             data.putString(EXTRA_KEY_PROJECT,row.getString("name"));
         }
         startFragment(new SurveyQuestion(), true, data);

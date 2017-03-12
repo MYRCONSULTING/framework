@@ -5,5 +5,7 @@
 
     <dimen name="default_8dp">8dp</dimen>
     <dimen name="default_16dp">16dp</dimen>
+    <dimen name="default_20dp">20dp</dimen>
+    <dimen name="default_32dp">32dp</dimen>
     <dimen name="app_bar_top_padding">0dp</dimen>
 </resources>

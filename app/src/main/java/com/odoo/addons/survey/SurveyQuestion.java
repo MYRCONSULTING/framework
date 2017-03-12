@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.odoo.R;
 import com.odoo.addons.customers.utils.ShareUtil;
 import com.odoo.addons.projects.TasksDetails;
+import com.odoo.addons.survey.models.SurveyUserInput;
+import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
@@ -39,6 +41,7 @@ import com.odoo.core.utils.OResource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import odoo.controls.OField;
 import odoo.controls.OForm;
@@ -61,7 +64,10 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     private ODataRow record = null;
     private OForm mForm;
     private com.odoo.addons.survey.models.SurveyQuestion surveyQuestion;
-    private Spinner spinner1, spinner2;
+    private Spinner spinner1;
+    private SurveyUserInput surveyUserInput;
+    private SurveyUserInputLine surveyUserInputLine;
+    private Bundle extrasUserInput;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -98,19 +104,57 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
             setTitle("Preguntas1");
 
 
+        /////////////////////////////////////////////////////////
+        final String uuid = UUID.randomUUID().toString();
+        System.out.println("uuid = " + uuid);
+        extra.getInt("id_task");
+        //User Input
+        surveyUserInput = new SurveyUserInput(getActivity(), null);
+        surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
+
+        //int rowId = extrasUserInput.getInt(OColumn.ROW_ID);
+        //record = surveyUserInput.browse(extra.getInt("id_task"));
+        //record.put("token", uuid);
+        //record.put("survey_id", uuid);
+        //record.put("x_project_task_ids", extra.getInt("id_task"));
+
+        /////////User Input
+        OValues valuesUserInput = new OValues();
+        //values.put("id",1);
+        valuesUserInput.put("token", uuid);
+        valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
+        valuesUserInput.put("survey_id",1);
+        //final int row_idUserInput = surveyUserInput.insert(valuesUserInput);
+
+        /////////User Input Line
+        OValues valuesUserInputLine = new OValues();
+        valuesUserInputLine.put("survey_id",1);
+        valuesUserInputLine.put("page_id", 1);
+        valuesUserInputLine.put("question_id", 2);
+        //valuesUserInputLine.put("user_input_id",row_idUserInput);
+        valuesUserInputLine.put("value_text","YaPe");
+        valuesUserInputLine.put("skipped",false);
+        valuesUserInputLine.put("answer_type","text");
+
+        //final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+
+
+
+
+        //Fin
     }
 
     // add items into spinner dynamically
-    public void addItemsOnSpinner2(View view, Cursor cursor, ODataRow row) {
+    public void addItemsOnSpinner(View view, Cursor cursor, ODataRow row) {
 
-        spinner2 = (Spinner) view.findViewById(R.id.simpleChoice_UserInput);
+        spinner1 = (Spinner) view.findViewById(R.id.simpleChoice_UserInput);
         List<String> list = new ArrayList<String>();
         list.add("list 1");
         list.add("list 2");
         list.add("list 3");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner2.setAdapter(dataAdapter);
+        spinner1.setAdapter(dataAdapter);
     }
 
     @Override
@@ -130,9 +174,23 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
-        addItemsOnSpinner2(view,cursor,row);
-        OControls.setText(view, R.id.editText_UserInput, row.getString("question"));
-        OControls.setVisible(view,R.id.editText_UserInput);
+        addItemsOnSpinner(view,cursor,row);
+        OControls.setText(view, R.id.textViewQuestion, row.getString("question"));
+        switch (row.getString("type")) {
+            case "free_text":
+                OControls.setVisible(view,R.id.editTextArea_UserInput);
+                //OControls.setText(view, R.id.editTextArea_UserInput, row.getString("question"));
+                break;
+            case "textbox":
+                OControls.setVisible(view,R.id.editText_UserInput);
+                //OControls.setText(view, R.id.editText_UserInput, row.getString("question"));
+                break;
+            case "numerical_box":
+                OControls.setVisible(view,R.id.editTextNumerical_UserInput);
+                //OControls.setText(view, R.id.editTextNumerical_UserInput, row.getString("question"));
+                break;
+        }
+
         Bitmap img;
         if (row.getString("image_small").equals("false")) {
             img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("question"));

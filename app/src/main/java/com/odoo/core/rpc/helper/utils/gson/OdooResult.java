@@ -19,6 +19,8 @@
  */
 package com.odoo.core.rpc.helper.utils.gson;
 
+import android.util.Log;
+
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
@@ -55,8 +57,14 @@ public class OdooResult extends TreeMap<String, Object> {
     }
 
     public Integer getInt(String key) {
-        return getDouble(key).intValue();
-    }
+        if (getDouble(key)!=null)
+        {
+            Log.i("Key >> ", key.toString());
+            Log.i("Val >> ", getDouble(key).toString());
+            return getDouble(key).intValue();
+        }
+        return 0;
+   }
 
     public Boolean getBoolean(String key) {
         return (Boolean) get(key);

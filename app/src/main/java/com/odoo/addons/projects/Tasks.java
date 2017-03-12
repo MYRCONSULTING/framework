@@ -253,8 +253,12 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         if (inNetwork()) {
             switch (view.getId()) {
                 case R.id.button1:
-
-                    startFragment(new SurveySurvey(), true, null);
+                    Bundle data = new Bundle();
+                    ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
+                    if (row != null) {
+                        data = row.getPrimaryBundleData();
+                    }
+                    startFragment(new SurveySurvey(), true, data);
                     break;
                 case R.id.button2:
                     Toast.makeText(getActivity(), _s(R.string.sync_label_tasks),

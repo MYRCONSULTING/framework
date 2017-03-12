@@ -45,6 +45,7 @@ public class SurveySurvey extends BaseFragment implements ISyncStatusObserverLis
     private OCursorListAdapter listAdapter;
     public static final String EXTRA_KEY_PROJECT = "extra_key_project";
     private String mCurFilter = null;
+    private Bundle extra = null;
 
 
     @Override
@@ -58,6 +59,7 @@ public class SurveySurvey extends BaseFragment implements ISyncStatusObserverLis
         super.onViewCreated(view, savedInstanceState);
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
+        extra = getArguments();
         listView = (ListView) mView.findViewById(R.id.listview);
         listAdapter = new OCursorListAdapter(getActivity(), null, R.layout.survey_row_item);
         listView.setAdapter(listAdapter);
@@ -156,6 +158,7 @@ public class SurveySurvey extends BaseFragment implements ISyncStatusObserverLis
         Bundle data = new Bundle();
         if (row != null) {
             data = row.getPrimaryBundleData();
+            data.putInt("id_task",extra.getInt("_id"));
             data.putString(EXTRA_KEY_PROJECT,row.getString("name"));
         }
         startFragment(new SurveyPage(), true, data);
