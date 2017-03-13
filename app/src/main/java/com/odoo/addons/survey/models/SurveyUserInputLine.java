@@ -5,13 +5,17 @@ import android.net.Uri;
 
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.base.addons.res.ResPartner;
+import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.OBoolean;
 import com.odoo.core.orm.fields.types.ODateTime;
+import com.odoo.core.orm.fields.types.OFloat;
 import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.support.OUser;
+
+import java.util.List;
 
 /**
  * Created by Ricardo Livelli on 09/02/2017.
@@ -27,6 +31,8 @@ public class SurveyUserInputLine extends OModel {
     OColumn survey_id = new OColumn("survey_id", SurveySurvey.class, OColumn.RelationType.ManyToOne);
     OColumn user_input_id = new OColumn("user_input_id",SurveyUserInput.class,OColumn.RelationType.ManyToOne);
     OColumn value_text = new OColumn("value_text",OVarchar.class).setSize(100);
+    OColumn value_free_text = new OColumn("value_free_text",OVarchar.class).setSize(100);
+    OColumn value_number = new OColumn("value_number",OFloat.class);
     OColumn skipped = new OColumn("skipped",OBoolean.class).setDefaultValue(false);
     OColumn answer_type = new OColumn("answer_type", OSelection.class)
             .addSelection("text","Entrada de texto")
@@ -42,6 +48,34 @@ public class SurveyUserInputLine extends OModel {
     @Override
     public Uri uri() {
         return buildURI(AUTHORITY);
+    }
+
+    public static List<ODataRow> getSurveyUserInputLineByQuestionList(Context context, String question_id) {
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
+        List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"question_id = ? ",
+                new String[]{question_id},"id asc");
+        return rowSurveyUserInputLine;
+    }
+
+    public static List<ODataRow> getSurveyUserInputLineByInputLineList(Context context, String user_input_id) {
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
+        List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"user_input_id = ? ",
+                new String[]{user_input_id},"id asc");
+        return rowSurveyUserInputLine;
+    }
+
+    public static List<ODataRow> getSurveyUserInputLineByInputLineAndTypeAndQuestionList(Context context, String user_input_id, String answer_type, String question_id) {
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
+        List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"user_input_id = ? and answer_type=? and question_id=? ",
+                new String[]{user_input_id,answer_type,question_id},"id asc");
+        return rowSurveyUserInputLine;
+    }
+
+    public static List<ODataRow> getSurveyUserInputLineBySurveyList(Context context, String survey_id) {
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
+        List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"survey_id = ? ",
+                new String[]{survey_id},"id asc");
+        return rowSurveyUserInputLine;
     }
 
 

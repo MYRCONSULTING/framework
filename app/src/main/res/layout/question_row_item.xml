@@ -1,40 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/default_8dp"
-        android:paddingTop="@dimen/default_8dp"
-        android:paddingBottom="@dimen/default_8dp"
-        android:paddingRight="@dimen/default_16dp"
-        android:layout_height="match_parent">
-
-        <odoo.controls.BezelImageView
-            android:id="@+id/image_small"
-            android:layout_width="40dp"
-            android:layout_margin="@dimen/default_8dp"
-            app:maskDrawable="@drawable/circle_mask"
-            android:layout_height="40dp" />
-
+    <ScrollView
+        android:id="@+id/ScrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginLeft="@dimen/default_8dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/default_8dp"
+            android:paddingTop="@dimen/default_8dp"
+            android:paddingBottom="@dimen/default_8dp"
+            android:paddingRight="@dimen/default_8dp"
             android:layout_height="wrap_content">
 
+            <odoo.controls.BezelImageView
+                android:id="@+id/image_small"
+                android:layout_width="40dp"
+                android:layout_margin="@dimen/default_8dp"
+                app:maskDrawable="@drawable/circle_mask"
+                android:layout_height="40dp" />
+
             <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/default_8dp"
                 android:layout_height="wrap_content">
-
-
                 <odoo.controls.OForm
                     android:id="@+id/taskFormEdit"
                     android:layout_width="match_parent"
@@ -43,93 +40,91 @@
                     android:orientation="vertical"
                     android:visibility="visible"
                     app:modelName="survey.question">
-                    <LinearLayout
+
+                    <TextView
+                        android:id="@+id/textViewQuestion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/parallax_view_edit"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/textViewQuestion"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="top"
-                            android:fontFamily="@string/app_name"
-                            android:textSize="@dimen/default_20dp"
-                            android:textStyle="bold"
-                            />
+                        android:gravity="top"
+                        android:isScrollContainer="true"
+                        android:textAllCaps="true"
+                        android:fontFamily="@string/app_name"
+                        android:textSize="@dimen/default_16dp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/editTextArea_UserInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:isScrollContainer="true"
+                        android:hint="@string/hint_question"
+                        android:inputType="text|textMultiLine"
+                        android:visibility="gone"
+                        android:gravity="top"/>
+                    <EditText
+                        android:id="@+id/editText_UserInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_question"
+                        android:inputType="text"
+                        android:isScrollContainer="true"
+                        android:visibility="gone" />
+                    <EditText
+                        android:id="@+id/editTextNumerical_UserInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:hint="@string/hint_question"
+                        android:visibility="gone"
+                        android:isScrollContainer="true"/>
+                    <EditText
+                        android:id="@+id/editTextDateTime_UserInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="datetime"
+                        android:hint="@string/hint_question"
+                        android:visibility="gone"
+                        android:isScrollContainer="true" />
+                    <Spinner
+                        android:id="@+id/simpleChoice_UserInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_question"
+                        android:visibility="gone"
+                        android:isScrollContainer="true"/>
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_question"
+                        android:isScrollContainer="true"
+                        android:visibility="gone"/>
+                    <!--
+                    <View style="@style/ViewSeparator" />
+                    -->
+                    <odoo.controls.OField
+                        android:id="@+id/question"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/default_8dp"
+                        app:fieldName="question"
+                        android:visibility="gone"
+                        app:controlLabel="@string/label_question"
+                        app:fieldTextAppearance="?android:textAppearanceLarge"
+                        app:showIcon="true"
+                        app:showLabel="true"></odoo.controls.OField>
+                    <odoo.controls.OField
+                        android:id="@+id/type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/default_8dp"
+                        app:fieldName="type"
+                        app:controlLabel="@string/label_question_type"
+                        app:fieldTextAppearance="?android:textAppearanceLarge"
+                        app:showIcon="false"
+                        android:visibility="gone"
+                        app:showLabel="true"></odoo.controls.OField>
 
-                        <odoo.controls.OField
-                            android:id="@+id/question"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="@dimen/default_8dp"
-                            app:fieldName="question"
-                            android:visibility="gone"
-                            app:controlLabel="@string/label_question"
-                            app:fieldTextAppearance="?android:textAppearanceLarge"
-                            app:showIcon="true"
-                            app:showLabel="true"></odoo.controls.OField>
-                        <odoo.controls.OField
-                            android:id="@+id/type"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="@dimen/default_8dp"
-                            app:fieldName="type"
-                            app:controlLabel="@string/label_question_type"
-                            app:fieldTextAppearance="?android:textAppearanceLarge"
-                            app:showIcon="false"
-                            android:visibility="gone"
-                            app:showLabel="true"></odoo.controls.OField>
-                        <EditText
-                            android:id="@+id/editTextArea_UserInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:hint="@string/hint_question"
-                            android:inputType="text|textMultiLine"
-                            android:visibility="gone"
-                            android:gravity="top"/>
-                        <EditText
-                            android:id="@+id/editText_UserInput"
-                            android:layout_width="match_parent"
-                            android:hint="@string/hint_question"
-                            android:inputType="text"
-                            android:visibility="gone"
-                            android:layout_height="match_parent" />
-                        <EditText
-                            android:id="@+id/editTextNumerical_UserInput"
-                            android:layout_width="match_parent"
-                            android:inputType="numberDecimal"
-                            android:hint="@string/hint_question"
-                            android:visibility="gone"
-                            android:layout_height="match_parent" />
-                        <EditText
-                            android:id="@+id/editTextDateTime_UserInput"
-                            android:layout_width="match_parent"
-                            android:inputType="datetime"
-                            android:hint="@string/hint_question"
-                            android:visibility="gone"
-                            android:layout_height="match_parent" />
-                        <Spinner
-                            android:id="@+id/simpleChoice_UserInput"
-                            android:layout_width="match_parent"
-                            android:hint="@string/hint_question"
-                            android:visibility="gone"
-                            android:layout_height="wrap_content" />
-                        <CheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:hint="@string/hint_question"
-                            android:visibility="gone"/>
-                        <!--
-                        <View style="@style/ViewSeparator" />
-                        -->
-                    </LinearLayout>
                 </odoo.controls.OForm>
-
-
             </LinearLayout>
-
         </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
-
+    </ScrollView>
+</RelativeLayout>

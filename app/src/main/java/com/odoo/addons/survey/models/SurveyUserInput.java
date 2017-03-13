@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.base.addons.res.ResPartner;
+import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.OBoolean;
@@ -13,6 +14,8 @@ import com.odoo.core.orm.fields.types.ODateTime;
 import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.support.OUser;
+
+import java.util.List;
 
 /**
  * Created by Ricardo Livelli on 09/02/2017.
@@ -43,5 +46,11 @@ public class SurveyUserInput extends OModel {
         return buildURI(AUTHORITY);
     }
 
+    public static List<ODataRow> getSurveyUserInputList(Context context, String rowIdProjectTask) {
+        SurveyUserInput surveyUserInput = new SurveyUserInput(context,null);
+        List<ODataRow> rowSurveyUserInput = surveyUserInput.select(null,"x_project_task_ids = ? ",
+                new String[]{rowIdProjectTask},"id asc");
+        return rowSurveyUserInput;
+    }
 
 }

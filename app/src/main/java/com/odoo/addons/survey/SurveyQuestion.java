@@ -15,7 +15,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -27,6 +30,7 @@ import com.odoo.addons.projects.TasksDetails;
 import com.odoo.addons.survey.models.SurveyUserInput;
 import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.core.orm.ODataRow;
+import com.odoo.core.orm.OM2ORecord;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
@@ -51,7 +55,7 @@ import odoo.controls.OForm;
  */
 
 public class SurveyQuestion extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        ISyncStatusObserverListener, SwipeRefreshLayout.OnRefreshListener, OCursorListAdapter.OnViewBindListener {
+        ISyncStatusObserverListener, OCursorListAdapter.OnViewBindListener {
 
     public static final String TAG = SurveyQuestion.class.getSimpleName();
 
@@ -68,24 +72,23 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     private SurveyUserInput surveyUserInput;
     private SurveyUserInputLine surveyUserInputLine;
     private Bundle extrasUserInput;
+    private EditText editText;
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.common_listview, container, false);
     }
 
     @Override
-    public void onCreateOptionsMenu(
-            Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_question, menu);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHasSwipeRefreshView(view, R.id.swipe_container, this);
+        //setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
         extra = getArguments();
         listView = (ListView) mView.findViewById(R.id.listview);
@@ -103,45 +106,6 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         else
             setTitle("Preguntas1");
 
-
-        /////////////////////////////////////////////////////////
-        final String uuid = UUID.randomUUID().toString();
-        System.out.println("uuid = " + uuid);
-        extra.getInt("id_task");
-        //User Input
-        surveyUserInput = new SurveyUserInput(getActivity(), null);
-        surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
-
-        //int rowId = extrasUserInput.getInt(OColumn.ROW_ID);
-        //record = surveyUserInput.browse(extra.getInt("id_task"));
-        //record.put("token", uuid);
-        //record.put("survey_id", uuid);
-        //record.put("x_project_task_ids", extra.getInt("id_task"));
-
-        /////////User Input
-        OValues valuesUserInput = new OValues();
-        //values.put("id",1);
-        valuesUserInput.put("token", uuid);
-        valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
-        valuesUserInput.put("survey_id",1);
-        //final int row_idUserInput = surveyUserInput.insert(valuesUserInput);
-
-        /////////User Input Line
-        OValues valuesUserInputLine = new OValues();
-        valuesUserInputLine.put("survey_id",1);
-        valuesUserInputLine.put("page_id", 1);
-        valuesUserInputLine.put("question_id", 2);
-        //valuesUserInputLine.put("user_input_id",row_idUserInput);
-        valuesUserInputLine.put("value_text","YaPe");
-        valuesUserInputLine.put("skipped",false);
-        valuesUserInputLine.put("answer_type","text");
-
-        //final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
-
-
-
-
-        //Fin
     }
 
     // add items into spinner dynamically
@@ -162,32 +126,98 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         switch (item.getItemId()) {
 
             case R.id.menu_save:
-                Log.i(TAG, "Id SurveyQuestion  Id   Save : " );
+                saveInputUser();
+                Log.i(TAG, "Save User Input : " );
+                Toast.makeText(getActivity(), "Graba", Toast.LENGTH_LONG).show();
                 break;
             case R.id.menu_syncronize:
-                Log.i(TAG, "Id SurveyQuestion  Id   Syncronize : " );
+                Log.i(TAG, "Syncronize : " );
                 break;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void saveInputUser(){
+        /////////////////////////////////////////////////////////
+
+        extra.getInt("id_task");
+        //User Input
+        surveyUserInput = new SurveyUserInput(getActivity(), null);
+        surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
+
+        //int rowId = extrasUserInput.getInt(OColumn.ROW_ID);
+        //record = surveyUserInput.browse(extra.getInt("id_task"));
+        //record.put("token", uuid);
+        //record.put("survey_id", uuid);
+        //record.put("x_project_task_ids", extra.getInt("id_task"));
+
+        /////////User Input
+        OValues valuesUserInput = new OValues();
+        //values.put("id",1);
+        final String uuid = UUID.randomUUID().toString();
+        System.out.println("uuid = " + uuid);
+        valuesUserInput.put("token", uuid);
+        valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
+        valuesUserInput.put("survey_id",1);
+        //final int row_idUserInput = surveyUserInput.insert(valuesUserInput);
+
+        /////////User Input Line
+        OValues valuesUserInputLine = new OValues();
+        valuesUserInputLine.put("survey_id",1);
+        valuesUserInputLine.put("page_id", 1);
+        // For para las questions
+        valuesUserInputLine.put("question_id", 2);
+        //valuesUserInputLine.put("user_input_id",row_idUserInput);
+        valuesUserInputLine.put("value_text","YaPe");
+        valuesUserInputLine.put("skipped",false);
+        valuesUserInputLine.put("answer_type","text");
+
+        //final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+
+    }
+
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
-        addItemsOnSpinner(view,cursor,row);
+        //com.odoo.addons.survey.models.SurveyQuestion surveyQuestion1 = new com.odoo.addons.survey.models.SurveyQuestion(getContext(), null);
+        ODataRow recordSurveyUserInputLine;
+        surveyUserInput = new SurveyUserInput(getActivity(), null);
+        int rowId = row.getInt("_id");
+        int rowTaskId = extra.getInt("id_task");
+        ODataRow recordPage = surveyQuestion.browse(rowId).getM2ORecord("page_id").browse();
+        ODataRow recordSurvey = surveyQuestion.browse(rowId).getM2ORecord("survey_id").browse();
+
+        ODataRow recordSurveyUserInput = null;
+        int rowIdUserInput = 0;
+        if (surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).size()>0){
+            recordSurveyUserInput = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).get(0);
+            rowIdUserInput = recordSurveyUserInput.getInt("_id");
+            //List<ODataRow> recordSurveyUserInputLineList = surveyUserInputLine.getSurveyUserInputLineByInputLineList(getContext(),String.valueOf(rowIdUserInput));
+        }
+
         OControls.setText(view, R.id.textViewQuestion, row.getString("question"));
         switch (row.getString("type")) {
             case "free_text":
                 OControls.setVisible(view,R.id.editTextArea_UserInput);
-                //OControls.setText(view, R.id.editTextArea_UserInput, row.getString("question"));
+                recordSurveyUserInputLine = getSurveyUserInputLineByInputLineAndTypeList(getContext(),String.valueOf(rowIdUserInput),"free_text",String.valueOf(rowId));
+                if (recordSurveyUserInputLine!= null){
+                    OControls.setText(view, R.id.editTextArea_UserInput, recordSurveyUserInputLine.get("value_free_text").toString());
+                }
                 break;
             case "textbox":
                 OControls.setVisible(view,R.id.editText_UserInput);
-                //OControls.setText(view, R.id.editText_UserInput, row.getString("question"));
+                recordSurveyUserInputLine = getSurveyUserInputLineByInputLineAndTypeList(getContext(),String.valueOf(rowIdUserInput),"text",String.valueOf(rowId));
+                if (recordSurveyUserInputLine!= null){
+                    OControls.setText(view, R.id.editText_UserInput, recordSurveyUserInputLine.get("value_text").toString());
+                }
+
                 break;
             case "numerical_box":
                 OControls.setVisible(view,R.id.editTextNumerical_UserInput);
-                //OControls.setText(view, R.id.editTextNumerical_UserInput, row.getString("question"));
+                recordSurveyUserInputLine = getSurveyUserInputLineByInputLineAndTypeList(getContext(),String.valueOf(rowIdUserInput),"number",String.valueOf(rowId));
+                if (recordSurveyUserInputLine!= null){
+                    OControls.setText(view, R.id.editTextNumerical_UserInput, recordSurveyUserInputLine.get("value_number").toString());
+                }
                 break;
         }
 
@@ -199,19 +229,22 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         }
         OControls.setImage(view, R.id.image_small, img);
 
-        /////////
-
-        mForm = (OForm) view.findViewById(R.id.taskFormEdit);
-        int rowId = row.getInt("_id");
-        mForm.setEditable(true);
-        record = surveyQuestion.browse(rowId);
-        Log.i(TAG, "Id SurveyQuestion _Id   : " + row.get("_id"));
-        mForm.initForm(record);
-        OField textView =  (OField) mForm.findViewById(R.id.question);
-        //textView.setmLabel("sssss");
-        //OControls.setText(view, R.id.question, row.getString("question"));
+        // Para los otros tipos de campos.
+        addItemsOnSpinner(view,cursor,row);
     }
 
+    public ODataRow getSurveyUserInputLineByInputLineAndTypeList(Context context, String user_input_id, String answer_type,String question_id) {
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
+        if (surveyUserInputLine.getSurveyUserInputLineByInputLineAndTypeAndQuestionList(getContext(),user_input_id,answer_type,question_id).size()>0)
+        {
+            ODataRow recordSurveyUserInputLine = surveyUserInputLine.getSurveyUserInputLineByInputLineAndTypeAndQuestionList(getContext(),user_input_id,answer_type,question_id).get(0);
+            return recordSurveyUserInputLine;
+        }
+        else
+        {
+            return null;
+        }
+    }
     @Override
     public void onStatusChange(Boolean changed) {
         if(changed){
@@ -241,28 +274,30 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
             OControls.setGone(mView, R.id.loadingProgress);
             OControls.setVisible(mView, R.id.swipe_container);
             //OControls.setGone(mView, R.id.no_items_found);
-            setHasSwipeRefreshView(mView, R.id.swipe_container, this);
+            //setHasSwipeRefreshView(mView, R.id.swipe_container, this);
         } else {
             OControls.setGone(mView, R.id.loadingProgress);
             OControls.setGone(mView, R.id.swipe_container);
             OControls.setVisible(mView, R.id.data_list_no_item);
-            setHasSwipeRefreshView(mView, R.id.data_list_no_item, this);
+            //setHasSwipeRefreshView(mView, R.id.data_list_no_item, this);
             OControls.setText(mView, R.id.title, "No Question found");
             OControls.setText(mView, R.id.subTitle, "Swipe to check new question");
         }
         if (db().isEmptyTable()) {
             // Request for sync
             // Request for sync
-            onRefresh();
+            //onRefresh();
         }
     }
 
+    /*
     @Override
     public void onRefresh() {
         if (inNetwork()) {
             parent().sync().requestSync(com.odoo.addons.survey.models.SurveyQuestion.AUTHORITY);
         }
     }
+    */
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
