@@ -81,7 +81,6 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     private EditText editText;
     private HashMap<Integer,ODataRow> mapsurveyUserInputLine = new HashMap<Integer,ODataRow>();
     private HashMap<Integer,String> mapsurveyQuestion = new HashMap<Integer,String>();
-    private HashMap<Integer,String> mapIdComponent = new HashMap<Integer,String>();
     private int rowIdUserInput = 0;
     private String idSurvey = "";
     ODataRow recordSurveyUserInput = null;
@@ -176,91 +175,74 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     }
 
     public void saveInputUser(){
+        surveyUserInput = new SurveyUserInput(getActivity(), null);
+        surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
+        int row_idUserInput = 0;
+        boolean flag = false;
+        OValues valuesUserInput = new OValues();
+        final String uuid = UUID.randomUUID().toString();
+        System.out.println("uuid = " + uuid);
+        valuesUserInput.put("token", uuid);
+        valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
+        valuesUserInput.put("survey_id",idSurvey);
 
-        Set setId = mapIdComponent.entrySet();
+        // Add User Input
+        if (rowIdUserInput==0) { // Registro Nuevo - Id de User Input - Respuesta relacionada a una tarea.
+            row_idUserInput = surveyUserInput.insert(valuesUserInput);
+        }else{
+            flag = surveyUserInput.update(rowIdUserInput,valuesUserInput);
+        }
 
-        Iterator iteratorId = setId.iterator();
-        while(iteratorId.hasNext()) {
-            Map.Entry mentry = (Map.Entry) iteratorId.next();
-            System.out.print("key is: " + mentry.getKey() + " & Value is: ");
-            System.out.println(mentry.getValue());
+        // Add User Input Line
+        Set set = mapsurveyQuestion.entrySet();
+        Iterator iterator = set.iterator();
+        while(iterator.hasNext()) {
+            Map.Entry mentry = (Map.Entry)iterator.next();
+            OValues valuesUserInputLine = new OValues();
+            valuesUserInputLine.put("survey_id",idSurvey);
+            ODataRow recordPage = surveyQuestion.browse(Integer.valueOf(mentry.getKey().toString())).getM2ORecord("page_id").browse();
+            valuesUserInputLine.put("page_id", recordPage.getInt("_id"));
+            valuesUserInputLine.put("question_id", mentry.getKey().toString());
+            valuesUserInputLine.put("skipped",false);
             EditText txtEdit = (EditText) getActivity().findViewById(Integer.valueOf(mentry.getKey().toString()));
-            txtEdit.getText();
-            //mapIdComponent.get(12);
-
-
-        }
-
-        //mView.findViewById(R.id.listview);
-        if (rowIdUserInput==0){ // Registro Nuevo - Id de User Input - Respuesta relacionada a una tarea.
-            surveyUserInput = new SurveyUserInput(getActivity(), null);
-            surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
-
-            // Add User Input
-            OValues valuesUserInput = new OValues();
-            final String uuid = UUID.randomUUID().toString();
-            System.out.println("uuid = " + uuid);
-            valuesUserInput.put("token", uuid);
-            valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
-            valuesUserInput.put("survey_id",idSurvey);
-            final int row_idUserInput = surveyUserInput.insert(valuesUserInput);
-            // Add User Input Line
-            Set set = mapsurveyQuestion.entrySet();
-            Iterator iterator = set.iterator();
-            while(iterator.hasNext()) {
-                Map.Entry mentry = (Map.Entry)iterator.next();
-                System.out.print("key is: "+ mentry.getKey() + " & Value is: ");
-                System.out.println(mentry.getValue());
-                OValues valuesUserInputLine = new OValues();
-                valuesUserInputLine.put("survey_id",idSurvey);
-                ODataRow recordPage = surveyQuestion.browse(Integer.valueOf(mentry.getKey().toString())).getM2ORecord("page_id").browse();
-                valuesUserInputLine.put("page_id", recordPage.getInt("_id"));
-                valuesUserInputLine.put("question_id", mentry.getKey().toString());
-                valuesUserInputLine.put("user_input_id",row_idUserInput);
-                valuesUserInputLine.put("skipped",false);
-                EditText txtEdit = (EditText) getActivity().findViewById(Integer.valueOf(mentry.getKey().toString()));
-                switch (mentry.getValue().toString()) {
-                    case "free_text":
-                        valuesUserInputLine.put("answer_type","free_text");
+            switch (mentry.getValue().toString()) {
+                case "free_text":
+                    valuesUserInputLine.put("answer_type","free_text");
+                    if (!txtEdit.getText().toString().isEmpty()){
                         valuesUserInputLine.put("value_free_text",txtEdit.getText());
-                        break;
-                    case "textbox":
-                        valuesUserInputLine.put("answer_type","text");
+                    }else{
+                        valuesUserInputLine.put("value_free_text"," ");
+                    }
+                    break;
+                case "textbox":
+                    valuesUserInputLine.put("answer_type","text");
+                    if (!txtEdit.getText().toString().isEmpty()){
                         valuesUserInputLine.put("value_text",txtEdit.getText());
-                        break;
-                    case "numerical_box":
-                        valuesUserInputLine.put("answer_type","number");
+                    }else{
+                        valuesUserInputLine.put("value_text"," ");
+                    }
+                    break;
+                case "numerical_box":
+                    valuesUserInputLine.put("answer_type","number");
+                    if (!txtEdit.getText().toString().isEmpty()){
                         valuesUserInputLine.put("value_number",txtEdit.getText());
-                        break;
-                }
-                final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+                    }else{
+                        valuesUserInputLine.put("value_number","0");
+                    }
+                    break;
             }
-
-
-            /*
-            // Add User Input Line
-            for(int x=0; x<mapsurveyUserInputLine.size(); x++){
-                ODataRow dataUserInputLine = mapsurveyUserInputLine.get(x);
-                OValues valuesUserInputLine = new OValues();
-                valuesUserInputLine.put("survey_id",recordSurveyUserInput.getInt("survey_id"));
-                valuesUserInputLine.put("page_id", recordPage.getInt("_int"));
-                // For para las questions
-                valuesUserInputLine.put("question_id", dataUserInputLine.getInt("question_id"));
+            if (rowIdUserInput==0){
                 valuesUserInputLine.put("user_input_id",row_idUserInput);
-                valuesUserInputLine.put("value_text","YaPe");
-                valuesUserInputLine.put("skipped",false);
-                valuesUserInputLine.put("answer_type","text");
-                final int row_idUserInputLine = surveyUserInputLine.insertOrUpdate(dataUserInputLine.getInt("_id"),valuesUserInputLine);
+                final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+            }else{ // Ya existe una respuesta asociada a la tarea.
+                valuesUserInputLine.put("user_input_id",rowIdUserInput);
+                if (mentry.getKey()!=null){
+                    String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString("_id");
+                    int row = Integer.valueOf(strrow);
+                    final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
+                }
             }
-            */
-
-        }else{ // Ya existe una respuesta asociada a la tarea.
-
         }
-
-
-
-
     }
 
     @Override
@@ -271,16 +253,9 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         recordSurveyUserInputLine = mapsurveyUserInputLine.get(rowId);
         OControls.setText(view, R.id.textViewQuestion, row.getString("question"));
         mapsurveyQuestion.put(rowId,row.getString("type"));
-        mapIdComponent.put(rowId,"idComponent"+rowId);
         linearlayoutTask = (LinearLayout) view.findViewById(R.id.taskFormEdit);
         switch (row.getString("type")) {
             case "free_text":
-                /*
-                OControls.setVisible(view,R.id.editTextArea_UserInput);
-                if (recordSurveyUserInputLine!= null){
-                    OControls.setText(view, R.id.editTextArea_UserInput, recordSurveyUserInputLine.get("value_free_text").toString());
-                }
-                */
                 EditText txtEdit_free_text = new EditText(getContext());
                 txtEdit_free_text.setId(rowId);
                 txtEdit_free_text.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -293,12 +268,6 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
 
                 break;
             case "textbox":
-                /*
-                OControls.setVisible(view,R.id.editText_UserInput);
-                if (recordSurveyUserInputLine!= null){
-                    OControls.setText(view, R.id.editText_UserInput, recordSurveyUserInputLine.get("value_text").toString());
-                }
-                */
                 EditText txtEdit_textbox = new EditText(getContext());
                 txtEdit_textbox.setId(rowId);
                 txtEdit_textbox.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -311,12 +280,6 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
 
                 break;
             case "numerical_box":
-                /*
-                OControls.setVisible(view,R.id.editTextNumerical_UserInput);
-                if (recordSurveyUserInputLine!= null){
-                    OControls.setText(view, R.id.editTextNumerical_UserInput, recordSurveyUserInputLine.get("value_number").toString());
-                }
-                */
                 EditText txtEdit_numerical_box = new EditText(getContext());
                 txtEdit_numerical_box.setId(rowId);
                 txtEdit_numerical_box.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
