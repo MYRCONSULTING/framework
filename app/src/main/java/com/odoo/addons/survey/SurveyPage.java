@@ -47,6 +47,7 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
     private Bundle extra = null;
     public static final String EXTRA_KEY_PROJECT = "extra_key_project";
     public static final String EXTRA_KEY_SURVEY = "extra_key_survey";
+    public static final String EXTRA_KEY_PAGE = "extra_key_page";
 
 
     @Override
@@ -91,7 +92,7 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
     @Override
     public void onStatusChange(Boolean changed) {
         if(changed){
-            getLoaderManager().restartLoader(0, null, this);
+            getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
         }
     }
 
@@ -178,9 +179,10 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
         if (row != null) {
             data = row.getPrimaryBundleData();
             data.putInt("id_task",extra.getInt("id_task"));
-
             data.putString(EXTRA_KEY_PROJECT,row.getString("name"));
             data.putString(EXTRA_KEY_SURVEY,extra.getString(EXTRA_KEY_SURVEY));
+            data.putInt(EXTRA_KEY_PAGE,data.getInt("_id"));
+
         }
         startFragment(new SurveyQuestion(), true, data);
         //IntentUtils.startActivity(getActivity(), SurveyQuestionActivity.class, data);
@@ -189,7 +191,7 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
     @Override
     public boolean onSearchViewTextChange(String newFilter) {
         mCurFilter = newFilter;
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
         return true;
     }
 

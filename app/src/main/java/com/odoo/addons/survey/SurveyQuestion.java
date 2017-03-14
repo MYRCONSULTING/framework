@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -37,12 +38,14 @@ import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.support.addons.fragment.BaseFragment;
+import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
 import com.odoo.core.support.drawer.ODrawerItem;
 import com.odoo.core.support.list.OCursorListAdapter;
 import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OControls;
+import com.odoo.core.utils.OCursorUtils;
 import com.odoo.core.utils.OResource;
 
 import java.util.ArrayList;
@@ -60,8 +63,10 @@ import odoo.controls.OForm;
  * Created by Ricardo Livelli on 09/03/2017.
  */
 
-public class SurveyQuestion extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        ISyncStatusObserverListener, OCursorListAdapter.OnViewBindListener {
+public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverListener,
+        LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
+        OCursorListAdapter.OnViewBindListener, IOnSearchViewChangeListener,
+        AdapterView.OnItemClickListener  {
 
     public static final String TAG = SurveyQuestion.class.getSimpleName();
 
@@ -83,13 +88,15 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     private HashMap<Integer,String> mapsurveyQuestion = new HashMap<Integer,String>();
     private int rowIdUserInput = 0;
     private String idSurvey = "";
+    private int idPage = 0;
     ODataRow recordSurveyUserInput = null;
     public static final String EXTRA_KEY_SURVEY = "extra_key_survey";
+    public static final String EXTRA_KEY_PAGE = "extra_key_page";
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.common_listview, container, false);
+        return inflater.inflate(R.layout.common_listview_question, container, false);
     }
 
     @Override
@@ -103,7 +110,7 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         //setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
         extra = getArguments();
-        listView = (ListView) mView.findViewById(R.id.listview);
+        listView = (ListView) mView.findViewById(R.id.listviewQuestion);
         surveyQuestion = new com.odoo.addons.survey.models.SurveyQuestion(getActivity(), null);
         listAdapter = new OCursorListAdapter(getActivity(), null, R.layout.question_row_item);
         listView.setAdapter(listAdapter);
@@ -119,6 +126,7 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
             setTitle("Preguntas1");
 
         idSurvey = extra.getString(EXTRA_KEY_SURVEY);
+        idPage = extra.getInt(EXTRA_KEY_PAGE);
         loadQuestionByUserInputLine();
     }
 
@@ -132,8 +140,8 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         if (surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).size()>0){
             recordSurveyUserInput = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).get(0);
             rowIdUserInput = recordSurveyUserInput.getInt("_id");
-            recordSurveyUserInputLine = getSurveyUserInputLineByInputList(getContext(),String.valueOf(rowIdUserInput));
-            if (recordSurveyUserInputLine.size()>0 && recordSurveyUserInputLine != null)
+            recordSurveyUserInputLine = getSurveyUserInputLineByInputList(getContext(),String.valueOf(rowIdUserInput),idPage);
+            if (recordSurveyUserInputLine != null)
             {
                 int sizeRecord = recordSurveyUserInputLine.size();
                 for(int x=0; x<sizeRecord; x++){
@@ -237,9 +245,15 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
             }else{ // Ya existe una respuesta asociada a la tarea.
                 valuesUserInputLine.put("user_input_id",rowIdUserInput);
                 if (mentry.getKey()!=null){
-                    String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString("_id");
-                    int row = Integer.valueOf(strrow);
-                    final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
+                    //Control de páginas
+                    if (mapsurveyUserInputLine.size()>0 && mapsurveyUserInputLine!= null){
+                        String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString("_id");
+                        int row = Integer.valueOf(strrow);
+                        final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
+                    }else{
+                        final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+                    }
+
                 }
             }
         }
@@ -282,7 +296,7 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
             case "numerical_box":
                 EditText txtEdit_numerical_box = new EditText(getContext());
                 txtEdit_numerical_box.setId(rowId);
-                txtEdit_numerical_box.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                txtEdit_numerical_box.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 txtEdit_numerical_box.setTag("idComponent"+rowId);
                 if (recordSurveyUserInputLine!= null && recordSurveyUserInputLine.size()>0){
                     txtEdit_numerical_box.setText(recordSurveyUserInputLine.get("value_number").toString());
@@ -304,11 +318,11 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         addItemsOnSpinner(view,cursor,row);
     }
 
-    public List<ODataRow> getSurveyUserInputLineByInputList(Context context, String user_input_id) {
+    public List<ODataRow> getSurveyUserInputLineByInputList(Context context, String user_input_id, int idPage) {
         SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
-        if (surveyUserInputLine.getSurveyUserInputLineByInputLineList(getContext(),user_input_id).size()>0)
+        List<ODataRow> recordSurveyUserInputLine = surveyUserInputLine.getSurveyUserInputLineByInputLineList(getContext(),user_input_id,idPage);
+        if (recordSurveyUserInputLine!= null)
         {
-            List<ODataRow> recordSurveyUserInputLine = surveyUserInputLine.getSurveyUserInputLineByInputLineList(getContext(),user_input_id);
             return recordSurveyUserInputLine;
         }
         else
@@ -322,9 +336,10 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     @Override
     public void onStatusChange(Boolean changed) {
         if(changed){
-            getLoaderManager().restartLoader(0, null, this);
+            getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
         }
     }
+
 
     @Override
     public List<ODrawerItem> drawerMenus(Context context) {
@@ -345,14 +360,14 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         listAdapter.changeCursor(data);
         if (data.getCount() > 0) {
-            OControls.setGone(mView, R.id.loadingProgress);
-            OControls.setVisible(mView, R.id.swipe_container);
+            //OControls.setGone(mView, R.id.loadingProgress);
+            OControls.setVisible(mView, R.id.swipe_containerQuestion);
             //OControls.setGone(mView, R.id.no_items_found);
             //setHasSwipeRefreshView(mView, R.id.swipe_container, this);
         } else {
-            OControls.setGone(mView, R.id.loadingProgress);
-            OControls.setGone(mView, R.id.swipe_container);
-            OControls.setVisible(mView, R.id.data_list_no_item);
+            //OControls.setGone(mView, R.id.loadingProgress);
+            //OControls.setGone(mView, R.id.swipe_container);
+            OControls.setVisible(mView, R.id.data_list_no_itemQuestion);
             //setHasSwipeRefreshView(mView, R.id.data_list_no_item, this);
             OControls.setText(mView, R.id.title, "No Question found");
             OControls.setText(mView, R.id.subTitle, "Swipe to check new question");
@@ -364,14 +379,12 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         }
     }
 
-    /*
     @Override
     public void onRefresh() {
         if (inNetwork()) {
-            parent().sync().requestSync(com.odoo.addons.survey.models.SurveyQuestion.AUTHORITY);
+            parent().sync().requestSync(com.odoo.addons.survey.models.SurveyPage.AUTHORITY);
         }
     }
-    */
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
@@ -395,5 +408,23 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
         return new CursorLoader(getActivity(), db().uri(),
                 null, selection, selectionArgs, "id");
+    }
+
+    @Override
+    public boolean onSearchViewTextChange(String newFilter) {
+        mCurFilter = newFilter;
+        getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
+        return true;
+    }
+
+    @Override
+    public void onSearchViewClose() {
+        // nothing to do
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //ODataRow row = OCursorUtils.toDatarow((Cursor) listAdapter.getItem(position));
+        //loadActivity(row);
     }
 }

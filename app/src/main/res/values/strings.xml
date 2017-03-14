@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Odoo</string>
     <string name="sync_label_tasks">Tasks</string>
+    <string name="sync_label_schedule">Agenda</string>
     <string name="sync_label_project">Projects</string>
     <string name="sync_label_customers">Customers</string>
     <string name="sync_label_supplier">Suppliers</string>

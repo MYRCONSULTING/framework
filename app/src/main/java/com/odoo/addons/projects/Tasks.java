@@ -86,9 +86,10 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(extra.getInt("_id"), extra, this);
         if (extra.getString("extra_key_project") == null || (extra.getString("extra_key_project").isEmpty()))
-            setTitle(extra.getString("extra_key_project"));
+            setTitle(OResource.string(getContext(), R.string.sync_label_schedule));
         else
-            setTitle("Tareas");
+            setTitle(OResource.string(getContext(), R.string.sync_label_schedule)+"/"+OResource.string(getContext(), R.string.sync_label_tasks));
+
 
     }
 
@@ -169,7 +170,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     @Override
     public List<ODrawerItem> drawerMenus(Context context) {
         List<ODrawerItem> menu = new ArrayList<>();
-        menu.add(new ODrawerItem(KEY).setTitle(OResource.string(context, R.string.sync_label_tasks))
+        menu.add(new ODrawerItem(KEY).setTitle(OResource.string(context, R.string.sync_label_schedule))
                 .setIcon(R.drawable.ic_action_notes_content)
                 .setInstance(new Tasks()));
         return menu;

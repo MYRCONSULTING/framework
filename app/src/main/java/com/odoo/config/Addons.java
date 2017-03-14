@@ -38,10 +38,11 @@ public class Addons extends AddonsHelper {
      * for maintain sequence call withSequence(int sequence)
      * OAddon partners = new OAddon(Partners.class).withSequence(2);
      */
-    OAddon customers = new OAddon(Customers.class).setDefault();
-    OAddon tasks = new OAddon(Tasks.class);
+
+    OAddon tasks = new OAddon(Tasks.class).setDefault();
     OAddon project = new OAddon(Project.class);
-    OAddon surveysurvey = new OAddon(SurveySurvey.class);
+    OAddon customers = new OAddon(Customers.class);
+    //OAddon surveysurvey = new OAddon(SurveySurvey.class);
     //OAddon surveypage = new OAddon(SurveyPage.class);
     //OAddon surveyquestion = new OAddon(SurveyQuestion.class);
     //OAddon survey = new OAddon(Project.class);

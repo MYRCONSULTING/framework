@@ -15,6 +15,7 @@ import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.support.OUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,11 +58,26 @@ public class SurveyUserInputLine extends OModel {
         return rowSurveyUserInputLine;
     }
 
-    public static List<ODataRow> getSurveyUserInputLineByInputLineList(Context context, String user_input_id) {
+    public static List<ODataRow> getSurveyUserInputLineByInputLineList(Context context, String user_input_id,int idPage) {
+        SurveyQuestion surveyQuestion = new SurveyQuestion(context,null);
         SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
         List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"user_input_id = ? ",
                 new String[]{user_input_id},"id asc");
-        return rowSurveyUserInputLine;
+
+        List<ODataRow> rowSurveyUserInputLine2 = new ArrayList<ODataRow>();
+
+        for (int i=0; i<rowSurveyUserInputLine.size(); i++) {
+            System.out.println(rowSurveyUserInputLine.get(i).getString("question_id"));
+
+            int recordPage = surveyQuestion.browse(rowSurveyUserInputLine.get(i).getInt("question_id")).getM2ORecord("page_id").browse().getInt("_id");
+            if (recordPage == idPage){
+                if (rowSurveyUserInputLine.get(i)!=null){
+                    rowSurveyUserInputLine2.add(rowSurveyUserInputLine.get(i));
+                }
+            }
+        }
+
+        return rowSurveyUserInputLine2;
     }
 
     public static List<ODataRow> getSurveyUserInputLineByInputLineAndTypeAndQuestionList(Context context, String user_input_id, String answer_type, String question_id) {

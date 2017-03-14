@@ -99,7 +99,7 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), db().uri(), null, null, null, null);
+        return new CursorLoader(getActivity(), db().uri(), null, null, null, "id");
     }
 
     @Override
