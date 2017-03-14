@@ -52,31 +52,6 @@
                         android:textSize="@dimen/default_16dp"
                         android:textStyle="bold"/>
                     <EditText
-                        android:id="@+id/editTextArea_UserInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:isScrollContainer="true"
-                        android:hint="@string/hint_question"
-                        android:inputType="text|textMultiLine"
-                        android:visibility="gone"
-                        android:gravity="top"/>
-                    <EditText
-                        android:id="@+id/editText_UserInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_question"
-                        android:inputType="text"
-                        android:isScrollContainer="true"
-                        android:visibility="gone" />
-                    <EditText
-                        android:id="@+id/editTextNumerical_UserInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:hint="@string/hint_question"
-                        android:visibility="gone"
-                        android:isScrollContainer="true"/>
-                    <EditText
                         android:id="@+id/editTextDateTime_UserInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

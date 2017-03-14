@@ -44,6 +44,8 @@ public class SurveySurvey extends BaseFragment implements ISyncStatusObserverLis
     private ListView listView;
     private OCursorListAdapter listAdapter;
     public static final String EXTRA_KEY_PROJECT = "extra_key_project";
+    public static final String EXTRA_KEY_SURVEY = "extra_key_survey";
+    public static final String EXTRA_KEY_SURVEY_TASK = "extra_key_survey_task";
     private String mCurFilter = null;
     private Bundle extra = null;
 
@@ -68,7 +70,7 @@ public class SurveySurvey extends BaseFragment implements ISyncStatusObserverLis
         listView.setFastScrollAlwaysVisible(true);
         listView.setOnItemClickListener(this);
         setHasSyncStatusObserver(TAG, this, db());
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(Integer.valueOf(extra.getString(EXTRA_KEY_SURVEY_TASK)), extra, this);
 
     }
 
@@ -87,9 +89,11 @@ public class SurveySurvey extends BaseFragment implements ISyncStatusObserverLis
     @Override
     public void onStatusChange(Boolean changed) {
         if(changed){
-            getLoaderManager().restartLoader(0, null, this);
+            getLoaderManager().restartLoader(Integer.valueOf(extra.getString(EXTRA_KEY_SURVEY_TASK)), extra, this);
         }
     }
+
+
 
     @Override
     public List<ODrawerItem> drawerMenus(Context context) {
@@ -106,8 +110,29 @@ public class SurveySurvey extends BaseFragment implements ISyncStatusObserverLis
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), db().uri(), null, null, null, null);
+    public Loader<Cursor> onCreateLoader(int id, Bundle data) {
+        String where = "_id = ?";
+        List<String> args = new ArrayList<>();
+        if (id > 0)
+            args.add(String.valueOf(id));
+        if (data!= null)
+            // args.add(data.get("id").toString());
+
+            if (mCurFilter != null) {
+                where += " and name like ? ";
+                args.add(mCurFilter + "%");
+            }
+        String selection = (args.size() > 0) ? where : null;
+        String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
+        return new CursorLoader(getActivity(), db().uri(),
+                null, selection, selectionArgs, "_id");
+    }
+
+    @Override
+    public boolean onSearchViewTextChange(String newFilter) {
+        mCurFilter = newFilter;
+        getLoaderManager().restartLoader(Integer.valueOf(extra.getString(EXTRA_KEY_SURVEY_TASK)), extra, this);
+        return true;
     }
 
     @Override
@@ -160,15 +185,12 @@ public class SurveySurvey extends BaseFragment implements ISyncStatusObserverLis
             data = row.getPrimaryBundleData();
             data.putInt("id_task",extra.getInt("_id"));
             data.putString(EXTRA_KEY_PROJECT,row.getString("name"));
+            data.putString(EXTRA_KEY_SURVEY,row.getString("_id"));
+
         }
         startFragment(new SurveyPage(), true, data);
     }
-    @Override
-    public boolean onSearchViewTextChange(String newFilter) {
-        mCurFilter = newFilter;
-        getLoaderManager().restartLoader(0, null, this);
-        return true;
-    }
+
 
     @Override
     public void onSearchViewClose() {

@@ -257,6 +257,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                     ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
                     if (row != null) {
                         data = row.getPrimaryBundleData();
+                        data.putString(EXTRA_KEY_SURVEY_TASK,row.getString("x_survey_id"));
                     }
                     startFragment(new SurveySurvey(), true, data);
                     break;

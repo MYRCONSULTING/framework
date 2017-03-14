@@ -65,7 +65,8 @@
                         android:hint="@string/label_your_self_hosted_url"
                         android:singleLine="true"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColorHint="@color/body_text_3" />
+                        android:textColorHint="@color/body_text_3"
+                        android:text="192.168.0.24:8069" />
 
                     <ProgressBar
                         android:id="@+id/serverURLCheckProgress"
@@ -117,7 +118,8 @@
                         android:hint="@string/label_username_or_email"
                         android:singleLine="true"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColorHint="@color/body_text_3" />
+                        android:textColorHint="@color/body_text_3"
+                        android:text="admin" />
                 </LinearLayout>
 
                 <View

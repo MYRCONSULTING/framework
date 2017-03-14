@@ -8,6 +8,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +20,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,7 +46,11 @@ import com.odoo.core.utils.OControls;
 import com.odoo.core.utils.OResource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import odoo.controls.OField;
@@ -73,6 +79,13 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     private SurveyUserInputLine surveyUserInputLine;
     private Bundle extrasUserInput;
     private EditText editText;
+    private HashMap<Integer,ODataRow> mapsurveyUserInputLine = new HashMap<Integer,ODataRow>();
+    private HashMap<Integer,String> mapsurveyQuestion = new HashMap<Integer,String>();
+    private HashMap<Integer,String> mapIdComponent = new HashMap<Integer,String>();
+    private int rowIdUserInput = 0;
+    private String idSurvey = "";
+    ODataRow recordSurveyUserInput = null;
+    public static final String EXTRA_KEY_SURVEY = "extra_key_survey";
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
@@ -106,7 +119,31 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         else
             setTitle("Preguntas1");
 
+        idSurvey = extra.getString(EXTRA_KEY_SURVEY);
+        loadQuestionByUserInputLine();
     }
+
+    public  void loadQuestionByUserInputLine(){
+        //ODataRow recordPage = surveyQuestion.browse(rowId).getM2ORecord("page_id").browse();
+        //ODataRow recordSurvey = surveyQuestion.browse(rowId).getM2ORecord("survey_id").browse();
+        List<ODataRow> recordSurveyUserInputLine= null;
+        rowIdUserInput = 0;
+        int rowTaskId = extra.getInt("id_task");
+
+        if (surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).size()>0){
+            recordSurveyUserInput = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).get(0);
+            rowIdUserInput = recordSurveyUserInput.getInt("_id");
+            recordSurveyUserInputLine = getSurveyUserInputLineByInputList(getContext(),String.valueOf(rowIdUserInput));
+            if (recordSurveyUserInputLine.size()>0 && recordSurveyUserInputLine != null)
+            {
+                int sizeRecord = recordSurveyUserInputLine.size();
+                for(int x=0; x<sizeRecord; x++){
+                    mapsurveyUserInputLine.put(recordSurveyUserInputLine.get(x).getInt("question_id"),recordSurveyUserInputLine.get(x));
+                }
+            }
+        }
+    }
+
 
     // add items into spinner dynamically
     public void addItemsOnSpinner(View view, Cursor cursor, ODataRow row) {
@@ -139,85 +176,156 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
     }
 
     public void saveInputUser(){
-        /////////////////////////////////////////////////////////
 
-        extra.getInt("id_task");
-        //User Input
-        surveyUserInput = new SurveyUserInput(getActivity(), null);
-        surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
+        Set setId = mapIdComponent.entrySet();
 
-        //int rowId = extrasUserInput.getInt(OColumn.ROW_ID);
-        //record = surveyUserInput.browse(extra.getInt("id_task"));
-        //record.put("token", uuid);
-        //record.put("survey_id", uuid);
-        //record.put("x_project_task_ids", extra.getInt("id_task"));
+        Iterator iteratorId = setId.iterator();
+        while(iteratorId.hasNext()) {
+            Map.Entry mentry = (Map.Entry) iteratorId.next();
+            System.out.print("key is: " + mentry.getKey() + " & Value is: ");
+            System.out.println(mentry.getValue());
+            EditText txtEdit = (EditText) getActivity().findViewById(Integer.valueOf(mentry.getKey().toString()));
+            txtEdit.getText();
+            //mapIdComponent.get(12);
 
-        /////////User Input
-        OValues valuesUserInput = new OValues();
-        //values.put("id",1);
-        final String uuid = UUID.randomUUID().toString();
-        System.out.println("uuid = " + uuid);
-        valuesUserInput.put("token", uuid);
-        valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
-        valuesUserInput.put("survey_id",1);
-        //final int row_idUserInput = surveyUserInput.insert(valuesUserInput);
 
-        /////////User Input Line
-        OValues valuesUserInputLine = new OValues();
-        valuesUserInputLine.put("survey_id",1);
-        valuesUserInputLine.put("page_id", 1);
-        // For para las questions
-        valuesUserInputLine.put("question_id", 2);
-        //valuesUserInputLine.put("user_input_id",row_idUserInput);
-        valuesUserInputLine.put("value_text","YaPe");
-        valuesUserInputLine.put("skipped",false);
-        valuesUserInputLine.put("answer_type","text");
+        }
 
-        //final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+        //mView.findViewById(R.id.listview);
+        if (rowIdUserInput==0){ // Registro Nuevo - Id de User Input - Respuesta relacionada a una tarea.
+            surveyUserInput = new SurveyUserInput(getActivity(), null);
+            surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
+
+            // Add User Input
+            OValues valuesUserInput = new OValues();
+            final String uuid = UUID.randomUUID().toString();
+            System.out.println("uuid = " + uuid);
+            valuesUserInput.put("token", uuid);
+            valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
+            valuesUserInput.put("survey_id",idSurvey);
+            final int row_idUserInput = surveyUserInput.insert(valuesUserInput);
+            // Add User Input Line
+            Set set = mapsurveyQuestion.entrySet();
+            Iterator iterator = set.iterator();
+            while(iterator.hasNext()) {
+                Map.Entry mentry = (Map.Entry)iterator.next();
+                System.out.print("key is: "+ mentry.getKey() + " & Value is: ");
+                System.out.println(mentry.getValue());
+                OValues valuesUserInputLine = new OValues();
+                valuesUserInputLine.put("survey_id",idSurvey);
+                ODataRow recordPage = surveyQuestion.browse(Integer.valueOf(mentry.getKey().toString())).getM2ORecord("page_id").browse();
+                valuesUserInputLine.put("page_id", recordPage.getInt("_id"));
+                valuesUserInputLine.put("question_id", mentry.getKey().toString());
+                valuesUserInputLine.put("user_input_id",row_idUserInput);
+                valuesUserInputLine.put("skipped",false);
+                EditText txtEdit = (EditText) getActivity().findViewById(Integer.valueOf(mentry.getKey().toString()));
+                switch (mentry.getValue().toString()) {
+                    case "free_text":
+                        valuesUserInputLine.put("answer_type","free_text");
+                        valuesUserInputLine.put("value_free_text",txtEdit.getText());
+                        break;
+                    case "textbox":
+                        valuesUserInputLine.put("answer_type","text");
+                        valuesUserInputLine.put("value_text",txtEdit.getText());
+                        break;
+                    case "numerical_box":
+                        valuesUserInputLine.put("answer_type","number");
+                        valuesUserInputLine.put("value_number",txtEdit.getText());
+                        break;
+                }
+                final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+            }
+
+
+            /*
+            // Add User Input Line
+            for(int x=0; x<mapsurveyUserInputLine.size(); x++){
+                ODataRow dataUserInputLine = mapsurveyUserInputLine.get(x);
+                OValues valuesUserInputLine = new OValues();
+                valuesUserInputLine.put("survey_id",recordSurveyUserInput.getInt("survey_id"));
+                valuesUserInputLine.put("page_id", recordPage.getInt("_int"));
+                // For para las questions
+                valuesUserInputLine.put("question_id", dataUserInputLine.getInt("question_id"));
+                valuesUserInputLine.put("user_input_id",row_idUserInput);
+                valuesUserInputLine.put("value_text","YaPe");
+                valuesUserInputLine.put("skipped",false);
+                valuesUserInputLine.put("answer_type","text");
+                final int row_idUserInputLine = surveyUserInputLine.insertOrUpdate(dataUserInputLine.getInt("_id"),valuesUserInputLine);
+            }
+            */
+
+        }else{ // Ya existe una respuesta asociada a la tarea.
+
+        }
+
+
+
 
     }
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
-        //com.odoo.addons.survey.models.SurveyQuestion surveyQuestion1 = new com.odoo.addons.survey.models.SurveyQuestion(getContext(), null);
+        LinearLayout linearlayoutTask;
         ODataRow recordSurveyUserInputLine;
-        surveyUserInput = new SurveyUserInput(getActivity(), null);
         int rowId = row.getInt("_id");
-        int rowTaskId = extra.getInt("id_task");
-        ODataRow recordPage = surveyQuestion.browse(rowId).getM2ORecord("page_id").browse();
-        ODataRow recordSurvey = surveyQuestion.browse(rowId).getM2ORecord("survey_id").browse();
-
-        ODataRow recordSurveyUserInput = null;
-        int rowIdUserInput = 0;
-        if (surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).size()>0){
-            recordSurveyUserInput = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).get(0);
-            rowIdUserInput = recordSurveyUserInput.getInt("_id");
-            //List<ODataRow> recordSurveyUserInputLineList = surveyUserInputLine.getSurveyUserInputLineByInputLineList(getContext(),String.valueOf(rowIdUserInput));
-        }
-
+        recordSurveyUserInputLine = mapsurveyUserInputLine.get(rowId);
         OControls.setText(view, R.id.textViewQuestion, row.getString("question"));
+        mapsurveyQuestion.put(rowId,row.getString("type"));
+        mapIdComponent.put(rowId,"idComponent"+rowId);
+        linearlayoutTask = (LinearLayout) view.findViewById(R.id.taskFormEdit);
         switch (row.getString("type")) {
             case "free_text":
+                /*
                 OControls.setVisible(view,R.id.editTextArea_UserInput);
-                recordSurveyUserInputLine = getSurveyUserInputLineByInputLineAndTypeList(getContext(),String.valueOf(rowIdUserInput),"free_text",String.valueOf(rowId));
                 if (recordSurveyUserInputLine!= null){
                     OControls.setText(view, R.id.editTextArea_UserInput, recordSurveyUserInputLine.get("value_free_text").toString());
                 }
+                */
+                EditText txtEdit_free_text = new EditText(getContext());
+                txtEdit_free_text.setId(rowId);
+                txtEdit_free_text.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                txtEdit_free_text.setTag("idComponent"+rowId);
+                if (recordSurveyUserInputLine!= null && recordSurveyUserInputLine.size()>0){
+                    txtEdit_free_text.setText(recordSurveyUserInputLine.get("value_free_text").toString());
+                }
+                txtEdit_free_text.setHint("Complete la informacion");
+                linearlayoutTask.addView(txtEdit_free_text);
+
                 break;
             case "textbox":
+                /*
                 OControls.setVisible(view,R.id.editText_UserInput);
-                recordSurveyUserInputLine = getSurveyUserInputLineByInputLineAndTypeList(getContext(),String.valueOf(rowIdUserInput),"text",String.valueOf(rowId));
                 if (recordSurveyUserInputLine!= null){
                     OControls.setText(view, R.id.editText_UserInput, recordSurveyUserInputLine.get("value_text").toString());
                 }
+                */
+                EditText txtEdit_textbox = new EditText(getContext());
+                txtEdit_textbox.setId(rowId);
+                txtEdit_textbox.setInputType(InputType.TYPE_CLASS_TEXT);
+                txtEdit_textbox.setTag("idComponent"+rowId);
+                if (recordSurveyUserInputLine!= null && recordSurveyUserInputLine.size()>0){
+                    txtEdit_textbox.setText(recordSurveyUserInputLine.get("value_text").toString());
+                }
+                txtEdit_textbox.setHint("Complete la informacion");
+                linearlayoutTask.addView(txtEdit_textbox);
 
                 break;
             case "numerical_box":
+                /*
                 OControls.setVisible(view,R.id.editTextNumerical_UserInput);
-                recordSurveyUserInputLine = getSurveyUserInputLineByInputLineAndTypeList(getContext(),String.valueOf(rowIdUserInput),"number",String.valueOf(rowId));
                 if (recordSurveyUserInputLine!= null){
                     OControls.setText(view, R.id.editTextNumerical_UserInput, recordSurveyUserInputLine.get("value_number").toString());
                 }
+                */
+                EditText txtEdit_numerical_box = new EditText(getContext());
+                txtEdit_numerical_box.setId(rowId);
+                txtEdit_numerical_box.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                txtEdit_numerical_box.setTag("idComponent"+rowId);
+                if (recordSurveyUserInputLine!= null && recordSurveyUserInputLine.size()>0){
+                    txtEdit_numerical_box.setText(recordSurveyUserInputLine.get("value_number").toString());
+                }
+                txtEdit_numerical_box.setHint("Complete la informacion");
+                linearlayoutTask.addView(txtEdit_numerical_box);
                 break;
         }
 
@@ -233,11 +341,11 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         addItemsOnSpinner(view,cursor,row);
     }
 
-    public ODataRow getSurveyUserInputLineByInputLineAndTypeList(Context context, String user_input_id, String answer_type,String question_id) {
+    public List<ODataRow> getSurveyUserInputLineByInputList(Context context, String user_input_id) {
         SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
-        if (surveyUserInputLine.getSurveyUserInputLineByInputLineAndTypeAndQuestionList(getContext(),user_input_id,answer_type,question_id).size()>0)
+        if (surveyUserInputLine.getSurveyUserInputLineByInputLineList(getContext(),user_input_id).size()>0)
         {
-            ODataRow recordSurveyUserInputLine = surveyUserInputLine.getSurveyUserInputLineByInputLineAndTypeAndQuestionList(getContext(),user_input_id,answer_type,question_id).get(0);
+            List<ODataRow> recordSurveyUserInputLine = surveyUserInputLine.getSurveyUserInputLineByInputLineList(getContext(),user_input_id);
             return recordSurveyUserInputLine;
         }
         else
@@ -245,6 +353,9 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
             return null;
         }
     }
+
+
+
     @Override
     public void onStatusChange(Boolean changed) {
         if(changed){
@@ -320,6 +431,6 @@ public class SurveyQuestion extends BaseFragment implements LoaderManager.Loader
         String selection = (args.size() > 0) ? where : null;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
         return new CursorLoader(getActivity(), db().uri(),
-                null, selection, selectionArgs, "question");
+                null, selection, selectionArgs, "id");
     }
 }

@@ -46,6 +46,7 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
     private OCursorListAdapter listAdapter;
     private Bundle extra = null;
     public static final String EXTRA_KEY_PROJECT = "extra_key_project";
+    public static final String EXTRA_KEY_SURVEY = "extra_key_survey";
 
 
     @Override
@@ -177,7 +178,9 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
         if (row != null) {
             data = row.getPrimaryBundleData();
             data.putInt("id_task",extra.getInt("id_task"));
+
             data.putString(EXTRA_KEY_PROJECT,row.getString("name"));
+            data.putString(EXTRA_KEY_SURVEY,extra.getString(EXTRA_KEY_SURVEY));
         }
         startFragment(new SurveyQuestion(), true, data);
         //IntentUtils.startActivity(getActivity(), SurveyQuestionActivity.class, data);
