@@ -77,12 +77,10 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
         listView.setAdapter(mAdapter);
         listView.setFastScrollAlwaysVisible(true);
         listView.setOnItemClickListener(this);
-        //setHasSyncStatusObserver(TAG, this, db());
+        setHasSyncStatusObserver(KEY, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(0, null, this);
-        setTitle("Proyectos");
-
-
+        setTitle(OResource.string(getContext(),R.string.sync_label_project));
     }
 
     @Override
@@ -98,9 +96,22 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), db().uri(), null, null, null, "id");
+    public Loader<Cursor> onCreateLoader(int id, Bundle data) {
+        String where = "state = ?";
+        List<String> args = new ArrayList<>();
+        args.add("open");
+        if (id > 0)
+            args.add(String.valueOf(id));
+
+        if (mCurFilter != null) {
+            where += " and name like ? ";
+            args.add("%" + mCurFilter + "%");
+        }
+        String selection = (args.size() > 0) ? where : where;
+        String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
+        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "id");
     }
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

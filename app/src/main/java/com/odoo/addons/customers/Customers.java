@@ -133,7 +133,7 @@ public class Customers extends BaseFragment implements ISyncStatusObserverListen
         args.add("true");
         if (mCurFilter != null) {
             where += " and name like ? ";
-            args.add(mCurFilter + "%");
+            args.add("%" + mCurFilter + "%");
         }
         String selection = (args.size() > 0) ? where : null;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;

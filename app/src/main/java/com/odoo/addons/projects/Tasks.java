@@ -22,7 +22,9 @@ import android.view.MenuItem;
 import com.odoo.R;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.survey.SurveySurvey;
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
+import com.odoo.core.orm.fields.types.OBlob;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -32,9 +34,11 @@ import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OControls;
 import com.odoo.core.utils.OCursorUtils;
+import com.odoo.core.utils.ODateUtils;
 import com.odoo.core.utils.OResource;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -71,12 +75,11 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         super.onViewCreated(view, savedInstanceState);
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
-
         extra = getArguments();
         listView = (ListView) mView.findViewById(R.id.listview);
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.task_row_item);
-        mAdapter.setOnRowViewClickListener(R.id.button1,this);
-        mAdapter.setOnRowViewClickListener(R.id.button2,this);
+        mAdapter.setOnRowViewClickListener(R.id.btnDetailTask,this);
+        mAdapter.setOnRowViewClickListener(R.id.btnFormulario,this);
         mAdapter.setOnViewBindListener(this);
         mAdapter.setHasSectionIndexers(true, "name");
         listView.setAdapter(mAdapter);
@@ -89,43 +92,98 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
             setTitle(OResource.string(getContext(), R.string.sync_label_schedule));
         else
             setTitle(OResource.string(getContext(), R.string.sync_label_schedule)+"/"+OResource.string(getContext(), R.string.sync_label_tasks));
-
-
     }
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
-        OControls.setText(view, android.R.id.text1, row.getString("name"));
-        Bitmap img;
-        if (row.getString("image_small").equals("false")) {
+        if (row.getInt("x_survey_id")==null || row.getInt("x_survey_id")==0){
+            OControls.setInvisible(view,R.id.btnFormulario);
+        }
+
+        OControls.setText(view, R.id.nameTask, row.getString("name"));
+        if (row.getString("date_start").equals("false")){
+            OControls.setGone(view,R.id.nameDateStart);
+        }else{
+            String date_start = ODateUtils.convertToDefault(row.getString("date_start"),
+                    ODateUtils.DEFAULT_FORMAT, "MMM dd hh:mm a");
+            OControls.setText(view, R.id.nameDateStart, date_start);
+        }
+
+        ResPartner resPartner = new ResPartner(getContext(),null);
+        String nameCustomer = "";
+        String image_small = null;
+        String street = "";
+        String street2 = "";
+        Bitmap img=null;
+        if (row.getString("partner_id")!=null && !row.getString("partner_id").equals("false")){
+            nameCustomer = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("name");
+            image_small = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("image_small");
+            street = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("street");
+            street2 = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("street2");
+
+            if (nameCustomer.equals("false"))
+                nameCustomer = "";
+            if (street.equals("false"))
+                street = "";
+            if (street2.equals("false"))
+                street2 = "";
+            if (nameCustomer.isEmpty())
+            {
+                OControls.setGone(view,R.id.nameCustomer);
+            }else{
+                OControls.setText(view, R.id.nameCustomer, nameCustomer);
+            }
+
+            if (street.isEmpty() && street2.isEmpty()){
+                OControls.setGone(view,R.id.addressCustomer);
+            }else{
+                OControls.setText(view, R.id.addressCustomer, street+" "+street2);
+            }
+
+            if (image_small.equals("false")) {
+                img = BitmapUtils.getAlphabetImage(getActivity(), nameCustomer);
+            }else{
+                img = BitmapUtils.getBitmapImage(getActivity(), image_small);
+            }
+
+        }else{
+            OControls.setGone(view,R.id.nameCustomer);
+            OControls.setGone(view,R.id.addressCustomer);
             img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("name"));
-        } else {
-            img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image_small"));
+
         }
         OControls.setImage(view, R.id.image_small, img);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle data) {
-        String where = "project_id = ?";
+        String where = "";
         List<String> args = new ArrayList<>();
-        if (id > 0)
+        if (id > 0){
+            where = "project_id = ?";
             args.add(String.valueOf(id));
+        }
+
         if (data!= null)
            // args.add(data.get("id").toString());
 
         if (mCurFilter != null) {
-            where += " and name like ? ";
-            args.add(mCurFilter + "%");
+            if (id > 0) {
+                where += " and name like ? ";
+            }else{
+                where += " name like ? ";
+            }
+            args.add("%" + mCurFilter + "%");
         }
         String selection = (args.size() > 0) ? where : null;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
         return new CursorLoader(getActivity(), db().uri(),
-                null, selection, selectionArgs, "name");
+                null, selection, selectionArgs, "date_start,partner_id");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        OControls.setGone(mView, R.id.fabButton);
         mAdapter.changeCursor(data);
         if (data.getCount() > 0) {
             new Handler().postDelayed(new Runnable() {
@@ -146,7 +204,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                     OControls.setVisible(mView, R.id.data_list_no_item);
                     setHasSwipeRefreshView(mView, R.id.data_list_no_item, Tasks.this);
                     OControls.setImage(mView, R.id.icon, R.drawable.ic_action_notes_content);
-                    OControls.setText(mView, R.id.title, _s(R.string.label_no_project_found));
+                    OControls.setText(mView, R.id.title, _s(R.string.label_no_task_found));
                     OControls.setText(mView, R.id.subTitle, "");
                 }
             }, 500);
@@ -214,7 +272,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     @Override
     public boolean onSearchViewTextChange(String newFilter) {
         mCurFilter = newFilter;
-        //getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
         return true;
     }
 
@@ -251,20 +309,20 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     @Override
     public void onRowViewClick(int position, Cursor cursor, View view,
                                final View parent) {
+        ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
         if (inNetwork()) {
             switch (view.getId()) {
-                case R.id.button1:
+                case R.id.btnFormulario:
                     Bundle data = new Bundle();
-                    ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
                     if (row != null) {
                         data = row.getPrimaryBundleData();
                         data.putString(EXTRA_KEY_SURVEY_TASK,row.getString("x_survey_id"));
                     }
                     startFragment(new SurveySurvey(), true, data);
                     break;
-                case R.id.button2:
-                    Toast.makeText(getActivity(), _s(R.string.sync_label_tasks),
-                            Toast.LENGTH_LONG).show();
+                case R.id.btnDetailTask:
+                    //Toast.makeText(getActivity(), _s(R.string.sync_label_tasks),Toast.LENGTH_LONG).show();
+                    loadActivity(row);
                     break;
                 default:
                     break;

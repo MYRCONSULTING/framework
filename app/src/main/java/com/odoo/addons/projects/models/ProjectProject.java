@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
@@ -18,6 +19,11 @@ public class ProjectProject extends OModel {
     public static final String AUTHORITY = "com.odoo.addons.projects.project_project";
 
     OColumn name = new OColumn("Name", OVarchar.class).setSize(100);
+    OColumn state = new OColumn("state", OSelection.class)
+            .addSelection("open","open")
+            .addSelection("close","close")
+            .addSelection("pending","pending")
+            .addSelection("cancelled","cancelled");
     public ProjectProject(Context context, OUser user) {
         super(context, "project.project", user);
     }

@@ -71,6 +71,7 @@ public class OSyncDataUtils {
         mCreateRelationRecords = createRelRecord;
         List<OdooRecord> updateInLocal = checkLocalUpdatedRecords();
         handleResult(updateInLocal);
+
     }
 
 
@@ -167,14 +168,17 @@ public class OSyncDataUtils {
             List<OColumn> columns = mModel.getColumns(false);
             columns.addAll(mModel.getFunctionalColumns());
             for (OdooRecord record : records) {
+
                 if (!recentSyncIds.contains(mModel.getModelName() + ":" + record.getInt("id"))) {
                     OValues values = new OValues();
                     recordsId.add(mModel.getModelName() + "_" + record.getInt("id"));
                     for (OColumn column : columns) {
                         String name = column.getSyncColumn();
                         String lName = column.getName();
+                        //Log.i(TAG, mModel.getModelName() + "0.- >>>>>>>>>>>>>> " + name + " " + lName + " >> " + record.get(column.getName()));
                         if (column.getRelationType() == null) {
                             // checks for functional store fields
+
                             if (column.isFunctionalColumn() && column.canFunctionalStore()) {
                                 List<String> depends = column.getFunctionalStoreDepends();
                                 OValues dependValues = new OValues();
@@ -193,6 +197,7 @@ public class OSyncDataUtils {
                             }
                         } else {
                             // Relation Columns
+                            //Log.i(TAG, mModel.getModelName() + " 2.- >>>>>>>>>>>>>> " + name + " " + lName + " >> " + record.get(column.getName()));
                             if (!record.getString(name).equals("false")) {
                                 switch (column.getRelationType()) {
                                     case ManyToOne:
@@ -269,6 +274,9 @@ public class OSyncDataUtils {
                                         }
                                         break;
                                 }
+                            }else{ // Hack By MYR - Para campos relacionados que devuelven false ya que no son campos obligatorios en algunos casos
+                                Log.i(TAG, mModel.getModelName() + " 5.- >>>>>>>>>>>>>> " + name + " " + lName + " >> " + record.get(column.getName()));
+                                values.put(name, record.get(column.getName()));
                             }
                         }
                     }
