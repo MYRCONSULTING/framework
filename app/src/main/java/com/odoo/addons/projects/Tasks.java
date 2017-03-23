@@ -39,7 +39,11 @@ import com.odoo.core.utils.OResource;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Ricardo Livelli on 09/02/2017.
@@ -59,6 +63,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     private Bundle extra = null;
     public static final String EXTRA_KEY_SURVEY_TASK = "extra_key_survey_task";
     private Context mContext = null;
+
 
 
     @Override
@@ -153,6 +158,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
 
         }
         OControls.setImage(view, R.id.image_small, img);
+
     }
 
     @Override
@@ -169,10 +175,11 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
 
         if (mCurFilter != null) {
             if (id > 0) {
-                where += " and name like ? ";
+                where += " and partner_name like ? or name like ?  ";
             }else{
-                where += " name like ? ";
+                where += " partner_name like ? or name like ? ";
             }
+            args.add("%" + mCurFilter + "%");
             args.add("%" + mCurFilter + "%");
         }
         String selection = (args.size() > 0) ? where : null;

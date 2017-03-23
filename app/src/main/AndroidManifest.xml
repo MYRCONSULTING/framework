@@ -18,6 +18,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
     <application
         android:name="com.odoo.App"
         android:allowBackup="true"
@@ -97,6 +99,26 @@
                 android:resource="@xml/customer_sync_adapter" />
         </service>
 
+        <!-- Sync Provider & Service Project Project  // -->
+
+        <provider
+            android:name="com.odoo.addons.projects.providers.ProjectProjectProvider"
+            android:authorities="com.odoo.addons.projects.project_project"
+            android:label="Project Project"
+            android:multiprocess="true" />
+
+        <service android:name=".addons.projects.services.ProjectProjectSyncService"
+            android:exported="true"
+            android:process=":sync_projects">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/project_sync_adapter" />
+        </service>
+
         <!-- Sync Provider & Service Project Task  // -->
         <provider
             android:name="com.odoo.addons.projects.providers.ProjectTaskProvider"
@@ -117,24 +139,24 @@
                 android:resource="@xml/task_sync_adapter" />
         </service>
 
-        <!-- Sync Provider & Service Project Project  // -->
-
+        <!-- Sync Provider & Service Project Task Type  // -->
         <provider
-            android:name="com.odoo.addons.projects.providers.ProjectProjectProvider"
-            android:authorities="com.odoo.addons.projects.project_project"
-            android:label="Project Project"
+            android:name="com.odoo.addons.projects.providers.ProjectTaskTypeProvider"
+            android:authorities="com.odoo.addons.projects.project_task_type"
+            android:label="Project Tasks Type"
             android:multiprocess="true" />
 
-        <service android:name=".addons.projects.services.ProjectProjectSyncService"
+
+        <service android:name=".addons.projects.services.ProjectTaskTypeSyncService"
             android:exported="true"
-            android:process=":sync_projects">
+            android:process=":sync_tasks_type">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
 
             <meta-data
                 android:name="android.content.SyncAdapter"
-                android:resource="@xml/project_sync_adapter" />
+                android:resource="@xml/task_type_sync_adapter" />
         </service>
 
         <!-- Sync Provider & Service Survey Survey  // -->

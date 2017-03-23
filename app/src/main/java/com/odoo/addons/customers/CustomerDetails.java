@@ -72,6 +72,7 @@ public class CustomerDetails extends OdooCompatActivity
     private Toolbar toolbar;
     private Customers.Type partnerType = Customers.Type.Customer;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +101,10 @@ public class CustomerDetails extends OdooCompatActivity
         if (hasRecordInExtra())
             partnerType = Customers.Type.valueOf(extras.getString(KEY_PARTNER_TYPE));
         if (!hasRecordInExtra())
+            partnerType = Customers.Type.valueOf(extras.getString(KEY_PARTNER_TYPE));
             mEditMode = true;
+
+
         setupToolbar();
     }
 
