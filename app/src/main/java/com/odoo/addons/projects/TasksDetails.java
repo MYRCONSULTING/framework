@@ -21,8 +21,11 @@ package com.odoo.addons.projects;
 
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
@@ -39,6 +42,8 @@ import com.odoo.App;
 import com.odoo.R;
 import com.odoo.addons.customers.utils.ShareUtil;
 import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.projects.models.ProjectTaskType;
+import com.odoo.addons.projects.models.TypeTask;
 import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveyQuestion;
 import com.odoo.addons.survey.models.SurveySurvey;
@@ -47,6 +52,7 @@ import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OAlert;
@@ -81,6 +87,7 @@ public class TasksDetails extends OdooCompatActivity
     private float textSize = -1;
     private int appearance = -1;
     private int textColor = Color.BLUE;
+    private Context mContext = null;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally
@@ -98,6 +105,7 @@ public class TasksDetails extends OdooCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
         setContentView(R.layout.tasks_detail);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.tasks_collapsing_toolbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,7 +114,7 @@ public class TasksDetails extends OdooCompatActivity
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         fileManager = new OFileManager(this);
         if (toolbar != null)
-            collapsingToolbarLayout.setTitle("");
+            collapsingToolbarLayout.setTitle(OResource.string(this, R.string.sync_label_tasks));
         if (savedInstanceState != null) {
             mEditMode = savedInstanceState.getBoolean(KEY_MODE);
             newImage = savedInstanceState.getString(KEY_NEW_IMAGE);
@@ -329,9 +337,91 @@ public class TasksDetails extends OdooCompatActivity
                         });
 
                 break;
+            case R.id.menu_task_end:
+                OAlert.showConfirm(this, OResource.string(this,
+                        R.string.confirm_are_you_sure_want_to_end),
+                        new OAlert.OnAlertConfirmListener() {
+                            @Override
+                            public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
+                                if (type == OAlert.ConfirmType.POSITIVE) {
+                                    ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+                                    OValues valuesProjectTask = new OValues();
+                                    //valuesProjectTask.put("name","tarea finalizada");
+                                    valuesProjectTask.put("stage_id",projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
+                                    valuesProjectTask.put("x_task_type",TypeTask.RETURNED_FROM_FIELD.getValue());
+                                    if (projectTask.update(record.getInt(OColumn.ROW_ID),valuesProjectTask)) {
+                                        //Toast.makeText(TasksDetails.this, R.string.toast_record_ended,Toast.LENGTH_SHORT).show();
+                                        //Syncronizar
+                                        sync();
+                                        //finish();
+                                    }
+
+
+
+                                }
+                            }
+                        });
+
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void sync(){
+        OAlert.showConfirm(this, OResource.string(this,R.string.confirm_are_you_sure_want_sync),
+                new OAlert.OnAlertConfirmListener() {
+                    @Override
+                    public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
+                        if (type == OAlert.ConfirmType.POSITIVE) {
+                            //Toast.makeText(TasksDetails.this, R.string.toast_record_synced,Toast.LENGTH_SHORT).show();
+                            onRefresh();
+                            //finish();
+                        }
+                    }
+                });
+    }
+
+    public void onRefresh() {
+            SyncTaskDetails syncTaskDetails = new SyncTaskDetails();
+            syncTaskDetails.execute(record);
+    }
+
+    private class SyncTaskDetails extends AsyncTask<ODataRow,Void,Boolean> {
+        private ProgressDialog mDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(TasksDetails.this);
+            mDialog.setTitle(R.string.title_working);
+            mDialog.setMessage(OResource.string(getApplicationContext(),R.string.label_sync_now));
+            mDialog.setCancelable(false);
+            mDialog.show();
+        }
+
+        public Boolean doInBackground(ODataRow...args){
+            ODataRow record = args[0];
+            ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+            ProjectTask projectTask = new ProjectTask(mContext, null);
+            ODomain domain = new ODomain();
+            domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
+            projectTask.quickSyncRecords(domain);
+            projectTask.delete(record.getInt(OColumn.ROW_ID),true);
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            mDialog.dismiss();
+            if (success) {
+                //Toast.makeText(TasksDetails.this, (record != null) ? " updated": " created", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

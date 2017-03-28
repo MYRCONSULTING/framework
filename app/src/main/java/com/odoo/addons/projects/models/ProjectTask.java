@@ -2,21 +2,29 @@ package com.odoo.addons.projects.models;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.odoo.addons.survey.models.SurveySurvey;
 import com.odoo.base.addons.res.ResPartner;
+import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.annotation.Odoo;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.ODate;
 import com.odoo.core.orm.fields.types.ODateTime;
+import com.odoo.core.orm.fields.types.OInteger;
+import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OText;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by Ricardo Livelli on 09/02/2017.
@@ -42,6 +50,9 @@ public class ProjectTask extends OModel {
 
     OColumn stage_id = new OColumn("stage_id", ProjectTaskType.class,OColumn.RelationType.ManyToOne);
 
+    @Odoo.Functional(method = "storeStageName", store = true, depends = {"stage_id"})
+    OColumn x_task_type = new OColumn("x_task_type", OVarchar.class).setLocalColumn();
+
     public ProjectTask(Context context, OUser user) {
         super(context, "project.task", user);
         setHasMailChatter(true);
@@ -53,9 +64,42 @@ public class ProjectTask extends OModel {
     }
 
     @Override
+    public boolean allowDeleteRecordOnServer(){
+        return false;
+    }
+
+    @Override
+    public void onSyncFinished(){
+        ProjectTask projectTask = new ProjectTask(getContext(),null);
+        ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
+        List<ODataRow> rowProjectTaskType = projectTask.select(null,"x_task_type = ?",new String[]{String.valueOf(TypeTask.PENDING.getValue())},"id asc");
+        for (int i=0; i<rowProjectTaskType.size(); i++) {
+            OValues valuesProjectTask = new OValues();
+            valuesProjectTask.put("stage_id",projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+            valuesProjectTask.put("x_task_type",TypeTask.ON_FIELD.getValue());
+            projectTask.update(rowProjectTaskType.get(i).getInt(OColumn.ROW_ID),valuesProjectTask);
+            // Syncroniza
+            ODomain domain = new ODomain();
+            domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+            projectTask.quickSyncRecords(domain);
+        }
+    }
+
+    @Override
     public ODomain defaultDomain() {
+        ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
         ODomain domain = new ODomain();
+        domain.add("&");
         domain.add("user_id", "=", getUser().getUserId());
+        //domain.add("|");
+        //domain.add("|");
+        domain.add("|");
+        domain.add("|");
+        //domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.IN_PREPARATION.getValue())); //9 En Preparación
+        domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.PENDING.getValue()));//10 Pendiente de envio de campo.
+        domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.ON_FIELD.getValue()));//11 En Campo
+        //domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.RETURNED_FROM_FIELD.getValue()));//12 Retornada de campo
+        domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.CANCEL.getValue()));//13 Cancelada
         return domain;
     }
 
@@ -70,5 +114,21 @@ public class ProjectTask extends OModel {
         }
         return "false";
     }
+
+    public String storeStageName(OValues values) {
+        if (!values.getString("stage_id").equals("false")) {
+            String[] array = TextUtils.split(values.getString("stage_id"),",");
+            String str = (array[0].substring(1).toString());
+            ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
+            List<ODataRow> rowProjectTaskType = projectTaskType.select(null,"id = ?",new String[]{str},"id asc");
+            if (!rowProjectTaskType.isEmpty()){
+                str = rowProjectTaskType.get(0).getString("x_task_type");
+            }
+            return str;
+        }
+        return "false";
+    }
+
+
 
 }

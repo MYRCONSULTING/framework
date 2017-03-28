@@ -11,9 +11,9 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/customer_detail_appbar"
         android:layout_width="match_parent"
-        android:layout_height="380dp"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppBar.Dark">
+        android:theme="@style/AppBar.Dark"
+        android:layout_height="wrap_content">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/tasks_collapsing_toolbar"
@@ -41,9 +41,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="88dp"
                 android:layout_gravity="bottom"
-                android:background="@drawable/scrim_bottom" />
+                android:background="@drawable/scrim_bottom"
+                android:layout_height="88dp" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

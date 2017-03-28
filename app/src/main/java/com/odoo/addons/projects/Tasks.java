@@ -21,6 +21,7 @@ import android.view.MenuItem;
 
 import com.odoo.R;
 import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.projects.models.TypeTask;
 import com.odoo.addons.survey.SurveySurvey;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
@@ -163,10 +164,12 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle data) {
-        String where = "";
         List<String> args = new ArrayList<>();
+        String where = "x_task_type = ? ";
+        args.add(String.valueOf(TypeTask.ON_FIELD.getValue()));
+
         if (id > 0){
-            where = "project_id = ?";
+            where = " and project_id = ?";
             args.add(String.valueOf(id));
         }
 

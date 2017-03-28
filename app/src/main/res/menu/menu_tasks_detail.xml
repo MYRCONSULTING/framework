@@ -29,6 +29,9 @@
             <item
                 android:id="@+id/menu_task_delete"
                 android:title="@string/label_delete" />
+            <item
+                android:id="@+id/menu_task_end"
+                android:title="@string/label_end" />
         </menu>
     </item>
 </menu>

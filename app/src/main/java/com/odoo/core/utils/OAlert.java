@@ -93,9 +93,9 @@ public class OAlert {
 
     public static void showConfirm(Context context, String message, final OnAlertConfirmListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Confirm");
+        builder.setTitle(OResource.string(context,R.string.confirm_label));
         builder.setMessage(message);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(OResource.string(context,R.string.label_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (listener != null) {
@@ -103,7 +103,7 @@ public class OAlert {
                 }
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(OResource.string(context,R.string.label_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (listener != null) {
