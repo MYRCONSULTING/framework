@@ -92,6 +92,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     ODataRow recordSurveyUserInput = null;
     public static final String EXTRA_KEY_SURVEY = "extra_key_survey";
     public static final String EXTRA_KEY_PAGE = "extra_key_page";
+    public static final String EXTRA_KEY_PAGE_NAME = "extra_key_page_task_name";
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
@@ -120,10 +121,8 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         setHasSyncStatusObserver(TAG, this, db());
 
         getLoaderManager().initLoader(extra.getInt("_id"), extra, this);
-        if (extra.getString("extra_key_project") == null || (extra.getString("extra_key_project").isEmpty()))
-            setTitle(extra.getString("extra_key_project"));
-        else
-            setTitle("Preguntas1");
+        setTitle(extra.getString(EXTRA_KEY_PAGE_NAME));
+
 
         idSurvey = extra.getString(EXTRA_KEY_SURVEY);
         idPage = extra.getInt(EXTRA_KEY_PAGE);
@@ -369,8 +368,9 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
             //OControls.setGone(mView, R.id.swipe_container);
             OControls.setVisible(mView, R.id.data_list_no_itemQuestion);
             //setHasSwipeRefreshView(mView, R.id.data_list_no_item, this);
-            OControls.setText(mView, R.id.title, "No Question found");
-            OControls.setText(mView, R.id.subTitle, "Swipe to check new question");
+            OControls.setImage(mView, R.id.icon, R.drawable.ic_assignment_black_24dp);
+            OControls.setText(mView, R.id.title, _s(R.string.label_pages_no));
+            OControls.setText(mView, R.id.subTitle, _s(R.string.label_pages_no_swipe));
         }
         if (db().isEmptyTable()) {
             // Request for sync

@@ -162,9 +162,24 @@ public class Customers extends BaseFragment implements ISyncStatusObserverListen
                     OControls.setGone(mView, R.id.swipe_container);
                     OControls.setVisible(mView, R.id.data_list_no_item);
                     setHasSwipeRefreshView(mView, R.id.data_list_no_item, Customers.this);
-                    OControls.setImage(mView, R.id.icon, R.drawable.ic_action_customers);
-                    OControls.setText(mView, R.id.title, _s(R.string.label_no_customer_found));
-                    OControls.setText(mView, R.id.subTitle, "");
+                    switch (mType) {
+                        case Customer:
+                            OControls.setText(mView, R.id.title, _s(R.string.label_no_customer_found));
+                            OControls.setImage(mView, R.id.icon, R.drawable.ic_action_customers);
+                            OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_customer_found_swipe));
+                            break;
+                        case Supplier:
+                            OControls.setText(mView, R.id.title, _s(R.string.label_no_supplier_found));
+                            OControls.setImage(mView, R.id.icon, R.drawable.ic_action_suppliers);
+                            OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_supplier_found_swipe));
+                            break;
+                        case Company:
+                            OControls.setText(mView, R.id.title, _s(R.string.label_no_company_found));
+                            OControls.setImage(mView, R.id.icon, R.drawable.ic_action_company);
+                            OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_company_found_swipe));
+                            break;
+                    }
+
                 }
             }, 500);
             if (db().isEmptyTable() && !syncRequested) {
@@ -212,7 +227,13 @@ public class Customers extends BaseFragment implements ISyncStatusObserverListen
     @Override
     public void onStatusChange(Boolean refreshing) {
         // Sync Status
-        getLoaderManager().restartLoader(0, null, this);
+
+        try{
+            getLoaderManager().restartLoader(0, null, this);
+        }catch(Exception e){
+
+        }
+
     }
 
 

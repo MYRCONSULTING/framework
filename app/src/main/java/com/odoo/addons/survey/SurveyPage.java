@@ -48,6 +48,8 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
     public static final String EXTRA_KEY_PROJECT = "extra_key_project";
     public static final String EXTRA_KEY_SURVEY = "extra_key_survey";
     public static final String EXTRA_KEY_PAGE = "extra_key_page";
+    public static final String EXTRA_KEY_SURVEY_NAME = "extra_key_survey_task_name";
+    public static final String EXTRA_KEY_PAGE_NAME = "extra_key_page_task_name";
 
 
     @Override
@@ -70,11 +72,7 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
         listView.setOnItemClickListener(this);
         setHasSyncStatusObserver(TAG, this, db());
         getLoaderManager().initLoader(extra.getInt("_id"), extra, this);
-        if (extra.getString("extra_key_project") == null || (extra.getString("extra_key_project").isEmpty()))
-            setTitle(extra.getString("extra_key_project"));
-        else
-            setTitle("Páginas");
-
+        setTitle(extra.getString(EXTRA_KEY_SURVEY_NAME));
     }
 
     @Override
@@ -92,15 +90,21 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
     @Override
     public void onStatusChange(Boolean changed) {
         if(changed){
-            getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
+            int val = extra.getInt("_id");
+            if (val>0){
+                try {
+                    getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
+                }catch (Exception e){
+                }
+            }
         }
     }
 
     @Override
     public List<ODrawerItem> drawerMenus(Context context) {
         List<ODrawerItem> menu = new ArrayList<>();
-        menu.add(new ODrawerItem(TAG).setTitle("Páginas")
-                .setIcon(R.drawable.ic_action_universe)
+        menu.add(new ODrawerItem(TAG).setTitle(_s(R.string.label_activitis))
+                .setIcon(R.drawable.ic_assignment_black_24dp)
                 .setInstance(new SurveyPage()));
         return menu;
     }
@@ -132,6 +136,7 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        OControls.setGone(mView, R.id.fabButton);
         listAdapter.changeCursor(data);
         if (data.getCount() > 0) {
             OControls.setGone(mView, R.id.loadingProgress);
@@ -143,12 +148,11 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
             OControls.setGone(mView, R.id.swipe_container);
             OControls.setVisible(mView, R.id.data_list_no_item);
             setHasSwipeRefreshView(mView, R.id.data_list_no_item, this);
-            OControls.setText(mView, R.id.title, "No Pages found");
-            OControls.setText(mView, R.id.subTitle, "Swipe to check new pages");
+            OControls.setImage(mView, R.id.icon, R.drawable.ic_assignment_black_24dp);
+            OControls.setText(mView, R.id.title, _s(R.string.label_pages_no));
+            OControls.setText(mView, R.id.subTitle, _s(R.string.label_pages_no_swipe));
         }
         if (db().isEmptyTable()) {
-            // Request for sync
-            // Request for sync
             onRefresh();
         }
     }
@@ -182,6 +186,8 @@ public class SurveyPage extends BaseFragment implements ISyncStatusObserverListe
             data.putString(EXTRA_KEY_PROJECT,row.getString("name"));
             data.putString(EXTRA_KEY_SURVEY,extra.getString(EXTRA_KEY_SURVEY));
             data.putInt(EXTRA_KEY_PAGE,data.getInt("_id"));
+            data.putString(EXTRA_KEY_PAGE_NAME,row.getString("title"));
+
 
         }
         startFragment(new SurveyQuestion(), true, data);

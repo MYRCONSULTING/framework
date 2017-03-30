@@ -15,23 +15,30 @@
         android:title="@string/label_cancel"
         app:showAsAction="always" />
     <item
+        android:id="@+id/menu_task_end"
+        android:icon="@drawable/ic_action_action_done_all"
+        app:showAsAction="always"
+        android:title="@string/label_end" />
+    <item
         android:id="@+id/menu_task_detail_more"
         android:icon="@drawable/ic_action_more"
-        android:title="@string/label_more"
-        app:showAsAction="always">
+        android:visible="false"
+        android:title="@string/label_more">
         <menu>
+
             <item
                 android:id="@+id/menu_task_share"
+                android:visible="false"
                 android:title="@string/label_share" />
             <item
                 android:id="@+id/menu_task_import"
+                android:visible="false"
                 android:title="@string/label_import_contact" />
             <item
                 android:id="@+id/menu_task_delete"
+                android:visible="false"
                 android:title="@string/label_delete" />
-            <item
-                android:id="@+id/menu_task_end"
-                android:title="@string/label_end" />
+
         </menu>
     </item>
 </menu>

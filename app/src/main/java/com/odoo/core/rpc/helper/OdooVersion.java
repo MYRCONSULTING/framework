@@ -67,31 +67,38 @@ public class OdooVersion {
     }
 
     public static OdooVersion parseVersion(OdooResult result) throws OdooVersionException {
-        OdooVersion version = new OdooVersion();
-        version.setServerSerie(result.getString("server_serie"));
-        version.setServerVersion(result.getString("server_version"));
-        List<Object> version_info = result.getArray("server_version_info");
-        version.setVersionNumber(((Double) version_info.get(0)).intValue());
-        if (version.getVersionNumber() < 7) {
-            throw new OdooVersionException("Server version is different from " +
-                    "the application supported version. (Only Odoo 7.0+ supported)");
-        }
-        String versionType = version_info.get(1) + "";
-        int versionTypeNumber = 0;
-        if (versionType.contains("saas")) {
-            versionTypeNumber = Integer.parseInt(versionType.split("~")[1]);
-            versionType = "saas";
-        }
-        version.setVersionTypeNumber(versionTypeNumber);
-        version.setVersionType(versionType);
-        version.setVersionRelease((String) version_info.get(3));
+        try{
 
-        if (version.getVersionNumber() > 9) {
-            String ent = version_info.get(5) + "";
-            version.setEnterprise(ent.equals("e"));
+            OdooVersion version = new OdooVersion();
+            version.setServerSerie(result.getString("server_serie"));
+            version.setServerVersion(result.getString("server_version"));
+            List<Object> version_info = result.getArray("server_version_info");
+            version.setVersionNumber(((Double) version_info.get(0)).intValue());
+            if (version.getVersionNumber() < 7) {
+                throw new OdooVersionException("Server version is different from " +
+                        "the application supported version. (Only Odoo 7.0+ supported)");
+            }
+            String versionType = version_info.get(1) + "";
+            int versionTypeNumber = 0;
+            if (versionType.contains("saas")) {
+                versionTypeNumber = Integer.parseInt(versionType.split("~")[1]);
+                versionType = "saas";
+            }
+            version.setVersionTypeNumber(versionTypeNumber);
+            version.setVersionType(versionType);
+            version.setVersionRelease((String) version_info.get(3));
+
+            if (version.getVersionNumber() > 9) {
+                String ent = version_info.get(5) + "";
+                version.setEnterprise(ent.equals("e"));
+            }
+
+            return version;
+
+        }catch (Exception e){
+            return null;
         }
 
-        return version;
     }
 
 

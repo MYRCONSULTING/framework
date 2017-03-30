@@ -115,6 +115,7 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        OControls.setGone(mView, R.id.fabButton);
         mAdapter.changeCursor(data);
         if (data.getCount() > 0) {
             new Handler().postDelayed(new Runnable() {
@@ -134,9 +135,10 @@ public class Project extends BaseFragment implements ISyncStatusObserverListener
                     OControls.setGone(mView, R.id.swipe_container);
                     OControls.setVisible(mView, R.id.data_list_no_item);
                     setHasSwipeRefreshView(mView, R.id.data_list_no_item, Project.this);
-                    OControls.setImage(mView, R.id.icon, R.drawable.ic_action_notes_content);
+                    OControls.setImage(mView, R.id.icon, R.drawable.ic_action_universe);
                     OControls.setText(mView, R.id.title, _s(R.string.label_no_project_found));
-                    OControls.setText(mView, R.id.subTitle, "");
+                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_activitis_found_swipe));
+
                 }
             }, 500);
             if (db().isEmptyTable() && !syncRequested) {

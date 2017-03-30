@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Todoo</string>
+    <string name="sync_label_where">Where</string>
     <string name="sync_label_tasks">Tasks</string>
+    <string name="sync_label_Done_Pending">Synchronization Pending</string>
     <string name="sync_label_schedule">Schedule</string>
     <string name="sync_label_project">Projects</string>
     <string name="sync_label_customers">Customers</string>
@@ -10,8 +12,14 @@
     <string name="toast_information_saved">Information Saved</string>
     <string name="toast_image_size_too_large">Image size too large !</string>
     <string name="label_no_customer_found">No Customer Found !</string>
-    <string name="label_no_project_found">No Project Found !</string>
+    <string name="label_no_company_found">No Company Found !</string>
+    <string name="label_no_supplier_found">No Supplier Found !</string>
+    <string name="label_no_project_found">No Projects Found !</string>
     <string name="label_no_task_found">No Task Found !</string>
+    <string name="label_no_task_found_swipe">Swipe to check new tasks</string>
+    <string name="label_no_customer_found_swipe">Swipe to check new customer</string>
+    <string name="label_no_company_found_swipe">Swipe to check new company</string>
+    <string name="label_no_supplier_found_swipe">Swipe to check new supplier</string>
     <string name="message_to">Message to %s</string>
     <string name="add_internal_note">Add and internal note</string>
     <string name="internal_note_hint">Add an internal note that will not be sent to the followers</string>
@@ -59,6 +67,18 @@
     <string name="confirm_are_you_sure_want_sync">Are you sure want to sync ?</string>
     <string name="confirm_label">Confirm</string>
     <string name="label_sync_now">Send informations ...</string>
+    <string name="sync_label_date_deadline">Date DeadLine</string>
+    <string name="sync_label_date_start">Date Start</string>
+    <string name="sync_label_priority">Priority</string>
+    <string name="label_no_activitis_found_swipe">Swipe to check new projects</string>
+    <string name="label_activitis">Activities</string>
+    <string name="label_activitis_no">No Ativities found</string>
+    <string name="label_activitis_no_swipe">Swipe to check new ativities</string>
+    <string name="label_pages_no">No Pages found</string>
+    <string name="label_pages_no_swipe">Swipe to check new pages</string>
+    <string name="label_question_no">No Question found</string>
+    <string name="label_question_no_swipe">Swipe to check new question</string>
+
 
 
 </resources>

@@ -20,7 +20,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
             android:layout_marginTop="40dp"
-            android:src="@drawable/odoo_small"
+            android:src="@drawable/todoo_black"
+            android:scaleType="fitXY"
+            android:minHeight="@dimen/default_60dp"
+            android:minWidth="@dimen/default_180dp"
             android:tint="#ffffff" />
 
         <LinearLayout

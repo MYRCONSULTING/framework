@@ -9,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +22,14 @@ import android.view.MenuItem;
 
 import com.odoo.R;
 import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.projects.models.ProjectTaskType;
 import com.odoo.addons.projects.models.TypeTask;
 import com.odoo.addons.survey.SurveySurvey;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
+import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.OBlob;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -91,7 +95,6 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         listView.setAdapter(mAdapter);
         listView.setFastScrollAlwaysVisible(true);
         listView.setOnItemClickListener(this);
-        //setHasSyncStatusObserver(TAG, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(extra.getInt("_id"), extra, this);
         if (extra.getString("extra_key_project") == null || (extra.getString("extra_key_project").isEmpty()))
@@ -107,6 +110,12 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         }
 
         OControls.setText(view, R.id.nameTask, row.getString("name"));
+        if (row.getString("name").trim().isEmpty() || (row.getString("name").trim().equals("false"))){
+            OControls.setGone(view, R.id.nameTask);
+        }else{
+            OControls.setText(view, R.id.nameTask, row.getString("name"));
+        }
+
         if (row.getString("date_start").equals("false")){
             OControls.setGone(view,R.id.nameDateStart);
         }else{
@@ -155,21 +164,34 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         }else{
             OControls.setGone(view,R.id.nameCustomer);
             OControls.setGone(view,R.id.addressCustomer);
-            img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("name"));
-
+            if (row.getString("name").trim().isEmpty() || (row.getString("name").trim().equals("false"))){
+                String code = TextUtils.substring(row.getString("code"),1,row.getString("code").length());
+                img = BitmapUtils.getNumberImage(getActivity(), Integer.valueOf(code).toString());
+            }else{
+                img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("name"));
+            }
         }
+
+        if (Integer.valueOf(row.getString("x_task_type")).equals(Integer.valueOf(TypeTask.RETURNED_FROM_FIELD.getValue()))){
+            OControls.setText(view, R.id.nameState,OResource.string(getContext(), R.string.sync_label_Done_Pending));
+        }else{
+            OControls.setGone(view, R.id.nameState);
+        }
+
         OControls.setImage(view, R.id.image_small, img);
+        OControls.setText(view, R.id.codeTask,row.getString("code") );
 
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle data) {
         List<String> args = new ArrayList<>();
-        String where = "x_task_type = ? ";
+        String where = "(x_task_type = ?  or x_task_type = ? )";
         args.add(String.valueOf(TypeTask.ON_FIELD.getValue()));
+        args.add(String.valueOf(TypeTask.RETURNED_FROM_FIELD.getValue()));
 
         if (id > 0){
-            where = " and project_id = ?";
+            where += " and project_id = ?";
             args.add(String.valueOf(id));
         }
 
@@ -177,11 +199,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
            // args.add(data.get("id").toString());
 
         if (mCurFilter != null) {
-            if (id > 0) {
-                where += " and partner_name like ? or name like ?  ";
-            }else{
-                where += " partner_name like ? or name like ? ";
-            }
+            where += " and (partner_name like ? or name like ?  )";
             args.add("%" + mCurFilter + "%");
             args.add("%" + mCurFilter + "%");
         }
@@ -215,7 +233,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                     setHasSwipeRefreshView(mView, R.id.data_list_no_item, Tasks.this);
                     OControls.setImage(mView, R.id.icon, R.drawable.ic_action_notes_content);
                     OControls.setText(mView, R.id.title, _s(R.string.label_no_task_found));
-                    OControls.setText(mView, R.id.subTitle, "");
+                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_task_found_swipe));
                 }
             }, 500);
             if (db().isEmptyTable() && !syncRequested) {
@@ -247,7 +265,14 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     @Override
     public void onStatusChange(Boolean refreshing) {
         // Sync Status
-        getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
+        int val = extra.getInt("_id");
+        if (val > 0 ){
+            try {
+                getLoaderManager().restartLoader(extra.getInt("_id"), extra, this);
+            }catch (Exception e){
+
+            }
+        }
     }
 
     @Override
@@ -261,6 +286,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                     .show();
         }
     }
+
 
     // Hasta aquí los metodos del ejemplo
 
@@ -331,7 +357,6 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                     startFragment(new SurveySurvey(), true, data);
                     break;
                 case R.id.btnDetailTask:
-                    //Toast.makeText(getActivity(), _s(R.string.sync_label_tasks),Toast.LENGTH_LONG).show();
                     loadActivity(row);
                     break;
                 default:

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
@@ -35,29 +36,67 @@
                 app:fieldName="name"
                 app:controlLabel="@string/sync_label_tasks"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
+                app:iconResource="@drawable/ic_assignment_black_24dp"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/nameTaskPriority"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="priority"
+                app:controlLabel="@string/sync_label_priority"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_priority_high_black_24dp"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/nameCustomer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="partner_name"
+                app:controlLabel="@string/sync_label_where"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_add_location_black_24dp"></odoo.controls.OField>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sera"
+                android:layout_marginLeft="64dp"
+                android:drawableLeft="@drawable/ic_directions_black_24dp"
+                android:textSize="@dimen/text_size_medium" />
+
+            <odoo.controls.OField
+                android:id="@+id/dateStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="date_start"
+                app:controlLabel="@string/sync_label_date_start"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_date_range_black_24dp"></odoo.controls.OField>
+
             <odoo.controls.OField
                 android:id="@+id/date_deadlineTask"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:fieldLabelColor="@color/theme_secondary"
                 app:fieldName="date_deadline"
-                app:controlLabel="@string/sync_label_tasks"
+                app:controlLabel="@string/sync_label_date_deadline"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
+                app:iconResource="@drawable/ic_alarm_black_24dp"></odoo.controls.OField>
+
             <odoo.controls.OField
                 android:id="@+id/descriptionTask"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:fieldLabelColor="@color/theme_secondary"
                 app:fieldName="description"
-                app:controlLabel="@string/sync_label_tasks"
+                app:controlLabel="@string/sync_label_tasks_description"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
+                app:iconResource="@drawable/ic_description_black_24dp"></odoo.controls.OField>
 
-            <View
-                style="@style/ViewSeparator"
-                android:layout_marginLeft="72dp" />
+
+
 
         </odoo.controls.OForm>
     </LinearLayout>
@@ -67,7 +106,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/statusBarHeight"
         android:visibility="gone">
 
         <odoo.controls.OForm
@@ -84,29 +122,39 @@
                 android:layout_below="@+id/parallax_view_edit"
                 android:orientation="vertical">
 
-                <odoo.controls.OField
-                    android:id="@android:id/title"
+                <!--odoo.controls.OField
+                    android:id="@+id/nameTaskEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/default_8dp"
+                    app:fieldLabelColor="@color/theme_secondary"
                     app:fieldName="name"
-                    app:controlLabel="@string/descr_elem_list_name"
-                    app:fieldTextAppearance="?android:textAppearanceLarge"
-                    app:showIcon="false"
-                    app:showLabel="true"></odoo.controls.OField>
+                    android:focusable="false"
+                    android:editable="false"
+                    app:controlLabel="@string/sync_label_tasks"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_edit"></odoo.controls.OField-->
                 <odoo.controls.OField
-                    android:id="@android:id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/default_8dp"
+                    app:fieldLabelColor="@color/theme_secondary"
                     app:fieldName="description"
                     app:controlLabel="@string/sync_label_tasks_description"
-                    app:fieldTextAppearance="?android:textAppearanceLarge"
-                    app:showIcon="false"
-                    app:showLabel="true"></odoo.controls.OField>
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_edit"></odoo.controls.OField>
 
-                <View style="@style/ViewSeparator" />
-                <!-- -->
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:fieldLabelColor="@color/theme_secondary"
+                    app:fieldName="date_deadline"
+                    app:controlLabel="@string/sync_label_date_deadline"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_edit"></odoo.controls.OField>
+
+
+
+                <!--View style="@style/ViewSeparator" /-->
+
                 <android.support.v4.view.ViewPager
                     android:id="@+id/pager"
                     android:visibility="visible"

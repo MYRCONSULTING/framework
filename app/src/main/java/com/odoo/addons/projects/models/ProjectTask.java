@@ -34,6 +34,7 @@ public class ProjectTask extends OModel {
     public static final String KEY = ProjectTask.class.getSimpleName();
     public static final String AUTHORITY = "com.odoo.addons.projects.project_tasks";
 
+    OColumn code = new OColumn("code", OVarchar.class).setSize(100);
     OColumn name = new OColumn("Name", OVarchar.class).setSize(100);
     OColumn project_id = new OColumn("project_id", ProjectProject.class, OColumn.RelationType.ManyToOne);
 
@@ -52,6 +53,11 @@ public class ProjectTask extends OModel {
 
     @Odoo.Functional(method = "storeStageName", store = true, depends = {"stage_id"})
     OColumn x_task_type = new OColumn("x_task_type", OVarchar.class).setLocalColumn();
+
+    OColumn priority = new OColumn("priority", OSelection.class)
+            .addSelection("0","Baja")
+            .addSelection("1","Normal")
+            .addSelection("2","Alta");
 
     public ProjectTask(Context context, OUser user) {
         super(context, "project.task", user);

@@ -142,4 +142,33 @@ public class BitmapUtils {
                 height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
         return bitmap;
     }
+
+    public static Bitmap getNumberImage(Context context, String content) {
+        Resources res = context.getResources();
+        Bitmap mDefaultBitmap = BitmapFactory.decodeResource(res, android.R.drawable.sym_def_app_icon);
+        int width = mDefaultBitmap.getWidth();
+        int height = mDefaultBitmap.getHeight();
+        TextPaint mPaint = new TextPaint();
+        mPaint.setTypeface(OControlHelper.boldFont());
+        mPaint.setColor(Color.WHITE);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setAntiAlias(true);
+        int textSize = res.getDimensionPixelSize(R.dimen.text_size_xxlarge);
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas();
+        Rect mBounds = new Rect();
+        canvas.setBitmap(bitmap);
+        canvas.drawColor(OStringColorUtil.getStringColor(context, content));
+        if (content == null || content.trim().length() == 0) {
+            content = "?";
+        }
+        String alphabet = content.trim();
+        mPaint.setTextSize(textSize);
+        mPaint.getTextBounds(alphabet, 0, content.trim().length(), mBounds);
+        canvas.drawText(alphabet, 0, content.trim().length(), width / 2,
+                height / 2 + (mBounds.bottom - mBounds.top) / 2, mPaint);
+        return bitmap;
+    }
+
 }

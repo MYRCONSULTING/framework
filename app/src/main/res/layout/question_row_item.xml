@@ -47,10 +47,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="top"
                         android:isScrollContainer="true"
-                        android:textAllCaps="true"
                         android:fontFamily="@string/app_name"
-                        android:textSize="@dimen/default_16dp"
-                        android:textStyle="bold"/>
+                        android:textSize="@dimen/default_16dp"/>
                     <EditText
                         android:id="@+id/editTextDateTime_UserInput"
                         android:layout_width="match_parent"

@@ -40,6 +40,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -96,6 +97,7 @@ public class OdooActivity extends OdooCompatActivity {
     private Bundle mSavedInstanceState = null;
     private Integer mDrawerSelectedIndex = -1;
     private Boolean mHasActionBarSpinner = false;
+
     private App app;
 
     @Override
@@ -614,6 +616,7 @@ public class OdooActivity extends OdooCompatActivity {
             mHasActionBarSpinner = hasActionBarSpinner;
         }
     }
+
 
     public Spinner getActionBarSpinner() {
         Spinner spinner = null;

@@ -125,6 +125,7 @@ public class TasksDetails extends OdooCompatActivity
 
         /////////////////////////////
 
+        /*
         OField oField = new OField(this);
         oField.initControl();
         oField.getId();
@@ -137,6 +138,7 @@ public class TasksDetails extends OdooCompatActivity
         oField.setResId(R.drawable.ic_action_message);
         linearlayoutTask = (LinearLayout) findViewById(R.id.taskFormView);
         linearlayoutTask.addView(oField);
+        */
 
         if (!hasRecordInExtra())
             mEditMode = true;
@@ -150,8 +152,10 @@ public class TasksDetails extends OdooCompatActivity
 
     private void setMode(Boolean edit) {
         if (mMenu != null) {
-            mMenu.findItem(R.id.menu_task_detail_more).setVisible(!edit);
-            mMenu.findItem(R.id.menu_task_edit).setVisible(!edit);
+            //mMenu.findItem(R.id.menu_task_detail_more).setVisible(!edit);
+            mMenu.findItem(R.id.menu_task_detail_more).setVisible(false);
+            //mMenu.findItem(R.id.menu_task_edit).setVisible(!edit);
+            mMenu.findItem(R.id.menu_task_edit).setVisible(false);
             mMenu.findItem(R.id.menu_task_save).setVisible(edit);
             mMenu.findItem(R.id.menu_task_cancel).setVisible(edit);
         }
@@ -207,9 +211,12 @@ public class TasksDetails extends OdooCompatActivity
     }
 
     private void checkControls() {
-        findViewById(R.id.nameTask).setOnClickListener(this);
-        findViewById(R.id.descriptionTask).setOnClickListener(this);
-        bindSurvey();
+        //findViewById(R.id.nameTask).setOnClickListener(this);
+        //findViewById(R.id.descriptionTask).setOnClickListener(this);
+        //findViewById(R.id.nameTaskEdit).setFocusable(false);
+        //findViewById(R.id.nameTaskEdit).setEnabled(false);
+        //findViewById(R.id.nameTaskEdit).setOnKeyListener(null);
+        //bindSurvey();
     }
 
     private void bindSurvey(){
@@ -338,26 +345,19 @@ public class TasksDetails extends OdooCompatActivity
 
                 break;
             case R.id.menu_task_end:
-                OAlert.showConfirm(this, OResource.string(this,
-                        R.string.confirm_are_you_sure_want_to_end),
+                OAlert.showConfirm(this, OResource.string(this,R.string.confirm_are_you_sure_want_sync),
                         new OAlert.OnAlertConfirmListener() {
                             @Override
                             public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
                                 if (type == OAlert.ConfirmType.POSITIVE) {
                                     ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
                                     OValues valuesProjectTask = new OValues();
-                                    //valuesProjectTask.put("name","tarea finalizada");
                                     valuesProjectTask.put("stage_id",projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
                                     valuesProjectTask.put("x_task_type",TypeTask.RETURNED_FROM_FIELD.getValue());
                                     if (projectTask.update(record.getInt(OColumn.ROW_ID),valuesProjectTask)) {
-                                        //Toast.makeText(TasksDetails.this, R.string.toast_record_ended,Toast.LENGTH_SHORT).show();
                                         //Syncronizar
-                                        sync();
-                                        //finish();
+                                        onRefresh();
                                     }
-
-
-
                                 }
                             }
                         });
@@ -365,20 +365,6 @@ public class TasksDetails extends OdooCompatActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void sync(){
-        OAlert.showConfirm(this, OResource.string(this,R.string.confirm_are_you_sure_want_sync),
-                new OAlert.OnAlertConfirmListener() {
-                    @Override
-                    public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
-                        if (type == OAlert.ConfirmType.POSITIVE) {
-                            //Toast.makeText(TasksDetails.this, R.string.toast_record_synced,Toast.LENGTH_SHORT).show();
-                            onRefresh();
-                            //finish();
-                        }
-                    }
-                });
     }
 
     public void onRefresh() {
@@ -416,7 +402,6 @@ public class TasksDetails extends OdooCompatActivity
             super.onPostExecute(success);
             mDialog.dismiss();
             if (success) {
-                //Toast.makeText(TasksDetails.this, (record != null) ? " updated": " created", Toast.LENGTH_LONG).show();
                 finish();
             }
         }
