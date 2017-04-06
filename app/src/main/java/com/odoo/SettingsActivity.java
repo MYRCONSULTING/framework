@@ -29,6 +29,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.odoo.addons.projects.models.ProjectProject;
+import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.projects.models.ProjectTaskType;
+import com.odoo.addons.survey.models.SurveyPage;
+import com.odoo.addons.survey.models.SurveyQuestion;
+import com.odoo.addons.survey.models.SurveyUserInput;
+import com.odoo.addons.survey.models.SurveyUserInputLine;
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.About;
 import com.odoo.core.account.OdooLogin;
 import com.odoo.core.support.OUser;
@@ -97,6 +105,17 @@ public class SettingsActivity extends AppCompatActivity {
             List<String> default_authorities = new ArrayList<>();
             default_authorities.add("com.android.calendar");
             default_authorities.add("com.android.contacts");
+            default_authorities.add(ProjectProject.AUTHORITY);
+            default_authorities.add(ProjectTask.AUTHORITY);
+            default_authorities.add(ProjectTaskType.AUTHORITY);
+            default_authorities.add(ResPartner.AUTHORITY);
+            default_authorities.add(com.odoo.addons.survey.models.SurveySurvey.AUTHORITY);
+            default_authorities.add(SurveyPage.AUTHORITY);
+            default_authorities.add(SurveyQuestion.AUTHORITY);
+            default_authorities.add(SurveyUserInput.AUTHORITY);
+            default_authorities.add(SurveyUserInputLine.AUTHORITY);
+
+
             SyncAdapterType[] list = ContentResolver.getSyncAdapterTypes();
             for (SyncAdapterType lst : list) {
                 if (lst.authority.contains("com.odoo")
@@ -109,6 +128,7 @@ public class SettingsActivity extends AppCompatActivity {
                         mAccount, authority);
                 if (isSyncActive) {
                     SyncUtils.get(this).setSyncPeriodic(authority, sync_interval, 60, 1);
+
                 }
             }
             Toast.makeText(this, OResource.string(this, R.string.toast_setting_saved),

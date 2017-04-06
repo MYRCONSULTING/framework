@@ -39,11 +39,15 @@
                 android:padding="20dp">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/odoo_mobile_small"
+                    android:src="@drawable/todoo_black"
+                    android:minHeight="@dimen/default_60dp"
+                    android:minWidth="@dimen/default_180dp"
+                    android:scaleType="fitXY"
+
                     android:tint="#ffffff" />
 
                 <TextView
@@ -87,7 +91,7 @@
                     android:text="@string/about_Company_line1"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                <TextView
+                <!--TextView
                     android:id="@+id/line2"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -97,9 +101,9 @@
                     android:paddingTop="10dp"
                     android:text="@string/about_Company_line2"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColorLink="#414141" />
+                    android:textColorLink="#414141" /-->
 
-                <TextView
+                <!--TextView
                     android:id="@+id/line3"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -109,9 +113,9 @@
                     android:paddingTop="10dp"
                     android:text="@string/about_Company_line3"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColorLink="#414141" />
+                    android:textColorLink="#414141" /-->
 
-                <TextView
+                <!--TextView
                     android:id="@+id/line4"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -121,7 +125,7 @@
                     android:paddingTop="10dp"
                     android:text="@string/about_Company_line4"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColorLink="#414141" />
+                    android:textColorLink="#414141" /-->
             </LinearLayout>
         </LinearLayout>
 

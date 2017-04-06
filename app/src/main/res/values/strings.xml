@@ -78,7 +78,8 @@
     <string name="label_pages_no_swipe">Swipe to check new pages</string>
     <string name="label_question_no">No Question found</string>
     <string name="label_question_no_swipe">Swipe to check new question</string>
-
-
+    <string name="title_notification">Todoo Notification</string>
+    <string name="title_task_notification">Updated Tasks</string>
+    <string name="notificacion_verifid_tasks">Verify tasks</string>
 
 </resources>

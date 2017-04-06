@@ -26,10 +26,12 @@ import com.odoo.addons.projects.models.ProjectTaskType;
 import com.odoo.addons.projects.models.TypeTask;
 import com.odoo.addons.survey.SurveySurvey;
 import com.odoo.base.addons.res.ResPartner;
+import com.odoo.core.account.OdooAccountQuickManage;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.OBlob;
 import com.odoo.core.rpc.helper.ODomain;
+import com.odoo.core.support.OUser;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -41,6 +43,7 @@ import com.odoo.core.utils.OControls;
 import com.odoo.core.utils.OCursorUtils;
 import com.odoo.core.utils.ODateUtils;
 import com.odoo.core.utils.OResource;
+import com.odoo.core.utils.notification.ONotificationBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,7 +71,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     private Bundle extra = null;
     public static final String EXTRA_KEY_SURVEY_TASK = "extra_key_survey_task";
     private Context mContext = null;
-
+    private String action;
 
 
     @Override
@@ -77,6 +80,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         setHasOptionsMenu(true);
         mContext = getActivity();
         setHasSyncStatusObserver(KEY, this, db());
+        action = getActivity().getIntent().getAction();
         return inflater.inflate(R.layout.common_listview, container, false);
     }
 
@@ -127,21 +131,19 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         ResPartner resPartner = new ResPartner(getContext(),null);
         String nameCustomer = "";
         String image_small = null;
-        String street = "";
-        String street2 = "";
+        String full_address = "";
         Bitmap img=null;
         if (row.getString("partner_id")!=null && !row.getString("partner_id").equals("false")){
             nameCustomer = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("name");
             image_small = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("image_small");
-            street = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("street");
-            street2 = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("street2");
+            ODataRow recordParthner = resPartner.browse(Integer.valueOf(row.getString("partner_id")));
+            full_address = resPartner.getAddress(recordParthner);
 
             if (nameCustomer.equals("false"))
                 nameCustomer = "";
-            if (street.equals("false"))
-                street = "";
-            if (street2.equals("false"))
-                street2 = "";
+            if (full_address.equals("false"))
+                full_address = "";
+
             if (nameCustomer.isEmpty())
             {
                 OControls.setGone(view,R.id.nameCustomer);
@@ -149,10 +151,10 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                 OControls.setText(view, R.id.nameCustomer, nameCustomer);
             }
 
-            if (street.isEmpty() && street2.isEmpty()){
+            if (full_address.trim().isEmpty()){
                 OControls.setGone(view,R.id.addressCustomer);
             }else{
-                OControls.setText(view, R.id.addressCustomer, street+" "+street2);
+                OControls.setText(view, R.id.addressCustomer, full_address);
             }
 
             if (image_small.equals("false")) {
@@ -180,7 +182,6 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
 
         OControls.setImage(view, R.id.image_small, img);
         OControls.setText(view, R.id.codeTask,row.getString("code") );
-
     }
 
     @Override
@@ -367,4 +368,6 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
                     Toast.LENGTH_LONG).show();
         }
     }
+
+
 }

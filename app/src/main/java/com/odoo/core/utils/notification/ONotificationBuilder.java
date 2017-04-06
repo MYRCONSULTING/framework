@@ -163,7 +163,7 @@ public class ONotificationBuilder {
         }
         mNotificationBuilder.setAutoCancel(mAutoCancel);
         mNotificationBuilder.setOngoing(mOnGoing);
-        mNotificationBuilder.setColor(OResource.color(mContext, notification_color));
+        mNotificationBuilder.setColor(OResource.color(mContext, R.color.theme_secondary));
         if (bigText != null) {
             NotificationCompat.BigTextStyle notiStyle = new NotificationCompat.BigTextStyle();
             notiStyle.setBigContentTitle(title);

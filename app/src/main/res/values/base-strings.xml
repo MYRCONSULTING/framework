@@ -110,7 +110,7 @@
         <item name="180">180</item>
         <item name="360">360</item>
     </string-array>
-    <string name="summary_about_odoo_mobile">Todoo Mobile</string>
+    <string name="summary_about_odoo_mobile">Todoo</string>
     <!-- About Company Fragment Strings -->
     <string name="about_Company_line1">Copyright © 2015-Today MYR SAC. All Rights Reserved.</string>
     <string name="about_Company_line2">Odoo is a trademark of the <a href="https://www.odoo.com/">Odoo.com.</a></string>

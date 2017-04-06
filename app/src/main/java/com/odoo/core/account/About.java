@@ -71,18 +71,22 @@ public class About extends AppCompatActivity implements View.OnClickListener {
                     .getString(R.string.label_version_build) + " " + versionCodeName);
 
             // setting link in textView
+            /*
             aboutLine2 = (TextView) findViewById(R.id.line2);
             if (aboutLine2 != null) {
                 aboutLine2.setMovementMethod(LinkMovementMethod.getInstance());
             }
+            */
             aboutLine3 = (TextView) findViewById(R.id.line3);
             if (aboutLine3 != null) {
                 aboutLine3.setMovementMethod(LinkMovementMethod.getInstance());
             }
+            /*
             aboutLine4 = (TextView) findViewById(R.id.line4);
             if (aboutLine4 != null) {
                 aboutLine4.setMovementMethod(LinkMovementMethod.getInstance());
             }
+            */
         } catch (Exception e) {
             e.printStackTrace();
         }

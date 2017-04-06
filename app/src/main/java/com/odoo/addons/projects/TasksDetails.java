@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.odoo.App;
@@ -48,6 +49,7 @@ import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveyQuestion;
 import com.odoo.addons.survey.models.SurveySurvey;
 import com.odoo.base.addons.ir.feature.OFileManager;
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
@@ -56,6 +58,8 @@ import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OAlert;
+import com.odoo.core.utils.OControls;
+import com.odoo.core.utils.ODateUtils;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OStringColorUtil;
 
@@ -123,23 +127,6 @@ public class TasksDetails extends OdooCompatActivity
         projectTask = new ProjectTask(this, null);
         extras = getIntent().getExtras();
 
-        /////////////////////////////
-
-        /*
-        OField oField = new OField(this);
-        oField.initControl();
-        oField.getId();
-        oField.setModel(ProjectTask.get(this,"project.task",null));
-        oField.setmField_name("date_deadline");
-        oField.setmLabel("Fecha final 12345678:");
-        oField.setmType(OField.FieldType.Date);
-        oField.setValue("2017-03-31");
-        oField.setIcon(R.drawable.ic_action_message);
-        oField.setResId(R.drawable.ic_action_message);
-        linearlayoutTask = (LinearLayout) findViewById(R.id.taskFormView);
-        linearlayoutTask.addView(oField);
-        */
-
         if (!hasRecordInExtra())
             mEditMode = true;
         setupToolbar();
@@ -201,88 +188,33 @@ public class TasksDetails extends OdooCompatActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.nameTask:
-                IntentUtils.requestMessage(this, record.getString("name"));
-                break;
-            case R.id.descriptionTask:
-                IntentUtils.requestMessage(this, record.getString("description"));
-                break;
+            case R.id.addressCustomer:
+                ResPartner resPartner = new ResPartner(mContext,null);
+                if (record.getString("partner_id")!=null && !record.getString("partner_id").equals("false")) {
+                    ODataRow recordParthner = resPartner.browse(Integer.valueOf(record.getString("partner_id")));
+                    String full_address = resPartner.getAddress(recordParthner);
+                    IntentUtils.redirectToMap(this, full_address);
+                    break;
+                }
         }
     }
 
     private void checkControls() {
-        //findViewById(R.id.nameTask).setOnClickListener(this);
-        //findViewById(R.id.descriptionTask).setOnClickListener(this);
-        //findViewById(R.id.nameTaskEdit).setFocusable(false);
-        //findViewById(R.id.nameTaskEdit).setEnabled(false);
-        //findViewById(R.id.nameTaskEdit).setOnKeyListener(null);
-        //bindSurvey();
-    }
-
-    private void bindSurvey(){
-        ArrayList<EditText> OFieldList = new ArrayList<EditText>();
-        List<ODataRow> rowSurveyQuestion = null;
-        //// 1.- Verifica la Encuesta que corresponde a la tarea seleccionada
-        String rowIdSurvey = null;
-        if (extras.containsKey(EXTRA_KEY_SURVEY_TASK) && rowIdSurvey == null) {
-            rowIdSurvey = extras.getString(EXTRA_KEY_SURVEY_TASK);
-            SurveySurvey surveySurvey = new SurveySurvey(this, null);
-            ODataRow rowSurvey = surveySurvey.browse(Integer.parseInt(rowIdSurvey));
-            Log.i(TAG, "Id SurveySurvey Title : " + rowSurvey.get("title"));
-            /// 2.- Recorre la cantidad de páginas de cada encuesta
-            SurveyPage surveyPage = new SurveyPage(this, null);
-            List<ODataRow> rowSurveyPage = surveyPage.getSurveyPage(this, rowIdSurvey);
-            for (ODataRow rowPage : rowSurveyPage) {
-                Log.i(TAG, "Id SurveyPage Title : " + rowPage.get("title"));
-                //Log.i(TAG, "Id SurveyPage _Id   : " + rowPage.get("_id"));
-                //Log.i(TAG, "Id SurveyPage  Id   : " + rowPage.get("id"));
-                /// 3.- Recorre la cantidad de Preguntas por página de cada encuesta
-                SurveyQuestion surveyQuestion = new SurveyQuestion(this, null);
-                rowSurveyQuestion = surveyQuestion.getSurveyQuestion(this, rowIdSurvey,
-                        rowPage.get("_id").toString());
-                for (ODataRow row : rowSurveyQuestion) {
-                    Log.i(TAG, "Id SurveyQuestion Question : " + row.get("question"));
-                    //Log.i(TAG, "Id SurveyQuestion _Id   : " + row.get("_id"));
-                    //Log.i(TAG, "Id SurveyQuestion  Id   : " + row.get("id"));
-
-                    OField oField = new OField(this);
-                    oField.setId(Integer.parseInt(row.get("_id").toString()));
-                    oField.setModel(SurveyQuestion.get(this,"survey.question",null));
-                    oField.setmLabel(row.get("question").toString());
-                    oField.setmField_name("question");
-                    oField.setmType(OField.FieldType.Text);
-                    oField.initControl();
-                    oField.setIcon(R.drawable.ic_action_message);
-                    oField.setResId(R.drawable.ic_action_message);
-
-
-                    ///////
-                    EditText txtBox;
-                    txtBox = new EditText(this);
-                    txtBox.setId(Integer.parseInt(row.get("_id").toString()));
-                    txtBox.setHint(row.get("question").toString());
-                    txtBox.setText(row.get("question").toString());
-                    txtBox.setTextAppearance(this,appearance);
-                    txtBox.setPadding(20, 10, 10, 10);
-
-                    txtBox.setTextColor(textColor);
-                    txtBox.setTypeface(OControlHelper.lightFont());
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-                    txtBox.setLayoutParams(params);
-                    txtBox.setBackgroundColor(Color.TRANSPARENT);
-                    txtBox.setTextSize(textSize);
-                    ////////7
-
-                    OFieldList.add(txtBox);
-                }
-            }
-        }
-        linearlayoutTask = (LinearLayout) findViewById(R.id.taskFormEdit);
-        for(EditText f : OFieldList) {
-            linearlayoutTask.addView(f);
+        ResPartner resPartner = new ResPartner(mContext,null);
+        String full_address = "";
+        if(record.getString("partner_id").equals("false")){
+            findViewById(R.id.nameCustomer).setVisibility(View.GONE);
+            findViewById(R.id.addressCustomer).setVisibility(View.GONE);
+        }else{
+            TextView textView;
+            textView = (TextView) findViewById(R.id.addressCustomer);
+            findViewById(R.id.addressCustomer).setOnClickListener(this);
+            ODataRow recordParthner = resPartner.browse(Integer.valueOf(record.getString("partner_id")));
+            full_address = resPartner.getAddress(recordParthner);
+            textView.setText(full_address);
         }
     }
+
     private void setColor(int color) {
         mForm.setIconTintColor(color);
     }
@@ -389,9 +321,44 @@ public class TasksDetails extends OdooCompatActivity
             ODataRow record = args[0];
             ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
             ProjectTask projectTask = new ProjectTask(mContext, null);
+            OValues oValues = new OValues();
             ODomain domain = new ODomain();
             domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
             projectTask.quickSyncRecords(domain);
+            ODataRow recordProjectTask = projectTask.browse(record.getInt(OColumn.ROW_ID));
+
+            if (Boolean.valueOf(recordProjectTask.getString("x_recursive"))){ // Tareas Recursivas
+                oValues.put("x_create_source","True");
+                oValues.put("name",recordProjectTask.getString("name"));
+                oValues.put("project_id",recordProjectTask.getString("project_id"));
+                oValues.put("x_survey_id",recordProjectTask.getString("x_survey_id"));
+                oValues.put("description",recordProjectTask.getString("description"));
+                oValues.put("date_deadline",recordProjectTask.getString("date_deadline"));
+                oValues.put("date_start",recordProjectTask.getString("date_start"));
+                oValues.put("date_end",recordProjectTask.getString("date_end"));
+                oValues.put("color",recordProjectTask.getString("color"));
+                oValues.put("partner_id",recordProjectTask.getString("partner_id"));
+                oValues.put("stage_id",projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+                oValues.put("x_task_type",TypeTask.ON_FIELD.getValue());
+                oValues.put("priority",recordProjectTask.getString("priority"));
+                oValues.put("x_recursive",recordProjectTask.getString("x_recursive"));
+
+                // 1.- Insert Task
+                int recordTask = projectTask.insert(oValues);
+                int recordTaskServer = 0;
+                ODataRow rowTask = new ODataRow();
+                domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+                // 2.- Syncroniza Task
+                projectTask.quickSyncRecords(domain);
+                // 3.- Return Id from Server
+                rowTask = projectTask.browse(recordTask);
+                recordTaskServer = rowTask.getInt("id");
+                // 4.- Syncroniza record
+                ODataRow rowSync = new ODataRow();
+                rowSync.put("id", recordTaskServer);
+                rowTask = projectTask.quickCreateRecord(rowSync);
+            }
+
             projectTask.delete(record.getInt(OColumn.ROW_ID),true);
             return true;
         }
@@ -443,6 +410,71 @@ public class TasksDetails extends OdooCompatActivity
 
         } else if (values != null) {
             Toast.makeText(this, R.string.toast_image_size_too_large, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void bindSurvey(){
+        ArrayList<EditText> OFieldList = new ArrayList<EditText>();
+        List<ODataRow> rowSurveyQuestion = null;
+        //// 1.- Verifica la Encuesta que corresponde a la tarea seleccionada
+        String rowIdSurvey = null;
+        if (extras.containsKey(EXTRA_KEY_SURVEY_TASK) && rowIdSurvey == null) {
+            rowIdSurvey = extras.getString(EXTRA_KEY_SURVEY_TASK);
+            SurveySurvey surveySurvey = new SurveySurvey(this, null);
+            ODataRow rowSurvey = surveySurvey.browse(Integer.parseInt(rowIdSurvey));
+            Log.i(TAG, "Id SurveySurvey Title : " + rowSurvey.get("title"));
+            /// 2.- Recorre la cantidad de páginas de cada encuesta
+            SurveyPage surveyPage = new SurveyPage(this, null);
+            List<ODataRow> rowSurveyPage = surveyPage.getSurveyPage(this, rowIdSurvey);
+            for (ODataRow rowPage : rowSurveyPage) {
+                Log.i(TAG, "Id SurveyPage Title : " + rowPage.get("title"));
+                //Log.i(TAG, "Id SurveyPage _Id   : " + rowPage.get("_id"));
+                //Log.i(TAG, "Id SurveyPage  Id   : " + rowPage.get("id"));
+                /// 3.- Recorre la cantidad de Preguntas por página de cada encuesta
+                SurveyQuestion surveyQuestion = new SurveyQuestion(this, null);
+                rowSurveyQuestion = surveyQuestion.getSurveyQuestion(this, rowIdSurvey,
+                        rowPage.get("_id").toString());
+                for (ODataRow row : rowSurveyQuestion) {
+                    Log.i(TAG, "Id SurveyQuestion Question : " + row.get("question"));
+                    //Log.i(TAG, "Id SurveyQuestion _Id   : " + row.get("_id"));
+                    //Log.i(TAG, "Id SurveyQuestion  Id   : " + row.get("id"));
+
+                    OField oField = new OField(this);
+                    oField.setId(Integer.parseInt(row.get("_id").toString()));
+                    oField.setModel(SurveyQuestion.get(this,"survey.question",null));
+                    oField.setmLabel(row.get("question").toString());
+                    oField.setmField_name("question");
+                    oField.setmType(OField.FieldType.Text);
+                    oField.initControl();
+                    oField.setIcon(R.drawable.ic_action_message);
+                    oField.setResId(R.drawable.ic_action_message);
+
+
+                    ///////
+                    EditText txtBox;
+                    txtBox = new EditText(this);
+                    txtBox.setId(Integer.parseInt(row.get("_id").toString()));
+                    txtBox.setHint(row.get("question").toString());
+                    txtBox.setText(row.get("question").toString());
+                    txtBox.setTextAppearance(this,appearance);
+                    txtBox.setPadding(20, 10, 10, 10);
+
+                    txtBox.setTextColor(textColor);
+                    txtBox.setTypeface(OControlHelper.lightFont());
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                    txtBox.setLayoutParams(params);
+                    txtBox.setBackgroundColor(Color.TRANSPARENT);
+                    txtBox.setTextSize(textSize);
+                    ////////7
+
+                    OFieldList.add(txtBox);
+                }
+            }
+        }
+        linearlayoutTask = (LinearLayout) findViewById(R.id.taskFormEdit);
+        for(EditText f : OFieldList) {
+            linearlayoutTask.addView(f);
         }
     }
 

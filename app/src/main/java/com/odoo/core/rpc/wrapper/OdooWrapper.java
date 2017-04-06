@@ -22,6 +22,7 @@ package com.odoo.core.rpc.wrapper;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
@@ -408,15 +409,20 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
     }
 
     public OUser authenticate(String username, String password, String database) {
-        OdooSyncResponse response = new OdooSyncResponse();
-        authenticate(username, password, database, null, response);
-        OdooResult userResult = response.get().result;
-        if (!(userResult.get("uid") instanceof Boolean)) {
-            userResult.put("username", username);
-            bindOdooSession(userResult);
-            generateUserObject(username, password, database, null, response);
-            if (response.getObject() != null)
-                return (OUser) response.getObject();
+        try{
+            OdooSyncResponse response = new OdooSyncResponse();
+            authenticate(username, password, database, null, response);
+            OdooResult userResult = response.get().result;
+            if (!(userResult.get("uid") instanceof Boolean)) {
+                userResult.put("username", username);
+                bindOdooSession(userResult);
+                generateUserObject(username, password, database, null, response);
+                if (response.getObject() != null)
+                    return (OUser) response.getObject();
+            }
+        }catch (Exception e){
+            Log.i(TAG,e.toString());
+            return null;
         }
         return null;
     }

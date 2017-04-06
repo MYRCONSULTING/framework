@@ -5,11 +5,13 @@
         android:id="@+id/menu_about_our_apps"
         android:icon="@drawable/ic_action_play_store"
         android:title="@string/label_our_apps"
+        android:visible="false"
         app:showAsAction="always"></item>
     <item
         android:id="@+id/menu_about_github"
         android:icon="@drawable/ic_action_github"
         android:title="@string/label_odoo_mobile_on_github"
+        android:visible="false"
         app:showAsAction="always"></item>
 
     <item
@@ -23,6 +25,7 @@
                 android:id="@+id/menu_export_db"
                 android:icon="@drawable/ic_action_content_export"
                 android:title="@string/label_export_db"
+                android:visible="false"
                 app:showAsAction="always">
 
             </item>

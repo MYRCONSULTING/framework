@@ -29,9 +29,19 @@ import android.util.Log;
 
 import com.odoo.App;
 import com.odoo.R;
+import com.odoo.addons.projects.models.ProjectProject;
+import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.projects.models.ProjectTaskType;
+import com.odoo.addons.survey.SurveySurvey;
+import com.odoo.addons.survey.models.SurveyPage;
+import com.odoo.addons.survey.models.SurveyQuestion;
+import com.odoo.addons.survey.models.SurveyUserInput;
+import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.base.addons.ir.IrModel;
 import com.odoo.base.addons.res.ResCompany;
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.About;
+import com.odoo.core.account.OdooAccountQuickManage;
 import com.odoo.core.auth.OdooAccountManager;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
@@ -45,11 +55,13 @@ import com.odoo.core.rpc.helper.OdooFields;
 import com.odoo.core.rpc.helper.utils.gson.OdooRecord;
 import com.odoo.core.rpc.helper.utils.gson.OdooResult;
 import com.odoo.core.support.OUser;
+import com.odoo.core.support.sync.SyncUtils;
 import com.odoo.core.utils.ODateUtils;
 import com.odoo.core.utils.OPreferenceManager;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OdooRecordUtils;
 import com.odoo.core.utils.logger.OLog;
+import com.odoo.core.utils.notification.ONotificationBuilder;
 import com.odoo.datas.OConstants;
 
 import java.util.ArrayList;
@@ -71,6 +83,7 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
     private HashMap<String, ODomain> mDomain = new HashMap<>();
     private HashMap<String, ISyncFinishListener> mSyncFinishListeners = new HashMap<>();
 
+
     public OSyncAdapter(Context context, Class<? extends OModel> model, OSyncService service,
                         boolean autoInitialize) {
         super(context, autoInitialize);
@@ -89,6 +102,18 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
         mService = service;
         preferenceManager = new OPreferenceManager(mContext);
         app = (App) context.getApplicationContext();
+
+        SyncUtils.get(mContext).setAutoSync(ResPartner.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(ProjectProject.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(ProjectTask.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(ProjectTaskType.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(ResPartner.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(com.odoo.addons.survey.models.SurveySurvey.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(SurveyPage.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(SurveyQuestion.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(SurveyUserInput.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(SurveyUserInputLine.AUTHORITY,true);
+
     }
 
     public OSyncAdapter setDomain(ODomain domain) {
@@ -519,4 +544,6 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
         mSyncFinishListeners.put(mModel.getModelName(), syncFinish);
         return this;
     }
+
+
 }

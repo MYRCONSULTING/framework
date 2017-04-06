@@ -58,9 +58,9 @@
                 app:fieldTextAppearance="?android:textAppearanceMedium"
                 app:iconResource="@drawable/ic_add_location_black_24dp"></odoo.controls.OField>
             <TextView
+                android:id="@+id/addressCustomer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sera"
                 android:layout_marginLeft="64dp"
                 android:drawableLeft="@drawable/ic_directions_black_24dp"
                 android:textSize="@dimen/text_size_medium" />
