@@ -283,12 +283,23 @@ public class TasksDetails extends OdooCompatActivity
                             public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
                                 if (type == OAlert.ConfirmType.POSITIVE) {
                                     ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+                                    // Create Recursive
+                                    String state = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+                                    if (Boolean.valueOf(record.getString("x_recursive")) && (record.getString("stage_id").equals(state))) {
+                                        createRecursive();
+                                    }
                                     OValues valuesProjectTask = new OValues();
                                     valuesProjectTask.put("stage_id",projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
                                     valuesProjectTask.put("x_task_type",TypeTask.RETURNED_FROM_FIELD.getValue());
                                     if (projectTask.update(record.getInt(OColumn.ROW_ID),valuesProjectTask)) {
                                         //Syncronizar
-                                        onRefresh();
+                                        if (inNetwork()){
+                                            //Toast.makeText(TasksDetails.this, R.string.toast_network_yes,Toast.LENGTH_SHORT).show();
+                                            onRefresh();
+                                        }else{
+                                            finish();
+                                            Toast.makeText(TasksDetails.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
                             }
@@ -301,10 +312,10 @@ public class TasksDetails extends OdooCompatActivity
 
     public void onRefresh() {
             SyncTaskDetails syncTaskDetails = new SyncTaskDetails();
-            syncTaskDetails.execute(record);
+            syncTaskDetails.execute();
     }
 
-    private class SyncTaskDetails extends AsyncTask<ODataRow,Void,Boolean> {
+    private class SyncTaskDetails extends AsyncTask<Void,Void,Boolean> {
         private ProgressDialog mDialog;
 
         @Override
@@ -317,49 +328,29 @@ public class TasksDetails extends OdooCompatActivity
             mDialog.show();
         }
 
-        public Boolean doInBackground(ODataRow...args){
-            ODataRow record = args[0];
-            ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+        public Boolean doInBackground(Void...args){
             ProjectTask projectTask = new ProjectTask(mContext, null);
-            OValues oValues = new OValues();
+            ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
             ODomain domain = new ODomain();
-            domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
+
+            //Syncroniza
+            String type1 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
+            String type2 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue()));
+            String type3 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+            domain.add("|");
+            domain.add("stage_id", "=", type1);
+            domain.add("|");
+            domain.add("stage_id", "=", type2);
+            domain.add("stage_id", "=", type3);
             projectTask.quickSyncRecords(domain);
-            ODataRow recordProjectTask = projectTask.browse(record.getInt(OColumn.ROW_ID));
 
-            if (Boolean.valueOf(recordProjectTask.getString("x_recursive"))){ // Tareas Recursivas
-                oValues.put("x_create_source","True");
-                oValues.put("name",recordProjectTask.getString("name"));
-                oValues.put("project_id",recordProjectTask.getString("project_id"));
-                oValues.put("x_survey_id",recordProjectTask.getString("x_survey_id"));
-                oValues.put("description",recordProjectTask.getString("description"));
-                oValues.put("date_deadline",recordProjectTask.getString("date_deadline"));
-                oValues.put("date_start",recordProjectTask.getString("date_start"));
-                oValues.put("date_end",recordProjectTask.getString("date_end"));
-                oValues.put("color",recordProjectTask.getString("color"));
-                oValues.put("partner_id",recordProjectTask.getString("partner_id"));
-                oValues.put("stage_id",projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
-                oValues.put("x_task_type",TypeTask.ON_FIELD.getValue());
-                oValues.put("priority",recordProjectTask.getString("priority"));
-                oValues.put("x_recursive",recordProjectTask.getString("x_recursive"));
-
-                // 1.- Insert Task
-                int recordTask = projectTask.insert(oValues);
-                int recordTaskServer = 0;
-                ODataRow rowTask = new ODataRow();
-                domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
-                // 2.- Syncroniza Task
-                projectTask.quickSyncRecords(domain);
-                // 3.- Return Id from Server
-                rowTask = projectTask.browse(recordTask);
-                recordTaskServer = rowTask.getInt("id");
-                // 4.- Syncroniza record
+            //Fuerza Syncronización
+            List<Integer> listProjectTask = projectTask.getProjectTaskOnField(getBaseContext());
+            for (Integer rowTask : listProjectTask) {
                 ODataRow rowSync = new ODataRow();
-                rowSync.put("id", recordTaskServer);
-                rowTask = projectTask.quickCreateRecord(rowSync);
+                rowSync.put("id", rowTask);
+                projectTask.quickCreateRecord(rowSync);
             }
-
-            projectTask.delete(record.getInt(OColumn.ROW_ID),true);
             return true;
         }
 
@@ -374,6 +365,28 @@ public class TasksDetails extends OdooCompatActivity
         }
     }
 
+    public int createRecursive(){
+        OValues oValues = new OValues();
+        ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+        ProjectTask projectTask = new ProjectTask(mContext, null);
+        ODataRow recordProjectTask = projectTask.browse(record.getInt(OColumn.ROW_ID));
+        oValues.put("x_create_source", "True");
+        oValues.put("name", recordProjectTask.getString("name"));
+        oValues.put("project_id", recordProjectTask.getString("project_id"));
+        oValues.put("x_survey_id", recordProjectTask.getString("x_survey_id"));
+        oValues.put("description", recordProjectTask.getString("description"));
+        oValues.put("date_deadline", recordProjectTask.getString("date_deadline"));
+        oValues.put("date_start", recordProjectTask.getString("date_start"));
+        oValues.put("date_end", recordProjectTask.getString("date_end"));
+        oValues.put("color", recordProjectTask.getString("color"));
+        oValues.put("partner_id", recordProjectTask.getString("partner_id"));
+        oValues.put("stage_id", projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+        oValues.put("x_task_type", TypeTask.ON_FIELD.getValue());
+        oValues.put("priority", recordProjectTask.getString("priority"));
+        oValues.put("x_recursive", recordProjectTask.getString("x_recursive"));
+        int recordTask = projectTask.insert(oValues);
+        return recordTask;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -476,6 +489,11 @@ public class TasksDetails extends OdooCompatActivity
         for(EditText f : OFieldList) {
             linearlayoutTask.addView(f);
         }
+    }
+
+    public boolean inNetwork() {
+        App app = (App) mContext.getApplicationContext();
+        return app.inNetwork();
     }
 
 }

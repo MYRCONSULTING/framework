@@ -162,4 +162,6 @@
     <string name="title_notification">Notificação todoo</string>
     <string name="title_task_notification">Tarefas atualizadas</string>
     <string name="notificacion_verifid_tasks">Verifique tarefas</string>
+    <string name="toast_network_not">Não conectado à Internet!</string>
+    <string name="toast_network_yes">Com sucesso conectado à internet!</string>
 </resources>

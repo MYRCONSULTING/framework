@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.odoo.R;
 import com.odoo.addons.projects.Tasks;
+import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveySurvey;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.OdooAccountQuickManage;
@@ -92,6 +93,7 @@ public class ProjectTask extends OModel {
 
     @Override
     public void onSyncFinished(){
+        ODomain domain = new ODomain();
         ProjectTask projectTask = new ProjectTask(getContext(),null);
         ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
         List<ODataRow> rowProjectTaskType = projectTask.select(null,"x_task_type = ?",new String[]{String.valueOf(TypeTask.PENDING.getValue())},"id asc");
@@ -101,7 +103,14 @@ public class ProjectTask extends OModel {
             valuesProjectTask.put("x_task_type",TypeTask.ON_FIELD.getValue());
             projectTask.update(rowProjectTaskType.get(i).getInt(OColumn.ROW_ID),valuesProjectTask);
         }
-        showTaskNotification();
+        //Clean Return onField
+        String type = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
+        projectTask.delete("stage_id = ?",new String[]{type},true);
+        //Clean Cancel
+        type = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue()));
+        projectTask.delete("stage_id = ?",new String[]{type},true);
+
+        //showTaskNotification();
     }
 
     @Override
@@ -207,5 +216,13 @@ public class ProjectTask extends OModel {
 
         builder.addAction(actionVerify);
         builder.build().show();
+    }
+
+    public static List<Integer> getProjectTaskOnField(Context context) {
+        ProjectTaskType projectTaskType = new ProjectTaskType(context,null);
+        ProjectTask projectTask = new ProjectTask(context,null);
+        String state = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+        List<Integer> rowProjectTask = projectTask.getServerIds();
+        return rowProjectTask;
     }
 }

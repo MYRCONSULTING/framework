@@ -181,7 +181,12 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         }
 
         OControls.setImage(view, R.id.image_small, img);
-        OControls.setText(view, R.id.codeTask,row.getString("code") );
+        if (row.getString("code")=="false"){
+            OControls.setGone(view, R.id.codeTask);
+        }else{
+            OControls.setText(view, R.id.codeTask,row.getString("code") );
+        }
+
     }
 
     @Override
@@ -347,27 +352,21 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     public void onRowViewClick(int position, Cursor cursor, View view,
                                final View parent) {
         ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
-        if (inNetwork()) {
-            switch (view.getId()) {
-                case R.id.btnFormulario:
-                    Bundle data = new Bundle();
-                    if (row != null) {
-                        data = row.getPrimaryBundleData();
-                        data.putString(EXTRA_KEY_SURVEY_TASK,row.getString("x_survey_id"));
-                    }
-                    startFragment(new SurveySurvey(), true, data);
-                    break;
-                case R.id.btnDetailTask:
-                    loadActivity(row);
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            Toast.makeText(getActivity(), _s(R.string.sync_label_tasks),
-                    Toast.LENGTH_LONG).show();
+        switch (view.getId()) {
+            case R.id.btnFormulario:
+                Bundle data = new Bundle();
+                if (row != null) {
+                    data = row.getPrimaryBundleData();
+                    data.putString(EXTRA_KEY_SURVEY_TASK,row.getString("x_survey_id"));
+                }
+                startFragment(new SurveySurvey(), true, data);
+                break;
+            case R.id.btnDetailTask:
+                loadActivity(row);
+                break;
+            default:
+                break;
         }
+
     }
-
-
 }

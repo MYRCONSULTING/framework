@@ -162,4 +162,6 @@
     <string name="title_notification">Todoo Notificación</string>
     <string name="title_task_notification">Tareas actualizadas</string>
     <string name="notificacion_verifid_tasks">Verificar tareas</string>
+    <string name="toast_network_not">No esta conectado a internet!</string>
+    <string name="toast_network_yes">Conectado a internet con exito!</string>
 </resources>
