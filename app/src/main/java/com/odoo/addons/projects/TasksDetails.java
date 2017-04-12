@@ -284,9 +284,10 @@ public class TasksDetails extends OdooCompatActivity
                                 if (type == OAlert.ConfirmType.POSITIVE) {
                                     ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
                                     // Create Recursive
+                                    int recordRecursive=0;
                                     String state = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
                                     if (Boolean.valueOf(record.getString("x_recursive")) && (record.getString("stage_id").equals(state))) {
-                                        createRecursive();
+                                        recordRecursive = createRecursive();
                                     }
                                     OValues valuesProjectTask = new OValues();
                                     valuesProjectTask.put("stage_id",projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
@@ -295,7 +296,8 @@ public class TasksDetails extends OdooCompatActivity
                                         //Syncronizar
                                         if (inNetwork()){
                                             //Toast.makeText(TasksDetails.this, R.string.toast_network_yes,Toast.LENGTH_SHORT).show();
-                                            onRefresh();
+                                            onRefresh(recordRecursive);
+                                            //onRefreshAll();
                                         }else{
                                             finish();
                                             Toast.makeText(TasksDetails.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
@@ -310,12 +312,63 @@ public class TasksDetails extends OdooCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void onRefresh() {
+    public void onRefresh(int recordRecursive) {
             SyncTaskDetails syncTaskDetails = new SyncTaskDetails();
-            syncTaskDetails.execute();
+            syncTaskDetails.execute(recordRecursive);
     }
 
-    private class SyncTaskDetails extends AsyncTask<Void,Void,Boolean> {
+    private class SyncTaskDetails extends AsyncTask<Integer,Void,Boolean> {
+        private ProgressDialog mDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(TasksDetails.this);
+            mDialog.setTitle(R.string.title_working);
+            mDialog.setMessage(OResource.string(getApplicationContext(),R.string.label_sync_now));
+            mDialog.setCancelable(false);
+            mDialog.show();
+        }
+
+        public Boolean doInBackground(Integer...args){
+            ProjectTask projectTask = new ProjectTask(mContext, null);
+            ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+            ODomain domain = new ODomain();
+            int recordRecursive = args[0];
+
+            //Syncroniza
+
+            //Fuerza Syncronización
+            if (recordRecursive>0){
+
+                String type3 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+                domain.add("stage_id", "=", type3);
+                projectTask.quickSyncRecords(domain);
+
+                int recordSever = projectTask.browse(recordRecursive).getInt("id");
+                ODataRow rowSync = new ODataRow();
+                rowSync.put("id", recordSever);
+                projectTask.quickCreateRecord(rowSync);
+            }else{
+                String type1 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
+                domain.add("stage_id", "=", type1);
+                projectTask.quickSyncRecords(domain);
+            }
+
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            mDialog.dismiss();
+            if (success) {
+                finish();
+            }
+        }
+    }
+    private class SyncTaskDetailsAllRecord extends AsyncTask<Void,Void,Boolean> {
         private ProgressDialog mDialog;
 
         @Override
@@ -334,6 +387,7 @@ public class TasksDetails extends OdooCompatActivity
             ODomain domain = new ODomain();
 
             //Syncroniza
+
             String type1 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
             String type2 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue()));
             String type3 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
@@ -343,6 +397,7 @@ public class TasksDetails extends OdooCompatActivity
             domain.add("stage_id", "=", type2);
             domain.add("stage_id", "=", type3);
             projectTask.quickSyncRecords(domain);
+
 
             //Fuerza Syncronización
             List<Integer> listProjectTask = projectTask.getProjectTaskOnField(getBaseContext());

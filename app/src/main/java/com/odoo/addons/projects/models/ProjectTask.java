@@ -110,6 +110,7 @@ public class ProjectTask extends OModel {
         type = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue()));
         projectTask.delete("stage_id = ?",new String[]{type},true);
 
+
         //showTaskNotification();
     }
 
@@ -219,9 +220,7 @@ public class ProjectTask extends OModel {
     }
 
     public static List<Integer> getProjectTaskOnField(Context context) {
-        ProjectTaskType projectTaskType = new ProjectTaskType(context,null);
         ProjectTask projectTask = new ProjectTask(context,null);
-        String state = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
         List<Integer> rowProjectTask = projectTask.getServerIds();
         return rowProjectTask;
     }

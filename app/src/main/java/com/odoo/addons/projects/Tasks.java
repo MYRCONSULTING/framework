@@ -1,8 +1,10 @@
 package com.odoo.addons.projects;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager;
@@ -134,34 +136,40 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         String full_address = "";
         Bitmap img=null;
         if (row.getString("partner_id")!=null && !row.getString("partner_id").equals("false")){
-            nameCustomer = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("name");
-            image_small = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("image_small");
-            ODataRow recordParthner = resPartner.browse(Integer.valueOf(row.getString("partner_id")));
-            full_address = resPartner.getAddress(recordParthner);
+            try{
 
-            if (nameCustomer.equals("false"))
-                nameCustomer = "";
-            if (full_address.equals("false"))
-                full_address = "";
+                nameCustomer = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("name");
+                image_small = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("image_small");
+                ODataRow recordParthner = resPartner.browse(Integer.valueOf(row.getString("partner_id")));
+                full_address = resPartner.getAddress(recordParthner);
 
-            if (nameCustomer.isEmpty())
-            {
-                OControls.setGone(view,R.id.nameCustomer);
-            }else{
-                OControls.setText(view, R.id.nameCustomer, nameCustomer);
+                if (nameCustomer.equals("false"))
+                    nameCustomer = "";
+                if (full_address.equals("false"))
+                    full_address = "";
+
+                if (nameCustomer.isEmpty())
+                {
+                    OControls.setGone(view,R.id.nameCustomer);
+                }else{
+                    OControls.setText(view, R.id.nameCustomer, nameCustomer);
+                }
+
+                if (full_address.trim().isEmpty()){
+                    OControls.setGone(view,R.id.addressCustomer);
+                }else{
+                    OControls.setText(view, R.id.addressCustomer, full_address);
+                }
+
+                if (image_small.equals("false")) {
+                    img = BitmapUtils.getAlphabetImage(getActivity(), nameCustomer);
+                }else{
+                    img = BitmapUtils.getBitmapImage(getActivity(), image_small);
+                }
+            }catch (Exception e){
+
             }
 
-            if (full_address.trim().isEmpty()){
-                OControls.setGone(view,R.id.addressCustomer);
-            }else{
-                OControls.setText(view, R.id.addressCustomer, full_address);
-            }
-
-            if (image_small.equals("false")) {
-                img = BitmapUtils.getAlphabetImage(getActivity(), nameCustomer);
-            }else{
-                img = BitmapUtils.getBitmapImage(getActivity(), image_small);
-            }
 
         }else{
             OControls.setGone(view,R.id.nameCustomer);
@@ -183,10 +191,55 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         OControls.setImage(view, R.id.image_small, img);
         if (row.getString("code")=="false"){
             OControls.setGone(view, R.id.codeTask);
+            if (inNetwork()){
+                onRefreshForze(row.getInt(OColumn.ROW_ID));
+            }
         }else{
             OControls.setText(view, R.id.codeTask,row.getString("code") );
         }
 
+    }
+
+    public void onRefreshForze(int record) {
+        SyncTaskDetails syncTaskDetails = new SyncTaskDetails();
+        syncTaskDetails.execute(record);
+    }
+
+    private class SyncTaskDetails extends AsyncTask<Integer,Void,Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        public Boolean doInBackground(Integer...args){
+            ProjectTask projectTask = new ProjectTask(mContext, null);
+            ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+            ODomain domain = new ODomain();
+            int record = args[0];
+            if (record>0){
+                String type3 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
+                domain.add("stage_id", "=", type3);
+                projectTask.quickSyncRecords(domain);
+                ODataRow row = projectTask.browse(record);
+                int recordSever = 0;
+                if (row!=null){
+                    recordSever = row.getInt("id");
+                }
+                if (recordSever>0){
+                    ODataRow rowSync = new ODataRow();
+                    rowSync.put("id", recordSever);
+                    projectTask.quickCreateRecord(rowSync);
+                }
+            }
+
+            return true;
+        }
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            if (success) {
+            }
+        }
     }
 
     @Override
@@ -212,7 +265,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         String selection = (args.size() > 0) ? where : null;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
         return new CursorLoader(getActivity(), db().uri(),
-                null, selection, selectionArgs, "date_start,partner_id");
+                null, selection, selectionArgs, "_id desc,date_start,partner_id");
     }
 
     @Override
@@ -288,8 +341,7 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
             setSwipeRefreshing(true);
         } else {
             hideRefreshingProgress();
-            Toast.makeText(getActivity(), _s(R.string.toast_network_required), Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(getActivity(), _s(R.string.toast_network_required), Toast.LENGTH_LONG).show();
         }
     }
 

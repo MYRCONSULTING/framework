@@ -135,10 +135,11 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         List<ODataRow> recordSurveyUserInputLine= null;
         rowIdUserInput = 0;
         int rowTaskId = extra.getInt("id_task");
+        List<ODataRow> rowUserInputList = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId));
 
-        if (surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).size()>0){
-            recordSurveyUserInput = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)).get(0);
-            rowIdUserInput = recordSurveyUserInput.getInt("_id");
+        if (rowUserInputList.size()>0){
+            recordSurveyUserInput = rowUserInputList.get(0);
+            rowIdUserInput = recordSurveyUserInput.getInt(OColumn.ROW_ID);
             recordSurveyUserInputLine = getSurveyUserInputLineByInputList(getContext(),String.valueOf(rowIdUserInput),idPage);
             if (recordSurveyUserInputLine != null)
             {
@@ -150,119 +151,11 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         }
     }
 
-
-    // add items into spinner dynamically
-    public void addItemsOnSpinner(View view, Cursor cursor, ODataRow row) {
-
-        spinner1 = (Spinner) view.findViewById(R.id.simpleChoice_UserInput);
-        List<String> list = new ArrayList<String>();
-        list.add("list 1");
-        list.add("list 2");
-        list.add("list 3");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(dataAdapter);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.menu_save:
-                saveInputUser();
-                Log.i(TAG, "Save User Input : " );
-                Toast.makeText(getActivity(), "Graba", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.menu_syncronize:
-                Log.i(TAG, "Syncronize : " );
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void saveInputUser(){
-        surveyUserInput = new SurveyUserInput(getActivity(), null);
-        surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
-        int row_idUserInput = 0;
-        boolean flag = false;
-        OValues valuesUserInput = new OValues();
-        final String uuid = UUID.randomUUID().toString();
-        System.out.println("uuid = " + uuid);
-        valuesUserInput.put("token", uuid);
-        valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
-        valuesUserInput.put("survey_id",idSurvey);
-
-        // Add User Input
-        if (rowIdUserInput==0) { // Registro Nuevo - Id de User Input - Respuesta relacionada a una tarea.
-            row_idUserInput = surveyUserInput.insert(valuesUserInput);
-        }else{
-            flag = surveyUserInput.update(rowIdUserInput,valuesUserInput);
-        }
-
-        // Add User Input Line
-        Set set = mapsurveyQuestion.entrySet();
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()) {
-            Map.Entry mentry = (Map.Entry)iterator.next();
-            OValues valuesUserInputLine = new OValues();
-            valuesUserInputLine.put("survey_id",idSurvey);
-            ODataRow recordPage = surveyQuestion.browse(Integer.valueOf(mentry.getKey().toString())).getM2ORecord("page_id").browse();
-            valuesUserInputLine.put("page_id", recordPage.getInt("_id"));
-            valuesUserInputLine.put("question_id", mentry.getKey().toString());
-            valuesUserInputLine.put("skipped",false);
-            EditText txtEdit = (EditText) getActivity().findViewById(Integer.valueOf(mentry.getKey().toString()));
-            switch (mentry.getValue().toString()) {
-                case "free_text":
-                    valuesUserInputLine.put("answer_type","free_text");
-                    if (!txtEdit.getText().toString().isEmpty()){
-                        valuesUserInputLine.put("value_free_text",txtEdit.getText());
-                    }else{
-                        valuesUserInputLine.put("value_free_text"," ");
-                    }
-                    break;
-                case "textbox":
-                    valuesUserInputLine.put("answer_type","text");
-                    if (!txtEdit.getText().toString().isEmpty()){
-                        valuesUserInputLine.put("value_text",txtEdit.getText());
-                    }else{
-                        valuesUserInputLine.put("value_text"," ");
-                    }
-                    break;
-                case "numerical_box":
-                    valuesUserInputLine.put("answer_type","number");
-                    if (!txtEdit.getText().toString().isEmpty()){
-                        valuesUserInputLine.put("value_number",txtEdit.getText());
-                    }else{
-                        valuesUserInputLine.put("value_number","0");
-                    }
-                    break;
-            }
-            if (rowIdUserInput==0){
-                valuesUserInputLine.put("user_input_id",row_idUserInput);
-                final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
-            }else{ // Ya existe una respuesta asociada a la tarea.
-                valuesUserInputLine.put("user_input_id",rowIdUserInput);
-                if (mentry.getKey()!=null){
-                    //Control de páginas
-                    if (mapsurveyUserInputLine.size()>0 && mapsurveyUserInputLine!= null){
-                        String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString("_id");
-                        int row = Integer.valueOf(strrow);
-                        final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
-                    }else{
-                        final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
-                    }
-
-                }
-            }
-        }
-    }
-
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
         LinearLayout linearlayoutTask;
         ODataRow recordSurveyUserInputLine;
-        int rowId = row.getInt("_id");
+        int rowId = row.getInt(OColumn.ROW_ID);
         recordSurveyUserInputLine = mapsurveyUserInputLine.get(rowId);
         OControls.setText(view, R.id.textViewQuestion, row.getString("question"));
         mapsurveyQuestion.put(rowId,row.getString("type"));
@@ -331,6 +224,116 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     }
 
 
+    // add items into spinner dynamically
+    public void addItemsOnSpinner(View view, Cursor cursor, ODataRow row) {
+
+        spinner1 = (Spinner) view.findViewById(R.id.simpleChoice_UserInput);
+        List<String> list = new ArrayList<String>();
+        list.add("list 1");
+        list.add("list 2");
+        list.add("list 3");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner1.setAdapter(dataAdapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.menu_save:
+                saveInputUser();
+                Log.i(TAG, "Save User Input : " );
+                Toast.makeText(getActivity(), _s(R.string.question_record_save), Toast.LENGTH_LONG).show();
+                break;
+            case R.id.menu_syncronize:
+                Log.i(TAG, "Syncronize : " );
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void saveInputUser(){
+        surveyUserInput = new SurveyUserInput(getActivity(), null);
+        surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
+        int row_idUserInput = 0;
+        boolean flag = false;
+        OValues valuesUserInput = new OValues();
+        final String uuid = UUID.randomUUID().toString();
+        System.out.println("uuid = " + uuid);
+        valuesUserInput.put("token", uuid);
+        valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
+        valuesUserInput.put("survey_id",idSurvey);
+
+        // Add User Input
+        if (rowIdUserInput==0) { // Registro Nuevo - Id de User Input - Respuesta relacionada a una tarea.
+            row_idUserInput = surveyUserInput.insert(valuesUserInput);
+            rowIdUserInput = row_idUserInput;
+        }else{
+            flag = surveyUserInput.update(rowIdUserInput,valuesUserInput);
+        }
+
+        // Add User Input Line
+        Set set = mapsurveyQuestion.entrySet();
+        Iterator iterator = set.iterator();
+        while(iterator.hasNext()) {
+            Map.Entry mentry = (Map.Entry)iterator.next();
+            OValues valuesUserInputLine = new OValues();
+            valuesUserInputLine.put("survey_id",idSurvey);
+            ODataRow recordPage = surveyQuestion.browse(Integer.valueOf(mentry.getKey().toString())).getM2ORecord("page_id").browse();
+            valuesUserInputLine.put("page_id", recordPage.getInt(OColumn.ROW_ID));
+            valuesUserInputLine.put("question_id", mentry.getKey().toString());
+            valuesUserInputLine.put("skipped",false);
+            EditText txtEdit = (EditText) getActivity().findViewById(Integer.valueOf(mentry.getKey().toString()));
+            switch (mentry.getValue().toString()) {
+                case "free_text":
+                    valuesUserInputLine.put("answer_type","free_text");
+                    if (!txtEdit.getText().toString().isEmpty()){
+                        valuesUserInputLine.put("value_free_text",txtEdit.getText());
+                    }else{
+                        valuesUserInputLine.put("value_free_text"," ");
+                    }
+                    break;
+                case "textbox":
+                    valuesUserInputLine.put("answer_type","text");
+                    if (!txtEdit.getText().toString().isEmpty()){
+                        valuesUserInputLine.put("value_text",txtEdit.getText());
+                    }else{
+                        valuesUserInputLine.put("value_text"," ");
+                    }
+                    break;
+                case "numerical_box":
+                    valuesUserInputLine.put("answer_type","number");
+                    if (!txtEdit.getText().toString().isEmpty()){
+                        valuesUserInputLine.put("value_number",txtEdit.getText());
+                    }else{
+                        valuesUserInputLine.put("value_number","0");
+                    }
+                    break;
+            }
+            if (rowIdUserInput==0){
+                valuesUserInputLine.put("user_input_id",row_idUserInput);
+                final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+            }else{ // Ya existe una respuesta asociada a la tarea.
+                valuesUserInputLine.put("user_input_id",rowIdUserInput);
+                if (mentry.getKey()!=null){
+                    //Control de páginas
+                    if (mapsurveyUserInputLine.size()>0 && mapsurveyUserInputLine!= null){
+                        String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString("_id");
+                        int row = Integer.valueOf(strrow);
+                        final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
+                    }else{
+                        final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+                    }
+
+                }
+            }
+        }
+    }
+
+
+
 
     @Override
     public void onStatusChange(Boolean changed) {
@@ -382,7 +385,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     @Override
     public void onRefresh() {
         if (inNetwork()) {
-            parent().sync().requestSync(com.odoo.addons.survey.models.SurveyPage.AUTHORITY);
+            parent().sync().requestSync(com.odoo.addons.survey.models.SurveyQuestion.AUTHORITY);
         }
     }
 
