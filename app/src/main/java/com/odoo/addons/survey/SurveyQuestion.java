@@ -87,6 +87,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     private HashMap<Integer,ODataRow> mapsurveyUserInputLine = new HashMap<Integer,ODataRow>();
     private HashMap<Integer,String> mapsurveyQuestion = new HashMap<Integer,String>();
     private int rowIdUserInput = 0;
+    List<ODataRow> recordSurveyUserInputLine= null;
     private String idSurvey = "";
     private int idPage = 0;
     ODataRow recordSurveyUserInput = null;
@@ -117,13 +118,9 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         listView.setAdapter(listAdapter);
         listAdapter.setOnViewBindListener(this);
         listAdapter.setHasSectionIndexers(true, "question");
-
-        setHasSyncStatusObserver(TAG, this, db());
-
+        //setHasSyncStatusObserver(TAG, this, db());
         getLoaderManager().initLoader(extra.getInt("_id"), extra, this);
         setTitle(extra.getString(EXTRA_KEY_PAGE_NAME));
-
-
         idSurvey = extra.getString(EXTRA_KEY_SURVEY);
         idPage = extra.getInt(EXTRA_KEY_PAGE);
         loadQuestionByUserInputLine();
@@ -132,21 +129,26 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     public  void loadQuestionByUserInputLine(){
         //ODataRow recordPage = surveyQuestion.browse(rowId).getM2ORecord("page_id").browse();
         //ODataRow recordSurvey = surveyQuestion.browse(rowId).getM2ORecord("survey_id").browse();
-        List<ODataRow> recordSurveyUserInputLine= null;
+        recordSurveyUserInputLine= null;
         rowIdUserInput = 0;
-        int rowTaskId = extra.getInt("id_task");
-        List<ODataRow> rowUserInputList = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId));
+        int rowTaskId = extra.getInt("id_task"); // Selecciona la Tarea
+        List<ODataRow> rowUserInputList = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)); // Selecciona todos los UserInput de la tarea
 
         if (rowUserInputList.size()>0){
             recordSurveyUserInput = rowUserInputList.get(0);
             rowIdUserInput = recordSurveyUserInput.getInt(OColumn.ROW_ID);
-            recordSurveyUserInputLine = getSurveyUserInputLineByInputList(getContext(),String.valueOf(rowIdUserInput),idPage);
-            if (recordSurveyUserInputLine != null)
-            {
-                int sizeRecord = recordSurveyUserInputLine.size();
-                for(int x=0; x<sizeRecord; x++){
-                    mapsurveyUserInputLine.put(recordSurveyUserInputLine.get(x).getInt("question_id"),recordSurveyUserInputLine.get(x));
-                }
+            loadUserInputLine(idPage,rowIdUserInput);
+        }
+    }
+
+    public void loadUserInputLine(int idPage, int rowIdUserInput ){
+        recordSurveyUserInputLine = getSurveyUserInputLineByInputList(getContext(),String.valueOf(rowIdUserInput),idPage); // Selecciona los UserInputLine de la tarea
+        if (recordSurveyUserInputLine != null)
+        {
+            int sizeRecord = recordSurveyUserInputLine.size();
+            for(int x=0; x<sizeRecord; x++){
+                //Coloca todas las respuestas en el siguiente mapa mapsurveyUserInputLine
+                mapsurveyUserInputLine.put(recordSurveyUserInputLine.get(x).getInt("question_id"),recordSurveyUserInputLine.get(x));
             }
         }
     }
@@ -156,11 +158,12 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         LinearLayout linearlayoutTask;
         ODataRow recordSurveyUserInputLine;
         int rowId = row.getInt(OColumn.ROW_ID);
-        recordSurveyUserInputLine = mapsurveyUserInputLine.get(rowId);
+        String typeQuestion = row.getString("type");
+        recordSurveyUserInputLine = mapsurveyUserInputLine.get(rowId); //Selecciona El UserInputLine que corresponde a la fila
         OControls.setText(view, R.id.textViewQuestion, row.getString("question"));
-        mapsurveyQuestion.put(rowId,row.getString("type"));
+        mapsurveyQuestion.put(rowId,typeQuestion); //Crea Mapa con Id de Respuesta y el tipo campo para la respuesta
         linearlayoutTask = (LinearLayout) view.findViewById(R.id.taskFormEdit);
-        switch (row.getString("type")) {
+        switch (typeQuestion) {
             case "free_text":
                 EditText txtEdit_free_text = new EditText(getContext());
                 txtEdit_free_text.setId(rowId);
@@ -169,7 +172,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
                 if (recordSurveyUserInputLine!= null && recordSurveyUserInputLine.size()>0){
                     txtEdit_free_text.setText(recordSurveyUserInputLine.get("value_free_text").toString());
                 }
-                txtEdit_free_text.setHint("Complete la informacion");
+                txtEdit_free_text.setHint(_s(R.string.hint_question));
                 linearlayoutTask.addView(txtEdit_free_text);
 
                 break;
@@ -181,7 +184,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
                 if (recordSurveyUserInputLine!= null && recordSurveyUserInputLine.size()>0){
                     txtEdit_textbox.setText(recordSurveyUserInputLine.get("value_text").toString());
                 }
-                txtEdit_textbox.setHint("Complete la informacion");
+                txtEdit_textbox.setHint(_s(R.string.hint_question));
                 linearlayoutTask.addView(txtEdit_textbox);
 
                 break;
@@ -193,7 +196,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
                 if (recordSurveyUserInputLine!= null && recordSurveyUserInputLine.size()>0){
                     txtEdit_numerical_box.setText(recordSurveyUserInputLine.get("value_number").toString());
                 }
-                txtEdit_numerical_box.setHint("Complete la informacion");
+                txtEdit_numerical_box.setHint(_s(R.string.hint_question));
                 linearlayoutTask.addView(txtEdit_numerical_box);
                 break;
         }
@@ -275,7 +278,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         }
 
         // Add User Input Line
-        Set set = mapsurveyQuestion.entrySet();
+        Set set = mapsurveyQuestion.entrySet(); //Recorre todas las preguntas correspondientes a esa página de la tarea seleccionada.
         Iterator iterator = set.iterator();
         while(iterator.hasNext()) {
             Map.Entry mentry = (Map.Entry)iterator.next();
@@ -312,22 +315,19 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
                     }
                     break;
             }
-            if (rowIdUserInput==0){
-                valuesUserInputLine.put("user_input_id",row_idUserInput);
-                final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
-            }else{ // Ya existe una respuesta asociada a la tarea.
-                valuesUserInputLine.put("user_input_id",rowIdUserInput);
-                if (mentry.getKey()!=null){
-                    //Control de páginas
-                    if (mapsurveyUserInputLine.size()>0 && mapsurveyUserInputLine!= null){
-                        String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString("_id");
-                        int row = Integer.valueOf(strrow);
-                        final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
-                    }else{
-                        final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
-                    }
-
+            valuesUserInputLine.put("user_input_id",rowIdUserInput);
+            if (mentry.getKey()!=null){
+                //Control de páginas
+                if (mapsurveyUserInputLine.size()>0 && mapsurveyUserInputLine!= null){
+                    String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString(OColumn.ROW_ID);
+                    int row = Integer.valueOf(strrow);
+                    final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
+                }else{
+                    final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
+                    //mapsurveyUserInputLine.put(recordSurveyUserInputLine.get(x).getInt("question_id"),recordSurveyUserInputLine.get(x));
+                    loadUserInputLine(idPage,rowIdUserInput);
                 }
+
             }
         }
     }

@@ -84,4 +84,5 @@
     <string name="toast_network_yes">Connected to internet with success!</string>
     <string name="toast_network_not">Not connected to the internet!</string>
     <string name="question_record_save">Answer records successfully</string>
+
 </resources>

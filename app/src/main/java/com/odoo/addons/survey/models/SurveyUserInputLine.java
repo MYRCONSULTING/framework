@@ -65,7 +65,7 @@ public class SurveyUserInputLine extends OModel {
         List<ODataRow> rowSurveyUserInputLine2 = new ArrayList<ODataRow>();
         for (int i=0; i<rowSurveyUserInputLine.size(); i++) {
             System.out.println(rowSurveyUserInputLine.get(i).getString("question_id"));
-            int recordPage = surveyQuestion.browse(rowSurveyUserInputLine.get(i).getInt("question_id")).getM2ORecord("page_id").browse().getInt("_id");
+            int recordPage = surveyQuestion.browse(rowSurveyUserInputLine.get(i).getInt("question_id")).getM2ORecord("page_id").browse().getInt(OColumn.ROW_ID);
             if (recordPage == idPage){
                 if (rowSurveyUserInputLine.get(i)!=null){
                     rowSurveyUserInputLine2.add(rowSurveyUserInputLine.get(i));
