@@ -318,7 +318,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
             valuesUserInputLine.put("user_input_id",rowIdUserInput);
             if (mentry.getKey()!=null){
                 //Control de páginas
-                if (mapsurveyUserInputLine.size()>0 && mapsurveyUserInputLine!= null){
+                if (mapsurveyUserInputLine.size()>0 && mapsurveyUserInputLine!= null && mapsurveyUserInputLine.get(mentry.getKey())!= null){
                     String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString(OColumn.ROW_ID);
                     int row = Integer.valueOf(strrow);
                     final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
