@@ -22,6 +22,7 @@ package com.odoo.addons.projects;
 
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -48,6 +49,7 @@ import com.odoo.addons.projects.models.TypeTask;
 import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveyQuestion;
 import com.odoo.addons.survey.models.SurveySurvey;
+import com.odoo.addons.survey.models.SurveyUserInput;
 import com.odoo.base.addons.ir.feature.OFileManager;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
@@ -55,7 +57,9 @@ import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.rpc.helper.ODomain;
+import com.odoo.core.support.OUser;
 import com.odoo.core.support.OdooCompatActivity;
+import com.odoo.core.support.sync.SyncUtils;
 import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OControls;
@@ -296,7 +300,7 @@ public class TasksDetails extends OdooCompatActivity
                                         //Syncronizar
                                         if (inNetwork()){
                                             //Toast.makeText(TasksDetails.this, R.string.toast_network_yes,Toast.LENGTH_SHORT).show();
-                                            onRefresh(recordRecursive);
+                                            onRefresh(recordRecursive,record.getInt(OColumn.ROW_ID));
                                             //onRefreshAll();
                                         }else{
                                             finish();
@@ -312,9 +316,13 @@ public class TasksDetails extends OdooCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void onRefresh(int recordRecursive) {
+    public void onRefresh(int recordRecursive, int idTask) {
+            SyncUtils syncUtils = new SyncUtils(getBaseContext(), OUser.current(getBaseContext()));
+
+            //syncUtils.cancelSync(SurveyPage.AUTHORITY);
+
             SyncTaskDetails syncTaskDetails = new SyncTaskDetails();
-            syncTaskDetails.execute(recordRecursive);
+            syncTaskDetails.execute(recordRecursive,idTask);
     }
 
     private class SyncTaskDetails extends AsyncTask<Integer,Void,Boolean> {
@@ -328,6 +336,7 @@ public class TasksDetails extends OdooCompatActivity
             mDialog.setMessage(OResource.string(getApplicationContext(),R.string.label_sync_now));
             mDialog.setCancelable(false);
             mDialog.show();
+            ContentResolver.setMasterSyncAutomatically(false);
         }
 
         public Boolean doInBackground(Integer...args){
@@ -335,10 +344,11 @@ public class TasksDetails extends OdooCompatActivity
             ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
             ODomain domain = new ODomain();
             int recordRecursive = args[0];
+            int idTask = args[1];
 
             //Syncroniza
 
-            //Fuerza Syncronización
+            //Fuerza Syncronización Tareas
             if (recordRecursive>0){
 
                 String type3 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
@@ -349,12 +359,33 @@ public class TasksDetails extends OdooCompatActivity
                 ODataRow rowSync = new ODataRow();
                 rowSync.put("id", recordSever);
                 projectTask.quickCreateRecord(rowSync);
-            }else{
+            }else{ // Solo tareas que estan finalizadas
                 String type1 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
                 domain.add("stage_id", "=", type1);
                 projectTask.quickSyncRecords(domain);
-            }
 
+                // Fuerza Syncronización de User Input.
+                if (idTask >0){
+                    SurveyUserInput surveyUserInput = new SurveyUserInput(getBaseContext(), null);
+                    int idUserInput = projectTask.browse(idTask).getInt("x_survey_user_input_id");
+                    if (inNetwork()) {
+                        int recordSever = surveyUserInput.browse(idUserInput).getInt("id");
+                        ODataRow rowSync = new ODataRow();
+                        rowSync.put("id", recordSever);
+                        surveyUserInput.quickCreateRecord(rowSync);
+                    }
+
+                    // Fuerza Syncronización de User Input Line.
+                    /*
+                    if (inNetwork()) {
+                            int recordSeverInputLine = surveyUserInputLine.browse(row).getInt("id");
+                            ODataRow rowSyncInputLine = new ODataRow();
+                            rowSyncInputLine.put("id", recordSeverInputLine);
+                            surveyUserInputLine.quickCreateRecord(rowSyncInputLine);
+                        }
+                     */
+                }
+            }
             return true;
         }
 
@@ -364,6 +395,7 @@ public class TasksDetails extends OdooCompatActivity
             super.onPostExecute(success);
             mDialog.dismiss();
             if (success) {
+                ContentResolver.setMasterSyncAutomatically(true);
                 finish();
             }
         }

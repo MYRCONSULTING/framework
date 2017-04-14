@@ -1,8 +1,10 @@
 package com.odoo.addons.survey;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -30,6 +32,9 @@ import android.widget.Toast;
 import com.odoo.R;
 import com.odoo.addons.customers.utils.ShareUtil;
 import com.odoo.addons.projects.TasksDetails;
+import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.projects.models.ProjectTaskType;
+import com.odoo.addons.projects.models.TypeTask;
 import com.odoo.addons.survey.models.SurveyUserInput;
 import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.core.orm.ODataRow;
@@ -37,6 +42,7 @@ import com.odoo.core.orm.OM2ORecord;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -82,6 +88,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     private Spinner spinner1;
     private SurveyUserInput surveyUserInput;
     private SurveyUserInputLine surveyUserInputLine;
+    private ProjectTask projectTask;
     private Bundle extrasUserInput;
     private EditText editText;
     private HashMap<Integer,ODataRow> mapsurveyUserInputLine = new HashMap<Integer,ODataRow>();
@@ -245,9 +252,16 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         switch (item.getItemId()) {
 
             case R.id.menu_save:
-                saveInputUser();
                 Log.i(TAG, "Save User Input : " );
-                Toast.makeText(getActivity(), _s(R.string.question_record_save), Toast.LENGTH_LONG).show();
+                OAlert.showConfirm(getContext(), OResource.string(getContext(),R.string.confirm_save_question),
+                        new OAlert.OnAlertConfirmListener() {
+                            @Override
+                            public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
+                                if (type == OAlert.ConfirmType.POSITIVE) {
+                                    onSave();
+                                }
+                            }
+                        });
                 break;
             case R.id.menu_syncronize:
                 Log.i(TAG, "Syncronize : " );
@@ -257,7 +271,49 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         return super.onOptionsItemSelected(item);
     }
 
+    private class SyncSaveSurveyQuestion extends AsyncTask<Integer,Void,Boolean> {
+        private ProgressDialog mDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(getContext());
+            mDialog.setTitle(R.string.title_save);
+            mDialog.setMessage(OResource.string(getContext(),R.string.label_save_now));
+            mDialog.setCancelable(false);
+            mDialog.show();
+        }
+
+        public Boolean doInBackground(Integer...args){
+            saveInputUser();
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            mDialog.dismiss();
+            if (success) {
+                getActivity().onBackPressed();
+            }
+        }
+    }
+
+    public void onSave() {
+        SyncSaveSurveyQuestion syncSaveSurveyQuestion = new SyncSaveSurveyQuestion();
+        syncSaveSurveyQuestion.execute();
+    }
+
+    public void updateTaskWithIdRepost(int idTask,int idRepost){
+        projectTask = new ProjectTask(getActivity(),null);
+        OValues valuesTask = new OValues();
+        valuesTask.put("x_survey_user_input_id", idRepost);
+        projectTask.update(idTask,valuesTask);
+
+    }
     public void saveInputUser(){
+
         surveyUserInput = new SurveyUserInput(getActivity(), null);
         surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
         int row_idUserInput = 0;
@@ -273,9 +329,19 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         if (rowIdUserInput==0) { // Registro Nuevo - Id de User Input - Respuesta relacionada a una tarea.
             row_idUserInput = surveyUserInput.insert(valuesUserInput);
             rowIdUserInput = row_idUserInput;
+            updateTaskWithIdRepost(extra.getInt("id_task"),rowIdUserInput);
         }else{
             flag = surveyUserInput.update(rowIdUserInput,valuesUserInput);
         }
+
+        //Syncroniza con servidor respuesta.
+        if (inNetwork()) {
+            int recordSever = surveyUserInput.browse(rowIdUserInput).getInt("id");
+            ODataRow rowSync = new ODataRow();
+            rowSync.put("id", recordSever);
+            surveyUserInput.quickCreateRecord(rowSync);
+        }
+
 
         // Add User Input Line
         Set set = mapsurveyQuestion.entrySet(); //Recorre todas las preguntas correspondientes a esa página de la tarea seleccionada.
@@ -318,19 +384,29 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
             valuesUserInputLine.put("user_input_id",rowIdUserInput);
             if (mentry.getKey()!=null){
                 //Control de páginas
+                int row = 0;
                 if (mapsurveyUserInputLine.size()>0 && mapsurveyUserInputLine!= null && mapsurveyUserInputLine.get(mentry.getKey())!= null){
                     String strrow = mapsurveyUserInputLine.get(mentry.getKey()).getString(OColumn.ROW_ID);
-                    int row = Integer.valueOf(strrow);
+                    row = Integer.valueOf(strrow);
                     final boolean flag_idUserInputLine = surveyUserInputLine.update(row,valuesUserInputLine);
                 }else{
-                    final int row_idUserInputLine = surveyUserInputLine.insert(valuesUserInputLine);
-                    //mapsurveyUserInputLine.put(recordSurveyUserInputLine.get(x).getInt("question_id"),recordSurveyUserInputLine.get(x));
+                    row = surveyUserInputLine.insert(valuesUserInputLine);
                     loadUserInputLine(idPage,rowIdUserInput);
                 }
+
+                //Syncroniza con servidor respuesta.
+                if (inNetwork()) {
+                    int recordSeverInputLine = surveyUserInputLine.browse(row).getInt("id");
+                    ODataRow rowSyncInputLine = new ODataRow();
+                    rowSyncInputLine.put("id", recordSeverInputLine);
+                    surveyUserInputLine.quickCreateRecord(rowSyncInputLine);
+                }
+
 
             }
         }
     }
+
 
 
 
@@ -386,6 +462,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     public void onRefresh() {
         if (inNetwork()) {
             parent().sync().requestSync(com.odoo.addons.survey.models.SurveyQuestion.AUTHORITY);
+            parent().sync().cancelSync(com.odoo.addons.survey.models.SurveyQuestion.AUTHORITY);
         }
     }
 

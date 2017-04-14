@@ -10,6 +10,7 @@ import com.odoo.R;
 import com.odoo.addons.projects.Tasks;
 import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveySurvey;
+import com.odoo.addons.survey.models.SurveyUserInput;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.OdooAccountQuickManage;
 import com.odoo.core.orm.ODataRow;
@@ -48,7 +49,7 @@ public class ProjectTask extends OModel {
     OColumn project_id = new OColumn("project_id", ProjectProject.class, OColumn.RelationType.ManyToOne);
 
     OColumn x_survey_id = new OColumn("x_survey_id",SurveySurvey.class,OColumn.RelationType.ManyToOne);
-    //OColumn user_id = new OColumn("Assigned", ResUsers.class, OColumn.RelationType.ManyToOne);
+    OColumn x_survey_user_input_id = new OColumn("x_survey_user_input_id",SurveyUserInput.class,OColumn.RelationType.ManyToOne);
 
     OColumn description = new OColumn("Description", OText.class);
     OColumn date_deadline = new OColumn("date_deadline", ODate.class);

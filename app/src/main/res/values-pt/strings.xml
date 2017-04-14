@@ -165,4 +165,7 @@
     <string name="toast_network_not">Não conectado à Internet!</string>
     <string name="toast_network_yes">Com sucesso conectado à internet!</string>
     <string name="question_record_save">Gravação com sucesso</string>
+    <string name="confirm_save_question">Tem certeza de que deseja salvar as respostas</string>
+    <string name="title_save">Gravação</string>
+    <string name="label_save_now">A informação de gravação ...</string>
 </resources>
