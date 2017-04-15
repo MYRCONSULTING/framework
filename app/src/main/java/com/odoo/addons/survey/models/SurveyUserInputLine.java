@@ -76,6 +76,12 @@ public class SurveyUserInputLine extends OModel {
         return rowSurveyUserInputLine2;
     }
 
+    public static List<ODataRow> getSurveyUserInputLineByInputLineList2(Context context, String user_input_id) {
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
+        List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"user_input_id = ? ",new String[]{user_input_id},"id asc");
+        return rowSurveyUserInputLine;
+    }
+
     public static List<ODataRow> getSurveyUserInputLineByInputLineAndTypeAndQuestionList(Context context, String user_input_id, String answer_type, String question_id) {
         SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
         List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"user_input_id = ? and answer_type=? and question_id=? ",

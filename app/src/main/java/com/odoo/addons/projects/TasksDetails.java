@@ -50,6 +50,7 @@ import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveyQuestion;
 import com.odoo.addons.survey.models.SurveySurvey;
 import com.odoo.addons.survey.models.SurveyUserInput;
+import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.base.addons.ir.feature.OFileManager;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
@@ -367,23 +368,27 @@ public class TasksDetails extends OdooCompatActivity
                 // Fuerza Syncronización de User Input.
                 if (idTask >0){
                     SurveyUserInput surveyUserInput = new SurveyUserInput(getBaseContext(), null);
+                    SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(getBaseContext(),null);
+
                     int idUserInput = projectTask.browse(idTask).getInt("x_survey_user_input_id");
                     if (inNetwork()) {
                         int recordSever = surveyUserInput.browse(idUserInput).getInt("id");
                         ODataRow rowSync = new ODataRow();
                         rowSync.put("id", recordSever);
                         surveyUserInput.quickCreateRecord(rowSync);
-                    }
 
-                    // Fuerza Syncronización de User Input Line.
-                    /*
-                    if (inNetwork()) {
-                            int recordSeverInputLine = surveyUserInputLine.browse(row).getInt("id");
-                            ODataRow rowSyncInputLine = new ODataRow();
-                            rowSyncInputLine.put("id", recordSeverInputLine);
-                            surveyUserInputLine.quickCreateRecord(rowSyncInputLine);
+                        // Fuerza Syncronización de User Input Line.
+                        List<ODataRow> recordSurveyUserInputLine = surveyUserInputLine.getSurveyUserInputLineByInputLineList2(getBaseContext(),String.valueOf(idUserInput));
+                        if (recordSurveyUserInputLine!= null)
+                        {
+                            for (ODataRow rowSyncUserInputLine:recordSurveyUserInputLine) {
+                                int recordSeverInputLine = rowSyncUserInputLine.getInt("id");
+                                ODataRow rowSyncInputLine = new ODataRow();
+                                rowSyncInputLine.put("id", recordSeverInputLine);
+                                surveyUserInputLine.quickCreateRecord(rowSyncInputLine);
+                            }
                         }
-                     */
+                    }
                 }
             }
             return true;
