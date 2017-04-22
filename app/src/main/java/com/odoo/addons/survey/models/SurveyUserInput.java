@@ -28,12 +28,16 @@ public class SurveyUserInput extends OModel {
     OColumn token = new OColumn("token", OVarchar.class).setSize(100);
     OColumn partner_id = new OColumn("partner_id", ResPartner.class, OColumn.RelationType.ManyToOne);
     OColumn survey_id = new OColumn("survey_id", SurveySurvey.class, OColumn.RelationType.ManyToOne);
-    OColumn x_project_task_ids = new OColumn("x_project_task_ids" , ProjectTask.class, OColumn.RelationType.ManyToOne);
     OColumn deadline = new OColumn("deadline", ODateTime.class);
     OColumn display_name = new OColumn("display_name",OVarchar.class).setSize(100);
     OColumn email = new OColumn("email",OVarchar.class).setSize(100);
     OColumn type = new OColumn("type",OVarchar.class).setDefaultValue("manually");
     OColumn test_entry = new OColumn("test_entry", OBoolean.class).setDefaultValue(true);
+    OColumn state = new OColumn("state", OSelection.class)
+            .addSelection("new","Sin comenzar aún")
+            .addSelection("skip","Parcialmente Completado")
+            .addSelection("done","Completada");
+    //OColumn project_task_ids = new OColumn("project_task_ids" , ProjectTask.class, OColumn.RelationType.ManyToMany);
 
 
 
@@ -44,13 +48,6 @@ public class SurveyUserInput extends OModel {
     @Override
     public Uri uri() {
         return buildURI(AUTHORITY);
-    }
-
-    public static List<ODataRow> getSurveyUserInputList(Context context, String rowIdProjectTask) {
-        SurveyUserInput surveyUserInput = new SurveyUserInput(context,null);
-        List<ODataRow> rowSurveyUserInput = surveyUserInput.select(null,"x_project_task_ids = ? ",
-                new String[]{rowIdProjectTask},"id asc");
-        return rowSurveyUserInput;
     }
 
 }

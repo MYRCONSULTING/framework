@@ -139,10 +139,9 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         recordSurveyUserInputLine= null;
         rowIdUserInput = 0;
         int rowTaskId = extra.getInt("id_task"); // Selecciona la Tarea
-        List<ODataRow> rowUserInputList = surveyUserInput.getSurveyUserInputList(getContext(),String.valueOf(rowTaskId)); // Selecciona todos los UserInput de la tarea
-
-        if (rowUserInputList.size()>0){
-            recordSurveyUserInput = rowUserInputList.get(0);
+        ODataRow rowUserInputList = projectTask.getSurveyUserInput(getContext(),rowTaskId); // Selecciona todos los UserInput de la tarea
+        if (rowUserInputList!=null){
+            recordSurveyUserInput = rowUserInputList;
             rowIdUserInput = recordSurveyUserInput.getInt(OColumn.ROW_ID);
             loadUserInputLine(idPage,rowIdUserInput);
         }
@@ -308,7 +307,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     public void updateTaskWithIdRepost(int idTask,int idRepost){
         projectTask = new ProjectTask(getActivity(),null);
         OValues valuesTask = new OValues();
-        valuesTask.put("x_survey_user_input_id", idRepost);
+        valuesTask.put("survey_user_input_ids", idRepost);
         projectTask.update(idTask,valuesTask);
 
     }
@@ -322,13 +321,15 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         final String uuid = UUID.randomUUID().toString();
         System.out.println("uuid = " + uuid);
         valuesUserInput.put("token", uuid);
-        valuesUserInput.put("x_project_task_ids", extra.getInt("id_task"));
+        //valuesUserInput.put("project_task_ids", extra.getInt("id_task"));
+        valuesUserInput.put("state","skip");
         valuesUserInput.put("survey_id",idSurvey);
 
         // Add User Input
         if (rowIdUserInput==0) { // Registro Nuevo - Id de User Input - Respuesta relacionada a una tarea.
             row_idUserInput = surveyUserInput.insert(valuesUserInput);
             rowIdUserInput = row_idUserInput;
+
             updateTaskWithIdRepost(extra.getInt("id_task"),rowIdUserInput);
         }else{
             flag = surveyUserInput.update(rowIdUserInput,valuesUserInput);

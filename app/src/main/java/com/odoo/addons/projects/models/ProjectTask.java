@@ -49,8 +49,6 @@ public class ProjectTask extends OModel {
     OColumn project_id = new OColumn("project_id", ProjectProject.class, OColumn.RelationType.ManyToOne);
 
     OColumn x_survey_id = new OColumn("x_survey_id",SurveySurvey.class,OColumn.RelationType.ManyToOne);
-    OColumn x_survey_user_input_id = new OColumn("x_survey_user_input_id",SurveyUserInput.class,OColumn.RelationType.ManyToOne);
-
     OColumn description = new OColumn("Description", OText.class);
     OColumn date_deadline = new OColumn("date_deadline", ODate.class);
     OColumn date_start = new OColumn("date_start", ODateTime.class);
@@ -74,6 +72,7 @@ public class ProjectTask extends OModel {
     OColumn x_recursive = new OColumn("x_recursive", OBoolean.class);
 
     OColumn x_create_source = new OColumn("x_create_source", OBoolean.class);
+    OColumn survey_user_input_ids = new OColumn("survey_user_input_ids",SurveyUserInput.class,OColumn.RelationType.ManyToMany);
 
     public ProjectTask(Context context, OUser user) {
         super(context, "project.task", user);
@@ -106,10 +105,10 @@ public class ProjectTask extends OModel {
         }
         //Clean Return onField
         String type = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
-        projectTask.delete("stage_id = ?",new String[]{type},true);
+        projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
         //Clean Cancel
         type = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue()));
-        projectTask.delete("stage_id = ?",new String[]{type},true);
+        projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
 
 
         //showTaskNotification();
@@ -224,5 +223,18 @@ public class ProjectTask extends OModel {
         ProjectTask projectTask = new ProjectTask(context,null);
         List<Integer> rowProjectTask = projectTask.getServerIds();
         return rowProjectTask;
+    }
+
+    public static ODataRow getSurveyUserInput(Context context, int rowIdProjectTask) {
+        ProjectTask projectTask = new ProjectTask(context,null);
+        int size=0;
+        ODataRow row;
+        size = projectTask.browse(rowIdProjectTask).getM2MRecord("survey_user_input_ids").browseEach().size();
+        if (size>0){
+            row = projectTask.browse(rowIdProjectTask).getM2MRecord("survey_user_input_ids").browseEach().get(size-1);
+        }else{
+            return null;
+        }
+        return row;
     }
 }
