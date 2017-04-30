@@ -61,18 +61,13 @@ public class ProjectTask extends OModel {
 
     OColumn stage_id = new OColumn("stage_id", ProjectTaskType.class,OColumn.RelationType.ManyToOne);
 
-    @Odoo.Functional(method = "storeStageName", store = true, depends = {"stage_id"})
-    OColumn x_task_type = new OColumn("x_task_type", OVarchar.class).setLocalColumn();
-
     OColumn priority = new OColumn("priority", OSelection.class)
             .addSelection("0","Baja")
             .addSelection("1","Normal")
             .addSelection("2","Alta");
 
     OColumn x_recursive = new OColumn("x_recursive", OBoolean.class);
-
     OColumn x_create_source = new OColumn("x_create_source", OBoolean.class);
-    OColumn survey_user_input_ids = new OColumn("survey_user_input_ids",SurveyUserInput.class,OColumn.RelationType.ManyToMany);
 
     public ProjectTask(Context context, OUser user) {
         super(context, "project.task", user);
@@ -90,33 +85,46 @@ public class ProjectTask extends OModel {
     }
 
 
-
     @Override
     public void onSyncFinished(){
+        ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
+        int stage_id_In_Preparation =  projectTaskType.getCodProjectTaskType_Id(TypeTask.IN_PREPARATION.getValue()); //9 En Preparación
+        int stage_id_Pending = projectTaskType.getCodProjectTaskType_Id(TypeTask.PENDING.getValue());//10 Pendiente de envio de campo.
+        int stage_id_On_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue());//11 En Campo
+        int stage_id_Return_From_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue());//12 Retornada de campo
+        int stage_id_Cancel = projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue());//13 Cancelada
+
         ODomain domain = new ODomain();
         ProjectTask projectTask = new ProjectTask(getContext(),null);
-        ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
-        List<ODataRow> rowProjectTaskType = projectTask.select(null,"x_task_type = ?",new String[]{String.valueOf(TypeTask.PENDING.getValue())},"id asc");
+        List<ODataRow> rowProjectTaskType = projectTask.select(null,"stage_id = ?",new String[]{String.valueOf(stage_id_Pending)},"id asc");
         for (int i=0; i<rowProjectTaskType.size(); i++) {
             OValues valuesProjectTask = new OValues();
-            valuesProjectTask.put("stage_id",projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
-            valuesProjectTask.put("x_task_type",TypeTask.ON_FIELD.getValue());
+            valuesProjectTask.put("stage_id",stage_id_On_Field);
             projectTask.update(rowProjectTaskType.get(i).getInt(OColumn.ROW_ID),valuesProjectTask);
         }
-        //Clean Return onField
-        String type = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue()));
-        projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
-        //Clean Cancel
-        type = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue()));
-        projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
 
+        //Clean Return onField
+        //String type = String.valueOf(stage_id_Return_From_Field);
+        //projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
+        //Clean Cancel
+
+        String type = String.valueOf(stage_id_Cancel);
+        projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
 
         //showTaskNotification();
     }
 
+
+
     @Override
     public ODomain defaultDomain() {
+        /* En este filtro se llama al metodo que devuelve los codigos del servidor*/
         ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
+        int stage_id_In_Preparation =  projectTaskType.getCodProjectTaskTypefromServer(TypeTask.IN_PREPARATION.getValue()); //9 En Preparación
+        int stage_id_Pending = projectTaskType.getCodProjectTaskTypefromServer(TypeTask.PENDING.getValue());//10 Pendiente de envio de campo.
+        int stage_id_On_Field = projectTaskType.getCodProjectTaskTypefromServer(TypeTask.ON_FIELD.getValue());//11 En Campo
+        int stage_id_Return_From_Field = projectTaskType.getCodProjectTaskTypefromServer(TypeTask.RETURNED_FROM_FIELD.getValue());//12 Retornada de campo
+        int stage_id_Cancel = projectTaskType.getCodProjectTaskTypefromServer(TypeTask.CANCEL.getValue());//13 Cancelada
         ODomain domain = new ODomain();
         domain.add("&");
         domain.add("user_id", "=", getUser().getUserId());
@@ -125,12 +133,13 @@ public class ProjectTask extends OModel {
         domain.add("|");
         domain.add("|");
         //domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.IN_PREPARATION.getValue())); //9 En Preparación
-        domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.PENDING.getValue()));//10 Pendiente de envio de campo.
-        domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.ON_FIELD.getValue()));//11 En Campo
+        domain.add("stage_id", "=", stage_id_Pending);//10 Pendiente de envio de campo.
+        domain.add("stage_id", "=", stage_id_On_Field);//11 En Campo
         //domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.RETURNED_FROM_FIELD.getValue()));//12 Retornada de campo
-        domain.add("stage_id", "=", projectTaskType.getCodProjectTaskType(TypeTask.CANCEL.getValue()));//13 Cancelada
+        domain.add("stage_id", "=", stage_id_Cancel);//13 Cancelada
         return domain;
     }
+
 
     public String storePartnerName(OValues values) {
         try {
@@ -140,20 +149,6 @@ public class ProjectTask extends OModel {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return "false";
-    }
-
-    public String storeStageName(OValues values) {
-        if (!values.getString("stage_id").equals("false")) {
-            String[] array = TextUtils.split(values.getString("stage_id"),",");
-            String str = (array[0].substring(1).toString());
-            ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
-            List<ODataRow> rowProjectTaskType = projectTaskType.select(null,"id = ?",new String[]{str},"id asc");
-            if (!rowProjectTaskType.isEmpty()){
-                str = rowProjectTaskType.get(0).getString("x_task_type");
-            }
-            return str;
         }
         return "false";
     }
@@ -225,16 +220,5 @@ public class ProjectTask extends OModel {
         return rowProjectTask;
     }
 
-    public static ODataRow getSurveyUserInput(Context context, int rowIdProjectTask) {
-        ProjectTask projectTask = new ProjectTask(context,null);
-        int size=0;
-        ODataRow row;
-        size = projectTask.browse(rowIdProjectTask).getM2MRecord("survey_user_input_ids").browseEach().size();
-        if (size>0){
-            row = projectTask.browse(rowIdProjectTask).getM2MRecord("survey_user_input_ids").browseEach().get(size-1);
-        }else{
-            return null;
-        }
-        return row;
-    }
+
 }

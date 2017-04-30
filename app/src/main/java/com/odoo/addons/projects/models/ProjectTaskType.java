@@ -34,7 +34,6 @@ public class ProjectTaskType extends OModel {
     OColumn name = new OColumn("Name", OVarchar.class).setSize(100);
     OColumn description = new OColumn("Description", OText.class);
     OColumn sequence = new OColumn("sequence", OInteger.class);
-    OColumn project_ids = new OColumn("project_ids",ProjectTask.class, OColumn.RelationType.ManyToMany);
     OColumn x_task_type = new OColumn("x_task_type", OSelection.class)
             .addSelection("0","IN PREPARATION")
             .addSelection("1","PENDING")
@@ -42,7 +41,6 @@ public class ProjectTaskType extends OModel {
             .addSelection("3","RETURNED FROM FIELD")
             .addSelection("4","CANCEL")
             .addSelection("5","OTHER");
-
 
     public ProjectTaskType(Context context, OUser user) {
         super(context, "project.task.type", user);
@@ -53,7 +51,8 @@ public class ProjectTaskType extends OModel {
         return buildURI(AUTHORITY);
     }
 
-    public int getCodProjectTaskType(int val) {
+    /*Metodo que devuelve los ID del Servidor de los tipos de estados recibiendo como parametro el tipo de estado*/
+    public int getCodProjectTaskTypefromServer(int val) {
         int rpta = -1;
         if (val!= -1) {
             ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
@@ -66,13 +65,14 @@ public class ProjectTaskType extends OModel {
         return -1;
     }
 
+    /* Metodo que devuelve el Id del estado recibiendo como parametro el tipo de estado*/
     public int getCodProjectTaskType_Id(int val) {
         int rpta = -1;
         if (val!= -1) {
             ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
             List<ODataRow> rowProjectTaskType = projectTaskType.select(null,"x_task_type = ?",new String[]{String.valueOf(val)},"id asc");
             if (!rowProjectTaskType.isEmpty()){
-                rpta = rowProjectTaskType.get(0).getInt("_id");
+                rpta = rowProjectTaskType.get(0).getInt(OColumn.ROW_ID);
             }
             return rpta;
         }

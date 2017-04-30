@@ -76,6 +76,8 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
     private String action;
 
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -111,6 +113,13 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
+        ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+        int stage_id_In_Preparation =  projectTaskType.getCodProjectTaskType_Id(TypeTask.IN_PREPARATION.getValue()); //9 En Preparación
+        int stage_id_Pending = projectTaskType.getCodProjectTaskType_Id(TypeTask.PENDING.getValue());//10 Pendiente de envio de campo.
+        int stage_id_On_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue());//11 En Campo
+        int stage_id_Return_From_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue());//12 Retornada de campo
+        int stage_id_Cancel = projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue());//13 Cancelada
+
         if (row.getInt("x_survey_id")==null || row.getInt("x_survey_id")==0){
             OControls.setInvisible(view,R.id.btnFormulario);
         }
@@ -182,7 +191,8 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
             }
         }
 
-        if (Integer.valueOf(row.getString("x_task_type")).equals(Integer.valueOf(TypeTask.RETURNED_FROM_FIELD.getValue()))){
+
+        if (Integer.valueOf(row.getString("stage_id")).equals(Integer.valueOf(stage_id_Return_From_Field))){
             OControls.setText(view, R.id.nameState,OResource.string(getContext(), R.string.sync_label_Done_Pending));
         }else{
             OControls.setGone(view, R.id.nameState);
@@ -212,13 +222,20 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
         }
 
         public Boolean doInBackground(Integer...args){
-            ProjectTask projectTask = new ProjectTask(mContext, null);
             ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+            int stage_id_In_Preparation =  projectTaskType.getCodProjectTaskType_Id(TypeTask.IN_PREPARATION.getValue()); //9 En Preparación
+            int stage_id_Pending = projectTaskType.getCodProjectTaskType_Id(TypeTask.PENDING.getValue());//10 Pendiente de envio de campo.
+            int stage_id_On_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue());//11 En Campo
+            int stage_id_Return_From_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue());//12 Retornada de campo
+            int stage_id_Cancel = projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue());//13 Cancelada
+
+
+            ProjectTask projectTask = new ProjectTask(mContext, null);
+
             ODomain domain = new ODomain();
             int record = args[0];
             if (record>0){
-                String type3 = String.valueOf(projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue()));
-                domain.add("stage_id", "=", type3);
+                domain.add("stage_id", "=", String.valueOf(stage_id_On_Field));
                 projectTask.quickSyncRecords(domain);
                 ODataRow row = projectTask.browse(record);
                 int recordSever = 0;
@@ -244,10 +261,18 @@ public class Tasks extends BaseFragment implements ISyncStatusObserverListener,
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle data) {
+        ProjectTaskType projectTaskType = new ProjectTaskType(mContext,null);
+        int stage_id_In_Preparation =  projectTaskType.getCodProjectTaskType_Id(TypeTask.IN_PREPARATION.getValue()); //9 En Preparación
+        int stage_id_Pending = projectTaskType.getCodProjectTaskType_Id(TypeTask.PENDING.getValue());//10 Pendiente de envio de campo.
+        int stage_id_On_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.ON_FIELD.getValue());//11 En Campo
+        int stage_id_Return_From_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue());//12 Retornada de campo
+        int stage_id_Cancel = projectTaskType.getCodProjectTaskType_Id(TypeTask.CANCEL.getValue());//13 Cancelada
+
+
         List<String> args = new ArrayList<>();
-        String where = "(x_task_type = ?  or x_task_type = ? )";
-        args.add(String.valueOf(TypeTask.ON_FIELD.getValue()));
-        args.add(String.valueOf(TypeTask.RETURNED_FROM_FIELD.getValue()));
+        String where = "(stage_id = ?  or stage_id = ? )";
+        args.add(String.valueOf(stage_id_On_Field));
+        args.add(String.valueOf(stage_id_Return_From_Field));
 
         if (id > 0){
             where += " and project_id = ?";

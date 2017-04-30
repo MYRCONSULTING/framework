@@ -37,7 +37,7 @@ public class SurveyUserInput extends OModel {
             .addSelection("new","Sin comenzar aún")
             .addSelection("skip","Parcialmente Completado")
             .addSelection("done","Completada");
-    //OColumn project_task_ids = new OColumn("project_task_ids" , ProjectTask.class, OColumn.RelationType.ManyToMany);
+    OColumn project_task_ids = new OColumn("project_task_ids" , ProjectTask.class, OColumn.RelationType.ManyToMany);
 
 
 
@@ -48,6 +48,28 @@ public class SurveyUserInput extends OModel {
     @Override
     public Uri uri() {
         return buildURI(AUTHORITY);
+    }
+
+    public ODataRow getSurveyUserInput(Context context, int rowIdProjectTask) {
+        SurveyUserInput surveyUserInput = new SurveyUserInput(context,null);
+        int size=0;
+
+        ODataRow rowResult = null;
+        List<ODataRow> rows = surveyUserInput.select(null,"state!=?",new String[]{"done"},"_id desc");
+        for(ODataRow rowSurveyUserInput: rows){
+            // code of block
+            size = rowSurveyUserInput.getM2MRecord("project_task_ids").browseEach().size();
+            if (size>0){
+                List<ODataRow> listRow = rowSurveyUserInput.getM2MRecord("project_task_ids").browseEach();
+                for (ODataRow rowTask: listRow) {
+                    if (rowTask.getInt(OColumn.ROW_ID) == rowIdProjectTask){
+                        rowResult = rowSurveyUserInput;
+                        return rowResult;
+                    }
+                } 
+            }
+        }
+       return null;
     }
 
 }

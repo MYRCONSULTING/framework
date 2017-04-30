@@ -4,15 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.projects.models.ProjectTaskType;
+import com.odoo.addons.projects.models.TypeTask;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
+import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.OBoolean;
 import com.odoo.core.orm.fields.types.ODateTime;
 import com.odoo.core.orm.fields.types.OFloat;
 import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
 
 import java.util.ArrayList;
@@ -96,5 +100,13 @@ public class SurveyUserInputLine extends OModel {
         return rowSurveyUserInputLine;
     }
 
-
+    @Override
+    public void onSyncFinished(){
+        ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
+        int stage_id_Return_From_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue());//12 Retornada de campo
+        ProjectTask projectTask = new ProjectTask(getContext(),null);
+        //Clean Return onField
+        String type = String.valueOf(stage_id_Return_From_Field);
+        projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
+    }
 }

@@ -19,13 +19,13 @@
         android:icon="@drawable/ic_action_more"
         android:title="@string/label_odoo_developer_mode"
         app:showAsAction="always"
-        android:visible="false">
+        android:visible="true">
         <menu>
             <item
                 android:id="@+id/menu_export_db"
                 android:icon="@drawable/ic_action_content_export"
                 android:title="@string/label_export_db"
-                android:visible="false"
+                android:visible="true"
                 app:showAsAction="always">
 
             </item>

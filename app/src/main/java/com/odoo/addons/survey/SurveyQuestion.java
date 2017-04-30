@@ -136,10 +136,13 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
     public  void loadQuestionByUserInputLine(){
         //ODataRow recordPage = surveyQuestion.browse(rowId).getM2ORecord("page_id").browse();
         //ODataRow recordSurvey = surveyQuestion.browse(rowId).getM2ORecord("survey_id").browse();
+        SurveyUserInput surveyUserInput = new SurveyUserInput(getContext(),null);
         recordSurveyUserInputLine= null;
         rowIdUserInput = 0;
         int rowTaskId = extra.getInt("id_task"); // Selecciona la Tarea
-        ODataRow rowUserInputList = projectTask.getSurveyUserInput(getContext(),rowTaskId); // Selecciona todos los UserInput de la tarea
+        //ODataRow rowUserInputList = projectTask.getSurveyUserInput(getContext(),rowTaskId); // Selecciona todos los UserInput de la tarea
+        ODataRow rowUserInputList = surveyUserInput.getSurveyUserInput(getContext(),rowTaskId); // Selecciona todos los UserInput de la tarea
+
         if (rowUserInputList!=null){
             recordSurveyUserInput = rowUserInputList;
             rowIdUserInput = recordSurveyUserInput.getInt(OColumn.ROW_ID);
@@ -312,16 +315,18 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
 
     }
     public void saveInputUser(){
-
+        List<Integer> taskIds = new ArrayList<>();
         surveyUserInput = new SurveyUserInput(getActivity(), null);
         surveyUserInputLine = new SurveyUserInputLine(getActivity(),null);
+
         int row_idUserInput = 0;
         boolean flag = false;
         OValues valuesUserInput = new OValues();
         final String uuid = UUID.randomUUID().toString();
         System.out.println("uuid = " + uuid);
         valuesUserInput.put("token", uuid);
-        //valuesUserInput.put("project_task_ids", extra.getInt("id_task"));
+        taskIds.add(extra.getInt("id_task"));
+        valuesUserInput.put("project_task_ids",taskIds);
         valuesUserInput.put("state","skip");
         valuesUserInput.put("survey_id",idSurvey);
 
@@ -330,7 +335,6 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
             row_idUserInput = surveyUserInput.insert(valuesUserInput);
             rowIdUserInput = row_idUserInput;
 
-            updateTaskWithIdRepost(extra.getInt("id_task"),rowIdUserInput);
         }else{
             flag = surveyUserInput.update(rowIdUserInput,valuesUserInput);
         }
