@@ -10,9 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,10 +23,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -135,7 +131,6 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         idSurvey = extra.getString(EXTRA_KEY_SURVEY);
         idPage = extra.getInt(EXTRA_KEY_PAGE);
         loadQuestionByUserInputLine();
-
     }
 
     public  void loadQuestionByUserInputLine(){
@@ -145,6 +140,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         recordSurveyUserInputLine= null;
         rowIdUserInput = 0;
         int rowTaskId = extra.getInt("id_task"); // Selecciona la Tarea
+        //ODataRow rowUserInputList = projectTask.getSurveyUserInput(getContext(),rowTaskId); // Selecciona todos los UserInput de la tarea
         ODataRow rowUserInputList = surveyUserInput.getSurveyUserInput(getContext(),rowTaskId); // Selecciona todos los UserInput de la tarea
 
         if (rowUserInputList!=null){
@@ -178,7 +174,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
         linearlayoutTask = (LinearLayout) view.findViewById(R.id.taskFormEdit);
         switch (typeQuestion) {
             case "free_text":
-                final EditText txtEdit_free_text = new EditText(getContext());
+                EditText txtEdit_free_text = new EditText(getContext());
                 txtEdit_free_text.setId(rowId);
                 txtEdit_free_text.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                 txtEdit_free_text.setTag("idComponent"+rowId);
@@ -186,69 +182,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
                     txtEdit_free_text.setText(recordSurveyUserInputLine.get("value_free_text").toString());
                 }
                 txtEdit_free_text.setHint(_s(R.string.hint_question));
-
-                // Para colocar el X y limpiar el campo
-                final ImageView imageView = new ImageView(getContext());
-                imageView.setId(rowId);
-                imageView.setVisibility(View.GONE);
-                final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                params.addRule(RelativeLayout.RIGHT_OF, rowId);
-                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, rowId);
-                imageView.setLayoutParams(params);
-                //imageView.setImageResource(R.drawable.ic_action_navigation_close);
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_navigation_close));
-                if(android.os.Build.VERSION.SDK_INT > 15)
-                {
-                    // for API above 15
-                    imageView.setBackground(getResources().getDrawable(R.drawable.scrim_top));
-                }
-                else
-                {
-                    // for API below 15
-                    imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.avatar));
-                }
-
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(imageView.getLayoutParams());
-                lp.setMargins(0, 0, 0, 0);
-                imageView.setLayoutParams(lp);
-                txtEdit_free_text.addTextChangedListener(new TextWatcher(){
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // TODO Auto-generated method stub
-
-                        //Show cross button after start typing.
-                        imageView.setVisibility(View.VISIBLE);
-
-                    }
-
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count,
-                                                  int after) {
-                        // TODO Auto-generated method stub
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        // TODO Auto-generated method stub
-
-                    }
-
-                });
-                imageView.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        // TODO Auto-generated method stub
-
-                        txtEdit_free_text.getText().clear();
-
-                    }
-                });
-
-
                 linearlayoutTask.addView(txtEdit_free_text);
-                linearlayoutTask.addView(imageView);
 
                 break;
             case "textbox":
