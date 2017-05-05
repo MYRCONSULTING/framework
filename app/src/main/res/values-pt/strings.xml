@@ -168,4 +168,5 @@
     <string name="confirm_save_question">Tem certeza de que deseja salvar as respostas</string>
     <string name="title_save">Gravação</string>
     <string name="label_save_now">A informação de gravação ...</string>
+    <string name="sync_label_date_end">Data final</string>
 </resources>

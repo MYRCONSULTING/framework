@@ -33,6 +33,7 @@ import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.projects.models.ProjectTaskType;
 import com.odoo.addons.survey.SurveySurvey;
+import com.odoo.addons.survey.models.SurveyLabel;
 import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveyQuestion;
 import com.odoo.addons.survey.models.SurveyUserInput;
@@ -113,6 +114,7 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
         SyncUtils.get(mContext).setAutoSync(SurveyQuestion.AUTHORITY,true);
         SyncUtils.get(mContext).setAutoSync(SurveyUserInput.AUTHORITY,true);
         SyncUtils.get(mContext).setAutoSync(SurveyUserInputLine.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(SurveyLabel.AUTHORITY,true);
 
     }
 

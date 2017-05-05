@@ -76,6 +76,16 @@
                 app:iconResource="@drawable/ic_date_range_black_24dp"></odoo.controls.OField>
 
             <odoo.controls.OField
+                android:id="@+id/dateEnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="date_end"
+                app:controlLabel="@string/sync_label_date_end"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_date_range_black_24dp"></odoo.controls.OField>
+
+            <odoo.controls.OField
                 android:id="@+id/date_deadlineTask"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

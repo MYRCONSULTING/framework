@@ -69,6 +69,7 @@
     <string name="label_sync_now">Send informations ...</string>
     <string name="sync_label_date_deadline">Date DeadLine</string>
     <string name="sync_label_date_start">Date Start</string>
+    <string name="sync_label_date_end">Date End</string>
     <string name="sync_label_priority">Priority</string>
     <string name="label_no_activitis_found_swipe">Swipe to check new projects</string>
     <string name="label_activitis">Activities</string>

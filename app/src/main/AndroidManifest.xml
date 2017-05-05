@@ -259,6 +259,26 @@
                 android:resource="@xml/survey_user_input_line_sync_adapter" />
         </service>
 
+        <!-- Sync Provider & Service Survey Label  // -->
+
+        <provider
+            android:name="com.odoo.addons.survey.providers.SurveyLabelProvider"
+            android:authorities="com.odoo.addons.survey.survey_label"
+            android:label="Survey Label"
+            android:multiprocess="true" />
+
+        <service android:name=".addons.survey.services.SurveyLabelSyncService"
+            android:exported="true"
+            android:process=":sync_survey_label">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/survey_label_sync_adapter" />
+        </service>
+
 
         <!-- Activity-->
         <activity
