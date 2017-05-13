@@ -103,14 +103,10 @@ public class ProjectTask extends OModel {
             projectTask.update(rowProjectTaskType.get(i).getInt(OColumn.ROW_ID),valuesProjectTask);
         }
 
-        //Clean Return onField
-        //String type = String.valueOf(stage_id_Return_From_Field);
-        //projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
         //Clean Cancel
-
         String type = String.valueOf(stage_id_Cancel);
-        projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
-
+        //projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
+        projectTask.delete("stage_id = ? ",new String[]{type},true);
         //showTaskNotification();
     }
 

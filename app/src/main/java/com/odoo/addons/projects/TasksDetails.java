@@ -300,8 +300,23 @@ public class TasksDetails extends OdooCompatActivity
     public void onRefresh(int idTask) {
             SyncUtils syncUtils = new SyncUtils(getBaseContext(), OUser.current(getBaseContext()));
             //syncUtils.cancelSync(SurveyPage.AUTHORITY);
+        if (!validateInputUser(idTask)){
             SyncTaskDetails syncTaskDetails = new SyncTaskDetails();
             syncTaskDetails.execute(idTask);
+        }else{
+            Toast.makeText(TasksDetails.this, R.string.toast_record_validate,Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+    //Metodo que valida que se cumpla que todos los campos obligatorios tengan datos.
+    public Boolean validateInputUser(Integer idTask){
+        ProjectTask projectTask = new ProjectTask(getBaseContext(), null);
+        Boolean flag=false;
+
+        projectTask.browse(idTask).getM2ORecord("x_survey_id").browse().getO2MRecord("page_ids").browseEach();
+
+        return flag;
     }
 
     private class SyncTaskDetails extends AsyncTask<Integer,Void,Boolean> {
@@ -316,6 +331,7 @@ public class TasksDetails extends OdooCompatActivity
             mDialog.setCancelable(false);
             mDialog.show();
             ContentResolver.setMasterSyncAutomatically(false);
+
         }
 
         public Boolean doInBackground(Integer...args){
@@ -368,18 +384,25 @@ public class TasksDetails extends OdooCompatActivity
                         surveyUserInput.quickCreateRecord(rowSync);
                     }
                     // Fuerza Syncronización de User Input Line.
-                    if (inNetwork()){
+
                         List<ODataRow> recordSurveyUserInputLine = surveyUserInputLine.getSurveyUserInputLineByInputLineList2(getBaseContext(),String.valueOf(idUserInput));
                         if (recordSurveyUserInputLine!= null)
                         {
                             for (ODataRow rowSyncUserInputLine:recordSurveyUserInputLine) {
                                 int recordSeverInputLine = rowSyncUserInputLine.getInt("id");
+                                int idInputLine = rowSyncUserInputLine.getInt(OColumn.ROW_ID);
+                                OValues valuesUserInputLine = new OValues();
+                                valuesUserInputLine.put("x_state", "done");
+                                surveyUserInputLine.update(idInputLine,valuesUserInputLine);
                                 ODataRow rowSyncInputLine = new ODataRow();
                                 rowSyncInputLine.put("id", recordSeverInputLine);
-                                surveyUserInputLine.quickCreateRecord(rowSyncInputLine);
+                                if (inNetwork()){
+                                    surveyUserInputLine.quickCreateRecord(rowSyncInputLine);
+                                }
+
                             }
                         }
-                    }
+
                 }
             }
         return true;
@@ -397,6 +420,7 @@ public class TasksDetails extends OdooCompatActivity
             if (!inNetwork()){
                 Toast.makeText(TasksDetails.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
             }
+            ContentResolver.setMasterSyncAutomatically(true);
 
         }
     }

@@ -60,10 +60,13 @@ public class DrawerUtils {
 
     public static List<ODrawerItem> baseSettingsItems(Context context) {
         String key = "base.settings";
+        String keySync = "base.sync";
         OPreferenceManager pref = new OPreferenceManager(context);
         List<ODrawerItem> settings = new ArrayList<>();
         settings.add(new ODrawerItem(key).setTitle(OResource.string(context, R.string.label_settings))
                 .setGroupTitle());
+        settings.add(new ODrawerItem(keySync).setTitle(OResource.string(context, R.string.label_syncro))
+                .setIcon(R.drawable.ic_autorenew_black_24dp));
         settings.add(new ODrawerItem(key).setTitle(OResource.string(context, R.string.title_profile))
                 .setInstance(Profile.class).setIcon(R.drawable.ic_action_user));
         settings.add(new ODrawerItem(key).setTitle(OResource.string(context, R.string.label_settings))

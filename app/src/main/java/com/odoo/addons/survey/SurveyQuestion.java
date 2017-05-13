@@ -284,6 +284,12 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
             mDialog.setMessage(OResource.string(getContext(),R.string.label_save_now));
             mDialog.setCancelable(false);
             mDialog.show();
+            boolean flag =  validateInputUser();
+            if (!flag){
+                this.cancel(true);
+                mDialog.dismiss();
+            }
+
         }
 
         public Boolean doInBackground(Integer...args){
@@ -356,15 +362,19 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
             OValues valuesUserInputLine = new OValues();
             valuesUserInputLine.put("survey_id",idSurvey);
             ODataRow recordPage = surveyQuestion.browse(Integer.valueOf(mentry.getKey().toString())).getM2ORecord("page_id").browse();
+            ODataRow recordQuestion = surveyQuestion.browse(Integer.valueOf(mentry.getKey().toString()));
             valuesUserInputLine.put("page_id", recordPage.getInt(OColumn.ROW_ID));
             valuesUserInputLine.put("question_id", mentry.getKey().toString());
             valuesUserInputLine.put("skipped",false);
+            valuesUserInputLine.put("x_state","SKIP");
             EditText txtEdit = (EditText) getActivity().findViewById(Integer.valueOf(mentry.getKey().toString()));
+            //txtEdit.setError(recordQuestion.getString("constr_error_msg"));
             switch (mentry.getValue().toString()) {
                 case "free_text":
                     valuesUserInputLine.put("answer_type","free_text");
                     if (!txtEdit.getText().toString().isEmpty()){
                         valuesUserInputLine.put("value_free_text",txtEdit.getText());
+
                     }else{
                         valuesUserInputLine.put("value_free_text"," ");
                     }
@@ -410,6 +420,29 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
 
             }
         }
+    }
+
+    public boolean validateInputUser(){
+        boolean flag = true;
+        // Add User Input Line
+        Set set = mapsurveyQuestion.entrySet(); //Recorre todas las preguntas correspondientes a esa página de la tarea seleccionada.
+        Iterator iterator = set.iterator();
+        while(iterator.hasNext()) {
+            Map.Entry mentry = (Map.Entry)iterator.next();
+            ODataRow recordQuestion = surveyQuestion.browse(Integer.valueOf(mentry.getKey().toString()));
+
+            Boolean required = Boolean.valueOf(recordQuestion.getString("constr_mandatory"));
+
+            EditText txtEdit = (EditText) getActivity().findViewById(Integer.valueOf(mentry.getKey().toString()));
+
+            if (txtEdit!= null && required){
+                if (txtEdit.getText().toString().trim().isEmpty()){
+                    txtEdit.setError(recordQuestion.getString("constr_error_msg"));
+                    flag = false;
+                }
+            }
+        }
+        return flag;
     }
 
 

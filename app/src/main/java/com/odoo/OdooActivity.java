@@ -24,10 +24,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -47,6 +52,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.odoo.addons.projects.TasksDetails;
+import com.odoo.addons.projects.models.ProjectProject;
+import com.odoo.addons.projects.models.ProjectTask;
+import com.odoo.addons.projects.models.ProjectTaskType;
+import com.odoo.addons.projects.models.TypeTask;
+import com.odoo.addons.survey.models.SurveyLabel;
+import com.odoo.addons.survey.models.SurveyPage;
+import com.odoo.addons.survey.models.SurveyQuestion;
+import com.odoo.addons.survey.models.SurveySurvey;
+import com.odoo.addons.survey.models.SurveyUserInput;
+import com.odoo.addons.survey.models.SurveyUserInputLine;
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.AppIntro;
 import com.odoo.core.account.ManageAccounts;
 import com.odoo.core.account.OdooLogin;
@@ -54,6 +71,9 @@ import com.odoo.core.account.OdooUserAskPassword;
 import com.odoo.core.account.OdooUserObjectUpdater;
 import com.odoo.core.auth.OdooAccountManager;
 import com.odoo.core.auth.OdooAuthenticator;
+import com.odoo.core.orm.ODataRow;
+import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.support.addons.fragment.IBaseFragment;
@@ -100,9 +120,20 @@ public class OdooActivity extends OdooCompatActivity {
 
     private App app;
 
+    private ProgressDialog progressDialog;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ////////////////
+        progressDialog = new ProgressDialog(OdooActivity.this);
+        progressDialog.setTitle(R.string.title_working);
+        progressDialog.setMessage(OResource.string(getApplicationContext(),R.string.label_sync_now));
+        progressDialog.setCancelable(true);
+        progressDialog.setProgress(100);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
         Log.i(TAG, "OdooActivity->onCreate");
         mSavedInstanceState = savedInstanceState;
         app = (App) getApplicationContext();
@@ -214,12 +245,124 @@ public class OdooActivity extends OdooCompatActivity {
                     focusOnDrawerItem(index);
                     setTitle(item.getTitle());
                 }
-                loadDrawerItemInstance(item.getInstance(), item.getExtra());
+                if (item.getKey().contains("base.sync")){
+                    callSyncAll();
+                    closeDrawer();
+
+                }else{
+                    loadDrawerItemInstance(item.getInstance(), item.getExtra());
+                }
+
             } else {
                 closeDrawer();
             }
         }
     };
+
+    public void callSyncAll(){
+        final SyncAllRecord syncAllRecord = new SyncAllRecord(OdooActivity.this);
+        syncAllRecord.execute();
+
+        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                syncAllRecord.cancel(true);
+            }
+        });
+    }
+
+
+
+    private class SyncAllRecord extends AsyncTask<Void,Integer,Boolean> {
+        private Context context;
+
+        public SyncAllRecord(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.show();
+            ContentResolver.setMasterSyncAutomatically(false);
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            progressDialog.setProgress(progress[0]);
+        }
+
+        public Boolean doInBackground(Void...args){
+
+            for (int i = 0; i <= 200; i++) {
+                publishProgress(i);
+                try {
+                    // simulate hard work
+                    syncAll();
+                    Thread.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            progressDialog.dismiss();
+            if (success) {
+                clean();
+               Toast.makeText(OdooActivity.this, R.string.toast_sync_ok,Toast.LENGTH_SHORT).show();
+            }
+            if (!inNetwork()){
+                Toast.makeText(OdooActivity.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
+            }
+            ContentResolver.setMasterSyncAutomatically(true);
+        }
+    }
+
+
+    public void clean(){
+        SurveyUserInput surveyUserInput = new SurveyUserInput(getBaseContext(),null);
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(getBaseContext(),null);
+        //Elimina encabezado de respuestas
+        surveyUserInput.delete("state = ? ",new String[]{"done"},true);
+        surveyUserInputLine.delete("x_state = ? ",new String[]{"done"},true);
+    }
+
+    public boolean inNetwork() {
+        App app = (App) getBaseContext().getApplicationContext();
+        return app.inNetwork();
+    }
+
+
+    public void syncAll(){
+        ResPartner resPartner = new ResPartner(getBaseContext(),OUser.current(getBaseContext()));
+        ProjectProject projectProject = new ProjectProject(getBaseContext(),OUser.current(getBaseContext()));
+        ProjectTask projectTask = new ProjectTask(getBaseContext(),OUser.current(getBaseContext()));
+        ProjectTaskType projectTaskType = new ProjectTaskType(getBaseContext(),OUser.current(getBaseContext()));
+        SurveySurvey surveySurvey = new SurveySurvey(getBaseContext(),OUser.current(getBaseContext()));
+        SurveyPage surveyPage = new SurveyPage(getBaseContext(),OUser.current(getBaseContext()));
+        SurveyQuestion surveyQuestion = new SurveyQuestion(getBaseContext(),OUser.current(getBaseContext()));
+        SurveyUserInput surveyUserInput = new SurveyUserInput(getBaseContext(),OUser.current(getBaseContext()));
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(getBaseContext(),OUser.current(getBaseContext()));
+        SurveyLabel surveyLabel = new SurveyLabel(getBaseContext(),OUser.current(getBaseContext()));
+
+        resPartner.sync().requestSync(ResPartner.AUTHORITY);
+        projectProject.sync().requestSync(ProjectProject.AUTHORITY);
+        projectTask.sync().requestSync(ProjectTask.AUTHORITY);
+        projectTaskType.sync().requestSync(ProjectTaskType.AUTHORITY);
+        surveySurvey.sync().requestSync(SurveySurvey.AUTHORITY);
+        surveyPage.sync().requestSync(SurveyPage.AUTHORITY);
+        surveyQuestion.sync().requestSync(SurveyQuestion.AUTHORITY);
+        surveyUserInput.sync().requestSync(SurveyUserInput.AUTHORITY);
+        surveyUserInputLine.sync().requestSync(SurveyUserInputLine.AUTHORITY);
+        surveyLabel.sync().requestSync(SurveyLabel.AUTHORITY);
+    }
 
     public void closeDrawer() {
         new Handler().postDelayed(new Runnable() {

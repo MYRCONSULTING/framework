@@ -13,6 +13,7 @@ import com.odoo.core.orm.fields.types.ODate;
 import com.odoo.core.orm.fields.types.ODateTime;
 import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
 
 import java.util.List;
@@ -48,6 +49,14 @@ public class SurveyUserInput extends OModel {
     @Override
     public Uri uri() {
         return buildURI(AUTHORITY);
+    }
+
+    @Override
+    public ODomain defaultDomain() {
+        /* En este filtro se llama al metodo que devuelve los codigos del servidor*/
+        ODomain domain = new ODomain();
+        domain.add("state", "!=", "done");//Solo syncroniza las respuestas que aun no han sido finalizadas.
+        return domain;
     }
 
     public ODataRow getSurveyUserInput(Context context, int rowIdProjectTask) {

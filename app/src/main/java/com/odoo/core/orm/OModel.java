@@ -1195,6 +1195,18 @@ public class OModel implements ISyncServiceListener {
     }
 
     public SyncUtils sync() {
+        Log.i("Syncro","Model");
         return SyncUtils.get(mContext);
+    }
+
+
+    public void deleteManyToManyRecords(String relModel,int record_id,String nameColumn) {
+        SQLiteDatabase db = getWritableDatabase();
+        // Deleting master record from relation model with given ids
+        String deleteSql = "DELETE FROM " + relModel + " WHERE " + nameColumn + " = " +String.valueOf(record_id);
+
+        db.execSQL(deleteSql);
+
+        db.close();
     }
 }

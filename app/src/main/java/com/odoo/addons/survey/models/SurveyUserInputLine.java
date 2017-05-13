@@ -3,6 +3,7 @@ package com.odoo.addons.survey.models;
 import android.content.Context;
 import android.net.Uri;
 
+import com.odoo.App;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.projects.models.ProjectTaskType;
 import com.odoo.addons.projects.models.TypeTask;
@@ -10,6 +11,8 @@ import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
+import com.odoo.core.orm.RelCommands;
+import com.odoo.core.orm.RelValues;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.OBoolean;
 import com.odoo.core.orm.fields.types.ODateTime;
@@ -30,7 +33,6 @@ public class SurveyUserInputLine extends OModel {
     public static final String KEY = SurveyUserInputLine.class.getSimpleName();
     public static final String AUTHORITY = "com.odoo.addons.survey.survey_user_input_line";
 
-
     OColumn page_id = new OColumn("page_id", SurveyPage.class, OColumn.RelationType.ManyToOne);
     OColumn question_id = new OColumn("question_id", SurveyQuestion.class,OColumn.RelationType.ManyToOne);
     OColumn survey_id = new OColumn("survey_id", SurveySurvey.class, OColumn.RelationType.ManyToOne);
@@ -45,6 +47,9 @@ public class SurveyUserInputLine extends OModel {
             .addSelection("date","Fecha")
             .addSelection("free_text","Zona para textos largos")
             .addSelection("suggestion","Suggestion");
+    OColumn x_state = new OColumn("x_state", OSelection.class)
+            .addSelection("SKIP","SKIP")
+            .addSelection("DONE","DONE");
 
     public SurveyUserInputLine(Context context, OUser user) {
         super(context, "survey.user_input_line", user);
@@ -95,18 +100,52 @@ public class SurveyUserInputLine extends OModel {
 
     public static List<ODataRow> getSurveyUserInputLineBySurveyList(Context context, String survey_id) {
         SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(context,null);
-        List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"survey_id = ? ",
-                new String[]{survey_id},"id asc");
+        List<ODataRow> rowSurveyUserInputLine = surveyUserInputLine.select(null,"survey_id = ? ",new String[]{survey_id},"id asc");
         return rowSurveyUserInputLine;
     }
 
     @Override
     public void onSyncFinished(){
         ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
+        SurveyUserInput surveyUserInput = new SurveyUserInput(getContext(),null);
+        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(getContext(),null);
+
+
         int stage_id_Return_From_Field = projectTaskType.getCodProjectTaskType_Id(TypeTask.RETURNED_FROM_FIELD.getValue());//12 Retornada de campo
         ProjectTask projectTask = new ProjectTask(getContext(),null);
+
+        //Elimina respuestas finalizadas
+        List<ODataRow> listsurveyUserInput = surveyUserInput.select(null,"state = ? ",new String[]{"done"},"id asc");
+        for (ODataRow rowsurveyUserInput : listsurveyUserInput) {
+            int idsurveyUserInput = rowsurveyUserInput.getInt(OColumn.ROW_ID);
+            surveyUserInput.deleteManyToManyRecords("survey_user_input_project_task_rel",idsurveyUserInput,"survey_user_input_id");
+
+            //surveyUserInputLine.delete("user_input_id = ? ",new String[]{String.valueOf(idsurveyUserInput)},true);
+
+
+
+            /*
+            List<ODataRow> listRelation = rowsurveyUserInput.getM2MRecord("project_task_ids").browseEach();
+            for (ODataRow rowRelation : listRelation) {
+            }
+            */
+
+        }
+        //Elimina encabezado de respuestas
+        //surveyUserInput.delete("state = ? ",new String[]{"done"},true);
+
+
         //Clean Return onField
+        //Limpia todas las tareas que ya finalizaron y no son recursivas.
         String type = String.valueOf(stage_id_Return_From_Field);
         projectTask.delete("stage_id = ? and x_recursive = ?",new String[]{type,"false"},true);
+
     }
+   @Override
+    public ODomain defaultDomain() {
+    ODomain domain = new ODomain();
+        domain.add("x_state", "=", "skip");
+        return domain;
+    }
+
 }

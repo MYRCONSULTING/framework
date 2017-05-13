@@ -32,6 +32,7 @@
     <string name="confirm_are_you_sure_want_to_delete">Are you sure want to delete ?</string>
     <string name="confirm_are_you_sure_want_to_end">Are you sure want to done ?</string>
     <string name="toast_record_deleted">Record deleted</string>
+    <string name="toast_record_validate">Could not send information. Please check! Is missing some mandatory information!</string>
     <string name="toast_record_ended">Record Doned</string>
     <string name="toast_record_synced">Sync Doned</string>
     <string name="label_phone">Phone</string>
