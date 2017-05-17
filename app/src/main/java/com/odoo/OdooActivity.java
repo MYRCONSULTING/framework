@@ -131,8 +131,8 @@ public class OdooActivity extends OdooCompatActivity {
         progressDialog.setTitle(R.string.title_working);
         progressDialog.setMessage(OResource.string(getApplicationContext(),R.string.label_sync_now));
         progressDialog.setCancelable(true);
-        progressDialog.setProgress(100);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        //progressDialog.setProgress(100);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         Log.i(TAG, "OdooActivity->onCreate");
         mSavedInstanceState = savedInstanceState;
@@ -290,22 +290,32 @@ public class OdooActivity extends OdooCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
-            progressDialog.setProgress(progress[0]);
+            //progressDialog.setProgress(progress[0]);
         }
 
         public Boolean doInBackground(Void...args){
 
-            for (int i = 0; i <= 200; i++) {
-                publishProgress(i);
-                try {
-                    // simulate hard work
-                    syncAll();
-                    Thread.sleep(3);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    return false;
+            if (inNetwork()){
+                syncAll();
+                /*
+                for (int i = 0; i <= 200; i++) {
+                    publishProgress(i);
+                    try {
+                        // simulate hard work
+                        syncAll();
+                        Thread.sleep(3);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
                 }
+                 */
+
+            }else{
+                Toast.makeText(OdooActivity.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
+                return false;
             }
+
             return true;
         }
 
@@ -317,9 +327,6 @@ public class OdooActivity extends OdooCompatActivity {
             if (success) {
                 clean();
                Toast.makeText(OdooActivity.this, R.string.toast_sync_ok,Toast.LENGTH_SHORT).show();
-            }
-            if (!inNetwork()){
-                Toast.makeText(OdooActivity.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
             }
             ContentResolver.setMasterSyncAutomatically(true);
         }
@@ -352,6 +359,18 @@ public class OdooActivity extends OdooCompatActivity {
         SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(getBaseContext(),OUser.current(getBaseContext()));
         SurveyLabel surveyLabel = new SurveyLabel(getBaseContext(),OUser.current(getBaseContext()));
 
+        ODomain oDomain = new ODomain();
+        resPartner.quickSyncRecords(oDomain);
+        projectProject.quickSyncRecords(oDomain);
+        projectTask.quickSyncRecords(oDomain);
+        projectTaskType.quickSyncRecords(oDomain);
+        surveySurvey.quickSyncRecords(oDomain);
+        surveyPage.quickSyncRecords(oDomain);
+        surveyQuestion.quickSyncRecords(oDomain);
+        surveyUserInput.quickSyncRecords(oDomain);
+        surveyUserInputLine.quickSyncRecords(oDomain);
+        surveyLabel.quickSyncRecords(oDomain);
+        /*
         resPartner.sync().requestSync(ResPartner.AUTHORITY);
         projectProject.sync().requestSync(ProjectProject.AUTHORITY);
         projectTask.sync().requestSync(ProjectTask.AUTHORITY);
@@ -362,6 +381,7 @@ public class OdooActivity extends OdooCompatActivity {
         surveyUserInput.sync().requestSync(SurveyUserInput.AUTHORITY);
         surveyUserInputLine.sync().requestSync(SurveyUserInputLine.AUTHORITY);
         surveyLabel.sync().requestSync(SurveyLabel.AUTHORITY);
+        */
     }
 
     public void closeDrawer() {

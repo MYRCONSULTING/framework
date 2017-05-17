@@ -54,6 +54,8 @@ import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.base.addons.ir.feature.OFileManager;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
+import com.odoo.core.orm.OM2MRecord;
+import com.odoo.core.orm.OM2ORecord;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
@@ -300,7 +302,7 @@ public class TasksDetails extends OdooCompatActivity
     public void onRefresh(int idTask) {
             SyncUtils syncUtils = new SyncUtils(getBaseContext(), OUser.current(getBaseContext()));
             //syncUtils.cancelSync(SurveyPage.AUTHORITY);
-        if (!validateInputUser(idTask)){
+        if (validateInputUser(idTask)){
             SyncTaskDetails syncTaskDetails = new SyncTaskDetails();
             syncTaskDetails.execute(idTask);
         }else{
@@ -312,10 +314,17 @@ public class TasksDetails extends OdooCompatActivity
     //Metodo que valida que se cumpla que todos los campos obligatorios tengan datos.
     public Boolean validateInputUser(Integer idTask){
         ProjectTask projectTask = new ProjectTask(getBaseContext(), null);
-        Boolean flag=false;
-
-        projectTask.browse(idTask).getM2ORecord("x_survey_id").browse().getO2MRecord("page_ids").browseEach();
-
+        Boolean flag=true;
+        ODataRow rowTask = projectTask.browse(idTask);
+        if (!(rowTask.getInt("x_survey_id")==null || rowTask.getInt("x_survey_id")==0)){
+            OM2ORecord om2ORecord = projectTask.browse(idTask).getM2ORecord("x_survey_id");
+            if (om2ORecord!=null){
+                ODataRow row= om2ORecord.browse();
+                if (row!=null){
+                    row.getO2MRecord("page_ids").browseEach();
+                }
+            }
+        }
         return flag;
     }
 

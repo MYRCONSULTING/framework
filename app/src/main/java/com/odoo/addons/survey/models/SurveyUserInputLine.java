@@ -48,8 +48,8 @@ public class SurveyUserInputLine extends OModel {
             .addSelection("free_text","Zona para textos largos")
             .addSelection("suggestion","Suggestion");
     OColumn x_state = new OColumn("x_state", OSelection.class)
-            .addSelection("SKIP","SKIP")
-            .addSelection("DONE","DONE");
+            .addSelection("skip","skip")
+            .addSelection("done","done");
 
     public SurveyUserInputLine(Context context, OUser user) {
         super(context, "survey.user_input_line", user);
