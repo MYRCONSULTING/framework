@@ -138,10 +138,17 @@ public class ProjectTask extends OModel {
 
 
     public String storePartnerName(OValues values) {
+        String partner = "";
         try {
             if (!values.getString("partner_id").equals("false")) {
-                JSONArray partner_id = new JSONArray(values.getString("partner_id"));
-                return partner_id.getString(1);
+                //JSONArray partner_id = new JSONArray(values.getString("partner_id").toString().split(","));
+                String partnerArray[]  = values.getString("partner_id").toString().split(",");
+
+                if (partnerArray.length>0){
+                    String xpartner = partnerArray[1].substring(0,partnerArray[1].length()-1).toString();
+                    partner =  xpartner;
+                }
+                return partner;
             }
         } catch (Exception e) {
             e.printStackTrace();

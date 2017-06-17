@@ -350,7 +350,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
             int recordSever = surveyUserInput.browse(rowIdUserInput).getInt("id");
             ODataRow rowSync = new ODataRow();
             rowSync.put("id", recordSever);
-            surveyUserInput.quickCreateRecord(rowSync);
+            ///surveyUserInput.quickCreateRecord(rowSync);
         }
 
 
@@ -414,7 +414,7 @@ public class SurveyQuestion extends BaseFragment implements ISyncStatusObserverL
                     int recordSeverInputLine = surveyUserInputLine.browse(row).getInt("id");
                     ODataRow rowSyncInputLine = new ODataRow();
                     rowSyncInputLine.put("id", recordSeverInputLine);
-                    surveyUserInputLine.quickCreateRecord(rowSyncInputLine);
+                    ////////////////surveyUserInputLine.quickCreateRecord(rowSyncInputLine);
                 }
 
 

@@ -70,13 +70,19 @@ public class ProjectTaskType extends OModel {
         int rpta = -1;
         if (val!= -1) {
             ProjectTaskType projectTaskType = new ProjectTaskType(getContext(),null);
-            List<ODataRow> rowProjectTaskType = projectTaskType.select(null,"x_task_type = ?",new String[]{String.valueOf(val)},"id asc");
-            if (!rowProjectTaskType.isEmpty()){
-                rpta = rowProjectTaskType.get(0).getInt(OColumn.ROW_ID);
+            try{
+                List<ODataRow> rowProjectTaskType = projectTaskType.select(null,"x_task_type = ?",new String[]{String.valueOf(val)},"id asc");
+                if (!rowProjectTaskType.isEmpty()){
+                    rpta = rowProjectTaskType.get(0).getInt(OColumn.ROW_ID);
+                }
+
+            }catch(Exception e){
+
             }
+
             return rpta;
         }
-        return -1;
+        return rpta;
     }
 
 
