@@ -20,6 +20,7 @@
 package com.odoo.config;
 
 import com.odoo.addons.account.AccountInvoice;
+import com.odoo.addons.account.AccountPayment;
 import com.odoo.addons.customers.Customers;
 import com.odoo.addons.projects.Project;
 import com.odoo.addons.projects.Tasks;
@@ -44,6 +45,7 @@ public class Addons extends AddonsHelper {
     OAddon project = new OAddon(Project.class);
     OAddon customers = new OAddon(Customers.class);
     OAddon account = new OAddon(AccountInvoice.class);
+    OAddon payment = new OAddon(AccountPayment.class);
     //OAddon surveysurvey = new OAddon(SurveySurvey.class);
     //OAddon surveypage = new OAddon(SurveyPage.class);
     //OAddon surveyquestion = new OAddon(SurveyQuestion.class);

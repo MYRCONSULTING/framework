@@ -175,4 +175,7 @@
     <string name="sync_label_accountinvoice">Facturas</string>
     <string name="label_no_invoice_found">No tiene facturas</string>
     <string name="label_no_invoice_found_swipe">Deslizar para comprobar nuevas facturas</string>
+    <string name="sync_label_accountpayment">Pagos</string>
+    <string name="label_no_payment_found">No existen pagos</string>
+    <string name="label_no_payment_found_swipe">Deslizar para comprobar nuevos pagos</string>
 </resources>

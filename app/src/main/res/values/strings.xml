@@ -7,6 +7,7 @@
     <string name="sync_label_schedule">Schedule</string>
     <string name="sync_label_project">Projects</string>
     <string name="sync_label_accountinvoice">Invoice</string>
+    <string name="sync_label_accountpayment">Payment</string>
     <string name="sync_label_customers">Customers</string>
     <string name="sync_label_supplier">Suppliers</string>
     <string name="sync_label_companies">Companies</string>
@@ -17,6 +18,7 @@
     <string name="label_no_supplier_found">No Supplier Found !</string>
     <string name="label_no_project_found">No Projects Found !</string>
     <string name="label_no_invoice_found">No Invoice Found !</string>
+    <string name="label_no_payment_found">No Payment Found !</string>
     <string name="label_no_task_found">No Task Found !</string>
     <string name="label_no_task_found_swipe">Swipe to check new tasks</string>
     <string name="label_no_customer_found_swipe">Swipe to check new customer</string>
@@ -76,6 +78,7 @@
     <string name="sync_label_priority">Priority</string>
     <string name="label_no_activitis_found_swipe">Swipe to check new projects</string>
     <string name="label_no_invoice_found_swipe">Swipe to check new invoice</string>
+    <string name="label_no_payment_found_swipe">Swipe to check new payment</string>
     <string name="label_activitis">Activities</string>
     <string name="label_activitis_no">No Ativities found</string>
     <string name="label_activitis_no_swipe">Swipe to check new ativities</string>

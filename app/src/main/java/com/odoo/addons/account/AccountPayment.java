@@ -21,8 +21,6 @@ import android.widget.Toast;
 
 import com.odoo.R;
 import com.odoo.addons.projects.Tasks;
-import com.odoo.addons.projects.models.ProjectProject;
-import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
@@ -41,12 +39,12 @@ import java.util.List;
  * Created by Ricardo Livelli on 09/02/2017.
  */
 
-public class AccountInvoice extends BaseFragment implements ISyncStatusObserverListener,
+public class AccountPayment extends BaseFragment implements ISyncStatusObserverListener,
         LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
         OCursorListAdapter.OnViewBindListener, IOnSearchViewChangeListener, View.OnClickListener,
         AdapterView.OnItemClickListener {
 
-    public static final String KEY = AccountInvoice.class.getSimpleName();
+    public static final String KEY = AccountPayment.class.getSimpleName();
     private View mView;
     private String mCurFilter = null;
     private ListView listView;
@@ -68,25 +66,26 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
         listView = (ListView) mView.findViewById(R.id.listview);
-        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.account_invoice_row_item);
+        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.account_payment_row_item);
         mAdapter.setOnViewBindListener(this);
-        mAdapter.setHasSectionIndexers(true, "number");
+        mAdapter.setHasSectionIndexers(true, "name");
         listView.setAdapter(mAdapter);
         listView.setFastScrollAlwaysVisible(true);
         listView.setOnItemClickListener(this);
         setHasSyncStatusObserver(KEY, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(0, null, this);
-        setTitle(OResource.string(getContext(),R.string.sync_label_accountinvoice));
+        setTitle(OResource.string(getContext(),R.string.sync_label_accountpayment));
     }
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
-        OControls.setText(view, android.R.id.text1, row.getString("number"));
+        OControls.setText(view, android.R.id.text1, row.getString("name"));
         OControls.setText(view, R.id.text0, row.getString("partner_name"));
-        OControls.setText(view, android.R.id.text2, row.getString("amount_total"));
+        OControls.setText(view, android.R.id.text2, row.getString("amount"));
         OControls.setText(view, R.id.text3, row.getString("state"));
-        OControls.setText(view, R.id.text4, row.getString("residual"));
+        OControls.setText(view, R.id.text4, row.getString("payment_type"));
+        OControls.setText(view, R.id.text5, row.getString("payment_date"));
         Bitmap img;
         if (row.getString("image_small").equals("false")) {
             img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("partner_name"));
@@ -105,7 +104,7 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
             args.add(String.valueOf(id));
 
         if (mCurFilter != null) {
-            where += " and number like ? ";
+            where += " and name like ? ";
             args.add("%" + mCurFilter + "%");
         }
         String selection = (args.size() > 0) ? where : where;
@@ -116,7 +115,6 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        OControls.setGone(mView, R.id.fabButton);
         mAdapter.changeCursor(data);
         if (data.getCount() > 0) {
             new Handler().postDelayed(new Runnable() {
@@ -125,7 +123,7 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
                     OControls.setGone(mView, R.id.loadingProgress);
                     OControls.setVisible(mView, R.id.swipe_container);
                     OControls.setGone(mView, R.id.data_list_no_item);
-                    setHasSwipeRefreshView(mView, R.id.swipe_container, AccountInvoice.this);
+                    setHasSwipeRefreshView(mView, R.id.swipe_container, AccountPayment.this);
                 }
             }, 500);
         } else {
@@ -135,10 +133,10 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
                     OControls.setGone(mView, R.id.loadingProgress);
                     OControls.setGone(mView, R.id.swipe_container);
                     OControls.setVisible(mView, R.id.data_list_no_item);
-                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, AccountInvoice.this);
+                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, AccountPayment.this);
                     OControls.setImage(mView, R.id.icon, R.drawable.ic_action_universe);
-                    OControls.setText(mView, R.id.title, _s(R.string.label_no_invoice_found));
-                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_invoice_found_swipe));
+                    OControls.setText(mView, R.id.title, _s(R.string.label_no_payment_found));
+                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_payment_found_swipe));
 
                 }
             }, 500);
@@ -155,16 +153,16 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
     }
 
     @Override
-    public Class<com.odoo.addons.account.models.AccountInvoice> database() {
-        return com.odoo.addons.account.models.AccountInvoice.class;
+    public Class<com.odoo.addons.account.models.AccountPayment> database() {
+        return com.odoo.addons.account.models.AccountPayment.class;
     }
 
     @Override
     public List<ODrawerItem> drawerMenus(Context context) {
         List<ODrawerItem> menu = new ArrayList<>();
-        menu.add(new ODrawerItem(KEY).setTitle(OResource.string(context, R.string.sync_label_accountinvoice))
+        menu.add(new ODrawerItem(KEY).setTitle(OResource.string(context, R.string.sync_label_accountpayment))
                 .setIcon(R.drawable.ic_action_universe)
-                .setInstance(new AccountInvoice()));
+                .setInstance(new AccountPayment()));
         return menu;
     }
 
@@ -177,7 +175,7 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
     @Override
     public void onRefresh() {
         if (inNetwork()) {
-            parent().sync().requestSync(com.odoo.addons.account.models.AccountInvoice.AUTHORITY);
+            parent().sync().requestSync(com.odoo.addons.account.models.AccountPayment.AUTHORITY);
             setSwipeRefreshing(true);
         } else {
             hideRefreshingProgress();
@@ -219,7 +217,7 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fabButton:
-                //loadActivity(null);
+                loadActivity(null);
                 break;
         }
     }
@@ -228,7 +226,7 @@ public class AccountInvoice extends BaseFragment implements ISyncStatusObserverL
         Bundle data = new Bundle();
         if (row != null) {
             data = row.getPrimaryBundleData();
-            data.putString(EXTRA_KEY_PROJECT,row.getString("number"));
+            data.putString(EXTRA_KEY_PROJECT,row.getString("name"));
         }
         startFragment(new Tasks(), true, data);
     }

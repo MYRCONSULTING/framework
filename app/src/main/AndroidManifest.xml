@@ -299,6 +299,26 @@
                 android:resource="@xml/account_invoice_sync_adapter" />
         </service>
 
+        <!-- Sync Provider & Service Account Payment  // -->
+        <provider
+            android:name="com.odoo.addons.account.providers.AccountPaymentProvider"
+            android:authorities="com.odoo.addons.account.account_payment"
+            android:label="@string/sync_label_accountpayment"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.account.services.AccountPaymentSyncService"
+            android:exported="true"
+            android:process=":sync_account_payment">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/account_payment_sync_adapter" />
+        </service>
+
 
         <!-- Activity-->
         <activity

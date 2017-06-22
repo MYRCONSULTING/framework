@@ -53,6 +53,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.odoo.addons.account.models.AccountInvoice;
+import com.odoo.addons.account.models.AccountPayment;
 import com.odoo.addons.projects.TasksDetails;
 import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
@@ -360,6 +361,7 @@ public class OdooActivity extends OdooCompatActivity {
         SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(getBaseContext(),OUser.current(getBaseContext()));
         SurveyLabel surveyLabel = new SurveyLabel(getBaseContext(),OUser.current(getBaseContext()));
         AccountInvoice accountInvoice = new AccountInvoice(getBaseContext(),OUser.current(getBaseContext()));
+        AccountPayment accountPayment = new AccountPayment(getBaseContext(),OUser.current(getBaseContext()));
 
         ODomain oDomain = new ODomain();
         resPartner.quickSyncRecords(oDomain);
@@ -373,6 +375,8 @@ public class OdooActivity extends OdooCompatActivity {
         surveyUserInputLine.quickSyncRecords(oDomain);
         surveyLabel.quickSyncRecords(oDomain);
         accountInvoice.quickSyncRecords(oDomain);
+        accountPayment.quickSyncRecords(oDomain);
+
         /*
         resPartner.sync().requestSync(ResPartner.AUTHORITY);
         projectProject.sync().requestSync(ProjectProject.AUTHORITY);
