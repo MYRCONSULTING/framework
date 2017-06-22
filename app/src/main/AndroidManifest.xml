@@ -279,6 +279,26 @@
                 android:resource="@xml/survey_label_sync_adapter" />
         </service>
 
+        <!-- Sync Provider & Service Account Invoice  // -->
+        <provider
+            android:name="com.odoo.addons.account.providers.AccountInvoiceProvider"
+            android:authorities="com.odoo.addons.account.account_invoice"
+            android:label="@string/sync_label_accountinvoice"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.account.services.AccountInvoiceSyncService"
+            android:exported="true"
+            android:process=":sync_account_invoice">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/account_invoice_sync_adapter" />
+        </service>
+
 
         <!-- Activity-->
         <activity

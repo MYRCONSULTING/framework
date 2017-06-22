@@ -172,4 +172,7 @@
     <string name="toast_record_validate">Não foi possível enviar as informações. Por favor, verifique! Algumas informações obrigatório está faltando!</string>
     <string name="label_syncro">Sincronizar</string>
     <string name="toast_sync_ok">Sincronizado com sucesso</string>
+    <string name="sync_label_accountinvoice">Notas</string>
+    <string name="label_no_invoice_found">Nao tem notas fiscais</string>
+    <string name="label_no_invoice_found_swipe">Deslize para verificar novas notas fiscais</string>
 </resources>
