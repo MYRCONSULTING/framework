@@ -46,6 +46,7 @@ public class Addons extends AddonsHelper {
     OAddon payment = new OAddon(AccountPayment.class);
 */
     OAddon encuesta = new OAddon(EncuestaF.class).setDefault();
+    //Prueba
     //OAddon surveysurvey = new OAddon(SurveySurvey.class);
     //OAddon surveypage = new OAddon(SurveyPage.class);
     //OAddon surveyquestion = new OAddon(SurveyQuestion.class);
