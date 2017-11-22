@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.projects.models.ProjectTaskType;
@@ -105,15 +106,21 @@ public class SettingsActivity extends AppCompatActivity {
             List<String> default_authorities = new ArrayList<>();
             default_authorities.add("com.android.calendar");
             default_authorities.add("com.android.contacts");
+
+
+            /*
             default_authorities.add(ProjectProject.AUTHORITY);
             default_authorities.add(ProjectTask.AUTHORITY);
             default_authorities.add(ProjectTaskType.AUTHORITY);
-            default_authorities.add(ResPartner.AUTHORITY);
             default_authorities.add(com.odoo.addons.survey.models.SurveySurvey.AUTHORITY);
             default_authorities.add(SurveyPage.AUTHORITY);
             default_authorities.add(SurveyQuestion.AUTHORITY);
             default_authorities.add(SurveyUserInput.AUTHORITY);
             default_authorities.add(SurveyUserInputLine.AUTHORITY);
+             */
+
+            default_authorities.add(ResPartner.AUTHORITY);
+            default_authorities.add(Encuesta.AUTHORITY);
 
 
             SyncAdapterType[] list = ContentResolver.getSyncAdapterTypes();

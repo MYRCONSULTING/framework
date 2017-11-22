@@ -24,11 +24,9 @@ import com.odoo.addons.account.AccountPayment;
 import com.odoo.addons.customers.Customers;
 import com.odoo.addons.projects.Project;
 import com.odoo.addons.projects.Tasks;
-import com.odoo.addons.survey.SurveyPage;
-import com.odoo.addons.survey.SurveyQuestion;
-import com.odoo.addons.survey.SurveySurvey;
 import com.odoo.core.support.addons.AddonsHelper;
 import com.odoo.core.support.addons.OAddon;
+import com.odoo.addons.enel.*;
 
 public class Addons extends AddonsHelper {
 
@@ -40,12 +38,14 @@ public class Addons extends AddonsHelper {
      * for maintain sequence call withSequence(int sequence)
      * OAddon partners = new OAddon(Partners.class).withSequence(2);
      */
-
+/*
     OAddon tasks = new OAddon(Tasks.class).setDefault();
     OAddon project = new OAddon(Project.class);
     OAddon customers = new OAddon(Customers.class);
     OAddon account = new OAddon(AccountInvoice.class);
     OAddon payment = new OAddon(AccountPayment.class);
+*/
+    OAddon encuesta = new OAddon(EncuestaF.class).setDefault();
     //OAddon surveysurvey = new OAddon(SurveySurvey.class);
     //OAddon surveypage = new OAddon(SurveyPage.class);
     //OAddon surveyquestion = new OAddon(SurveyQuestion.class);

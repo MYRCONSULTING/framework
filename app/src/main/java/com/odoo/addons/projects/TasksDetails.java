@@ -555,7 +555,7 @@ public class TasksDetails extends OdooCompatActivity
     private void bindSurvey(){
         ArrayList<EditText> OFieldList = new ArrayList<EditText>();
         List<ODataRow> rowSurveyQuestion = null;
-        //// 1.- Verifica la Encuesta que corresponde a la tarea seleccionada
+        //// 1.- Verifica la EncuestaF que corresponde a la tarea seleccionada
         String rowIdSurvey = null;
         if (extras.containsKey(EXTRA_KEY_SURVEY_TASK) && rowIdSurvey == null) {
             rowIdSurvey = extras.getString(EXTRA_KEY_SURVEY_TASK);

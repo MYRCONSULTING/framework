@@ -54,6 +54,7 @@ import android.widget.Toast;
 
 import com.odoo.addons.account.models.AccountInvoice;
 import com.odoo.addons.account.models.AccountPayment;
+import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.addons.projects.TasksDetails;
 import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
@@ -351,6 +352,7 @@ public class OdooActivity extends OdooCompatActivity {
 
     public void syncAll(){
         ResPartner resPartner = new ResPartner(getBaseContext(),OUser.current(getBaseContext()));
+        /*
         ProjectProject projectProject = new ProjectProject(getBaseContext(),OUser.current(getBaseContext()));
         ProjectTask projectTask = new ProjectTask(getBaseContext(),OUser.current(getBaseContext()));
         ProjectTaskType projectTaskType = new ProjectTaskType(getBaseContext(),OUser.current(getBaseContext()));
@@ -362,9 +364,13 @@ public class OdooActivity extends OdooCompatActivity {
         SurveyLabel surveyLabel = new SurveyLabel(getBaseContext(),OUser.current(getBaseContext()));
         AccountInvoice accountInvoice = new AccountInvoice(getBaseContext(),OUser.current(getBaseContext()));
         AccountPayment accountPayment = new AccountPayment(getBaseContext(),OUser.current(getBaseContext()));
+         */
+
+        Encuesta encuesta = new Encuesta(getBaseContext(),OUser.current(getBaseContext()));
 
         ODomain oDomain = new ODomain();
         resPartner.quickSyncRecords(oDomain);
+        /*
         projectProject.quickSyncRecords(oDomain);
         projectTask.quickSyncRecords(oDomain);
         projectTaskType.quickSyncRecords(oDomain);
@@ -376,6 +382,9 @@ public class OdooActivity extends OdooCompatActivity {
         surveyLabel.quickSyncRecords(oDomain);
         accountInvoice.quickSyncRecords(oDomain);
         accountPayment.quickSyncRecords(oDomain);
+         */
+
+        encuesta.quickSyncRecords(oDomain);
 
         /*
         resPartner.sync().requestSync(ResPartner.AUTHORITY);

@@ -59,6 +59,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name="com.odoo.core.account.About" />
         <activity android:name="com.odoo.core.account.Profile" />
+        <activity android:name="com.odoo.addons.enel.EncuestaDetails" />
 
         <!-- Reminder Receivers// -->
         <receiver android:name="com.odoo.core.utils.reminder.ReminderReceiver" />
@@ -317,6 +318,26 @@
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/account_payment_sync_adapter" />
+        </service>
+
+        <!-- Sync Provider & Service Enel EncuestaF  // -->
+        <provider
+            android:name="com.odoo.addons.enel.providers.EncuestaProvider"
+            android:authorities="com.odoo.addons.enel.enel100k_enel100k"
+            android:label="@string/sync_label_encuesta"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.enel.services.EncuestaSyncService"
+            android:exported="true"
+            android:process=":sync_encuesta_payment">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/enel_encuesta_sync_adapter" />
         </service>
 
 

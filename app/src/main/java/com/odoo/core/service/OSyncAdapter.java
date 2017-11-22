@@ -29,6 +29,7 @@ import android.util.Log;
 
 import com.odoo.App;
 import com.odoo.R;
+import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.projects.models.ProjectTaskType;
@@ -105,16 +106,16 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
         app = (App) context.getApplicationContext();
 
         SyncUtils.get(mContext).setAutoSync(ResPartner.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(ProjectProject.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(ProjectTask.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(ProjectTaskType.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(ResPartner.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(com.odoo.addons.survey.models.SurveySurvey.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(SurveyPage.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(SurveyQuestion.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(SurveyUserInput.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(SurveyUserInputLine.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(SurveyLabel.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(ProjectProject.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(ProjectTask.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(ProjectTaskType.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(com.odoo.addons.survey.models.SurveySurvey.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(SurveyPage.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(SurveyQuestion.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(SurveyUserInput.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(SurveyUserInputLine.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(SurveyLabel.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(Encuesta.AUTHORITY,true);
 
     }
 
