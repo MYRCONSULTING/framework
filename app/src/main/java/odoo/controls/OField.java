@@ -111,7 +111,7 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
     }
 
     public enum FieldType {
-        Text, Boolean, ManyToOne, Chips, Selection, Date, Time, DateTime, Blob, RelationType;
+        Text, Boolean, ManyToOne, Chips, Selection, Date, Time, DateTime, Blob, RelationType, Integer;
 
         public static FieldType getTypeValue(int type_val) {
             switch (type_val) {
@@ -133,6 +133,8 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
                     return FieldType.Blob;
                 case 8:
                     return FieldType.Time;
+                case 9:
+                    return FieldType.Integer;
             }
             return FieldType.Text;
         }
@@ -267,6 +269,9 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
             case Blob:
                 controlView = initBlobControl();
                 break;
+            case Integer:
+                controlView = initNumberControl();
+                break;
             default:
                 return;
         }
@@ -312,11 +317,16 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
     private <T> FieldType getType(Class<T> type_class) {
         try {
             // Varchar
-            if (type_class.isAssignableFrom(OVarchar.class)
-                    || type_class.isAssignableFrom(OInteger.class)
-                    || type_class.isAssignableFrom(OFloat.class)) {
+            if (type_class.isAssignableFrom(OVarchar.class)) {
                 return FieldType.Text;
             }
+
+            // Integer e Float
+            if (type_class.isAssignableFrom(OInteger.class)
+                    || type_class.isAssignableFrom(OFloat.class)) {
+                return FieldType.Integer;
+            }
+
             // boolean
             if (type_class.isAssignableFrom(OBoolean.class)) {
                 return FieldType.Boolean;
@@ -415,13 +425,30 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
         this.mType = mType;
     }
 
-    // EditText control (TextView, EditText)
     private View initTextControl() {
         setOrientation(VERTICAL);
         OEditTextField edt = new OEditTextField(mContext);
         edt.setWidgetType(mWidgetType);
         mControlData = edt;
+        if (mColumn.getSize()!=null){
+            textSize = mColumn.getSize();
+        }
         edt.setResource(textSize, textAppearance, textColor);
+        edt.setColumn(mColumn);
+        edt.setHint(mLabel);
+        return edt;
+    }
+
+    // EditText control (TextView, EditText)
+    private View initNumberControl() {
+        setOrientation(VERTICAL);
+        OEditNumberField edt = new OEditNumberField(mContext);
+        edt.setWidgetType(mWidgetType);
+        mControlData = edt;
+        if (mColumn.getSize()!=null){
+            textSize = mColumn.getSize();
+        }
+       edt.setResource(textSize, textAppearance, textColor);
         edt.setColumn(mColumn);
         edt.setHint(mLabel);
         return edt;

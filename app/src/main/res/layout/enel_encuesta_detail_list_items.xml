@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:fieldLabelColor="@color/theme_secondary"
-                app:controlLabel="@string/label_suministro_vista"
+                app:controlLabel="@string/label_suministro"
                 app:fieldName="suministro"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
                 app:iconResource="@drawable/ic_action_universe"></odoo.controls.OField>
@@ -169,12 +169,13 @@
                 android:orientation="vertical">
 
                 <odoo.controls.OField
-                    android:id="@android:id/title"
+                    android:id="@+id/suministroEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/default_8dp"
                     app:fieldName="suministro"
-                    app:controlLabel="@string/label_suministro_editar"
+                    app:fieldTextSize="@dimen/text_size_large"
+                    app:controlLabel="@string/label_suministro"
                     app:fieldTextAppearance="?android:textAppearanceLarge"
                     app:showIcon="false"
                     app:showLabel="true"></odoo.controls.OField>

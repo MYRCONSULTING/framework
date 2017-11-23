@@ -30,13 +30,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.odoo.addons.enel.models.Encuesta;
-import com.odoo.addons.projects.models.ProjectProject;
-import com.odoo.addons.projects.models.ProjectTask;
-import com.odoo.addons.projects.models.ProjectTaskType;
-import com.odoo.addons.survey.models.SurveyPage;
-import com.odoo.addons.survey.models.SurveyQuestion;
-import com.odoo.addons.survey.models.SurveyUserInput;
-import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.About;
 import com.odoo.core.account.OdooLogin;

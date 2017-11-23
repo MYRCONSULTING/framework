@@ -286,8 +286,14 @@ public class OdooActivity extends OdooCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog.show();
-            ContentResolver.setMasterSyncAutomatically(false);
+            if (inNetwork()){
+                progressDialog.show();
+                ContentResolver.setMasterSyncAutomatically(false);
+            }else{
+                Toast.makeText(OdooActivity.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
+
+            }
+
         }
 
         @Override
@@ -315,7 +321,7 @@ public class OdooActivity extends OdooCompatActivity {
                  */
 
             }else{
-                Toast.makeText(OdooActivity.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(OdooActivity.this, R.string.toast_network_required,Toast.LENGTH_SHORT).show();
                 return false;
             }
 

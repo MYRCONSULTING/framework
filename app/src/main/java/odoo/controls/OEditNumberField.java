@@ -35,9 +35,9 @@ import android.widget.TextView;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.utils.ODateUtils;
 
-public class OEditTextField extends LinearLayout implements IOControlData,
+public class OEditNumberField extends LinearLayout implements IOControlData,
         View.OnFocusChangeListener {
-    public static final String TAG = OEditTextField.class.getSimpleName();
+    public static final String TAG = OEditNumberField.class.getSimpleName();
 
     private Context mContext;
     private EditText edtText;
@@ -52,23 +52,23 @@ public class OEditTextField extends LinearLayout implements IOControlData,
     private int textColor = Color.BLACK;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public OEditTextField(Context context, AttributeSet attrs,
-                          int defStyleAttr, int defStyleRes) {
+    public OEditNumberField(Context context, AttributeSet attrs,
+                            int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public OEditTextField(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OEditNumberField(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr, 0);
     }
 
-    public OEditTextField(Context context, AttributeSet attrs) {
+    public OEditNumberField(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0, 0);
     }
 
-    public OEditTextField(Context context) {
+    public OEditNumberField(Context context) {
         super(context);
         init(context, null, 0, 0);
     }
@@ -93,6 +93,8 @@ public class OEditTextField extends LinearLayout implements IOControlData,
         if (mEditable) {
             edtText = new EditText(mContext);
             edtText.setTypeface(OControlHelper.lightFont());
+            edtText.setInputType(InputType.TYPE_CLASS_NUMBER);
+
             edtText.setFilters(new InputFilter[] {new InputFilter.LengthFilter((int)textSize)});
             edtText.setLayoutParams(params);
             edtText.setBackgroundColor(Color.TRANSPARENT);

@@ -9,7 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.odoo.App;
@@ -23,6 +25,7 @@ import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.rpc.helper.OdooFields;
 import com.odoo.core.rpc.helper.utils.gson.OdooResult;
+import com.odoo.core.support.OUser;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.IntentUtils;
@@ -84,9 +87,6 @@ public class EncuestaDetails extends OdooCompatActivity
             mEditMode = false;
         else
             mEditMode = true;
-
-
-
         setupToolbar();
     }
 
@@ -120,6 +120,7 @@ public class EncuestaDetails extends OdooCompatActivity
         }
         setColor(color);
     }
+
 
     private void setupToolbar() {
         if (!hasRecordInExtra()) {
@@ -200,6 +201,8 @@ public class EncuestaDetails extends OdooCompatActivity
                 break;
             case R.id.menu_enel_encuesta_save:
                 OValues values = mForm.getValues();
+                //Aquí validar campos obligatorios.
+
                 if (values != null) {
                     if (newImage != null) {
                         values.put("image_small", newImage);
@@ -216,7 +219,11 @@ public class EncuestaDetails extends OdooCompatActivity
                             finish();
                         }
                     }
+                }else{
+                    //findViewById(R.id.suministroEdit);
+                    Toast.makeText(this, R.string.hint_question, Toast.LENGTH_LONG).show();
                 }
+
                 break;
             case R.id.menu_enel_encuesta_cancel:
             case R.id.menu_enel_encuesta_edit:

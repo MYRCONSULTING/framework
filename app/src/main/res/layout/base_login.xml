@@ -69,7 +69,7 @@
                         android:singleLine="true"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColorHint="@color/body_text_3"
-                        android:text="192.168.0.24:8069" />
+                        android:text="encuesta.myrconsulting.net" />
 
                     <ProgressBar
                         android:id="@+id/serverURLCheckProgress"

@@ -181,8 +181,7 @@
     <string name="sync_label_encuesta">Encuestas</string>
     <string name="label_no_encuesta_found">No existen encuestas</string>
     <string name="label_no_encuesta_found_swipe">Deslizar para comprobar nuevas encuestas</string>
-    <string name="label_suministro_vista">No. Suministro Vista</string>
-    <string name="label_suministro_editar">No. Suministro Editar</string>
+    <string name="label_suministro">No. Suministro</string>
     <string name="label_nombres">Nombres</string>
     <string name="label_apellido_paterno">Apellido Paterno</string>
     <string name="label_apellido_materno">Apellido Materno</string>

@@ -137,7 +137,7 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
                     setHasSwipeRefreshView(mView, R.id.data_list_no_item, EncuestaF.this);
                     OControls.setImage(mView, R.id.icon, R.drawable.ic_action_universe);
                     OControls.setText(mView, R.id.title, _s(R.string.label_no_encuesta_found));
-                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_payment_found_swipe));
+                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_encuesta_found_swipe));
 
                 }
             }, 500);
