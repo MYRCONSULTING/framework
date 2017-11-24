@@ -1,95 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/default_8dp"
-        android:paddingTop="@dimen/default_8dp"
         android:paddingBottom="@dimen/default_8dp"
+        android:paddingLeft="@dimen/default_8dp"
         android:paddingRight="@dimen/default_16dp"
-        android:layout_height="match_parent">
+        android:paddingTop="@dimen/default_8dp">
 
         <odoo.controls.BezelImageView
             android:id="@+id/image_small"
             android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="@dimen/default_8dp"
-            app:maskDrawable="@drawable/circle_mask"
-            android:layout_height="40dp" />
+            app:maskDrawable="@drawable/circle_mask" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/default_8dp"
-            android:layout_height="wrap_content">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/nombresviewlabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:text="@string/label_nombres"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_4"></TextView>
+
+                    <TextView
+                        android:id="@+id/nombresview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_1"></TextView>
+
+                </LinearLayout>
 
 
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/apellido_paternolabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:text="@string/label_apellido_paterno"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_4"></TextView>
+
+
+                    <TextView
+                        android:id="@+id/apellido_paternoview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_1"></TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/apellido_maternolabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:text="@string/label_apellido_materno"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_4"></TextView>
+
+                    <TextView
+                        android:id="@+id/apellido_maternoview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_1"></TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/suministrolabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:text="@string/label_suministro"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_4"></TextView>
+
+                    <TextView
+                        android:id="@+id/suministroview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_1"></TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/dnilabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:text="@string/label_dni"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_4"></TextView>
+
+                    <TextView
+                        android:id="@+id/dniview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_1"></TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/telefono_fijolabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@string/font_normal"
+                        android:text="@string/label_telefono_fijo"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/body_text_4"></TextView>
 
                 <TextView
-                    android:id="@android:id/text1"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/body_text_1"
-                    android:fontFamily="@string/font_normal"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"></TextView>
-                <TextView
-                    android:id="@+id/text0"
+                    android:id="@+id/telefono_fijoview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:fontFamily="@string/font_normal"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/body_text_1"></TextView>
-                <TextView
-                    android:id="@android:id/text2"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/body_text_1"
-                    android:fontFamily="@string/font_normal"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"></TextView>
-                <TextView
-                    android:id="@+id/text3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:fontFamily="@string/font_normal"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/body_text_1"></TextView>
-                <TextView
-                    android:id="@+id/text4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:fontFamily="@string/font_normal"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/body_text_1"></TextView>
-                <TextView
-                    android:id="@+id/text5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:fontFamily="@string/font_normal"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/body_text_1"></TextView>
 
-
-
+                </LinearLayout>
 
 
             </LinearLayout>
-
 
 
         </LinearLayout>

@@ -2,8 +2,10 @@ package com.odoo.addons.enel.services;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.odoo.addons.enel.models.Encuesta;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.service.OSyncAdapter;
 import com.odoo.core.service.OSyncService;
 import com.odoo.core.support.OUser;
@@ -18,12 +20,15 @@ public class EncuestaSyncService extends OSyncService {
 
     @Override
     public OSyncAdapter getSyncAdapter(OSyncService service, Context context) {
-        return new OSyncAdapter(getApplicationContext(), Encuesta.class, this, true);
+        return new OSyncAdapter(getApplicationContext(), Encuesta.class, this, true,36);
     }
 
     @Override
     public void performDataSync(OSyncAdapter adapter, Bundle extras, OUser user) {
-        adapter.syncDataLimit(13);
+        Log.i(TAG, "Para por aquí Service created 1");
+        //adapter.syncDataLimit(37);
+
+
     }
 
 

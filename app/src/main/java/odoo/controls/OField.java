@@ -430,9 +430,12 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
         OEditTextField edt = new OEditTextField(mContext);
         edt.setWidgetType(mWidgetType);
         mControlData = edt;
-        if (mColumn.getSize()!=null){
-            textSize = mColumn.getSize();
+        if (mColumn!=null){
+            if (mColumn.getSize()!=null){
+                textSize = mColumn.getSize();
+            }
         }
+
         edt.setResource(textSize, textAppearance, textColor);
         edt.setColumn(mColumn);
         edt.setHint(mLabel);
@@ -445,8 +448,10 @@ public class OField extends LinearLayout implements IOControlData.ValueUpdateLis
         OEditNumberField edt = new OEditNumberField(mContext);
         edt.setWidgetType(mWidgetType);
         mControlData = edt;
-        if (mColumn.getSize()!=null){
-            textSize = mColumn.getSize();
+        if (mColumn!=null){
+            if (mColumn.getSize()!=null){
+                textSize = mColumn.getSize();
+            }
         }
        edt.setResource(textSize, textAppearance, textColor);
         edt.setColumn(mColumn);

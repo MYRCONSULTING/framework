@@ -330,7 +330,7 @@
         <service
             android:name=".addons.enel.services.EncuestaSyncService"
             android:exported="true"
-            android:process=":sync_encuesta_payment">
+            android:process=":sync_enel_encuesta">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>

@@ -2,6 +2,7 @@ package com.odoo.addons.enel.models;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.base.addons.res.ResUsers;
@@ -49,7 +50,7 @@ public class Encuesta extends OModel {
     @Override
     public ODomain defaultDomain() {
         ODomain domain = new ODomain();
-        //domain.add("user_id", "=", getUser().getUserId());
+        domain.add("id", "=", 0); // Modelo Bottom - Top Sirve solo para recolectar información
         return domain;
     }
 
@@ -57,4 +58,23 @@ public class Encuesta extends OModel {
         String add = row.getString("suministro");
         return add;
     }
+
+    @Override
+    public boolean allowDeleteRecordOnServer(){
+        return false;
+    }
+
+    @Override
+    public void onSyncFinished(){
+
+        Log.e(TAG, "Limpio 1" );
+
+        int id = 0;
+        String type = String.valueOf(id);
+        Encuesta encuesta = new Encuesta(getContext(),null);
+        encuesta.delete("id > ? ",new String[]{type},true);
+        Log.e(TAG, "Limpio 2" );
+
+    }
+
 }

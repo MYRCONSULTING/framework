@@ -46,13 +46,14 @@ import com.odoo.core.orm.fields.utils.DomainFilterParser;
 import com.odoo.core.utils.OResource;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class OForm extends LinearLayout {
     public static final String TAG = OForm.class.getSimpleName();
     private Boolean mEditable = false;
     private String mModel;
     private OModel model = null;
-    private HashMap<String, OField> mFormFieldControls = new HashMap<>();
+    private LinkedHashMap<String, OField> mFormFieldControls = new LinkedHashMap<>();
     private Context mContext = null;
     private ODataRow mRecord = null;
     private Boolean autoUIGenerate = true;

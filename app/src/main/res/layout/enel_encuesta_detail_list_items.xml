@@ -70,6 +70,51 @@
                 android:layout_marginLeft="72dp" />
 
             <odoo.controls.OField
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="email"
+                app:controlLabel="@string/label_email2"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/direccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/label_direccion"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="direccion"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/distrito"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/label_distrito"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="distrito"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
+
+
+            <odoo.controls.OField
+                android:id="@+id/edad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="edad"
+                app:controlLabel="@string/label_edad"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_search"></odoo.controls.OField>
+
+            <View
+                style="@style/ViewSeparator"
+                android:layout_marginLeft="72dp" />
+
+            <odoo.controls.OField
                 android:id="@+id/dni"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,49 +144,7 @@
                 app:fieldTextAppearance="?android:textAppearanceMedium"
                 app:iconResource="@drawable/ic_action_mobile"></odoo.controls.OField>
 
-            <View
-                style="@style/ViewSeparator"
-                android:layout_marginLeft="72dp" />
 
-            <odoo.controls.OField
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="email"
-                app:controlLabel="@string/label_email2"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/edad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="edad"
-                app:controlLabel="@string/label_edad"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_search"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/distrito"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:controlLabel="@string/label_distrito"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="distrito"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/direccion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:controlLabel="@string/label_direccion"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="direccion"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
 
         </odoo.controls.OForm>
     </LinearLayout>
@@ -217,6 +220,44 @@
                 <odoo.controls.OField
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:fieldName="email"
+                    app:controlLabel="@string/label_email2"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:fieldName="direccion"
+                    app:controlLabel="@string/label_direccion"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:fieldName="distrito"
+                    app:controlLabel="@string/label_distrito"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
+
+
+
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:fieldName="edad"
+                    app:controlLabel="@string/label_edad"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_search"></odoo.controls.OField>
+
+                <View
+                    style="@style/ViewSeparator"
+                    android:layout_marginLeft="72dp" />
+
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:fieldName="dni"
                     app:controlLabel="@string/label_dni"
                     app:iconResource="@drawable/ic_action_search"
@@ -237,43 +278,6 @@
                     app:controlLabel="@string/label_telefono_celular"
                     app:iconResource="@drawable/ic_action_mobile"
                     app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
-
-
-                <View
-                    style="@style/ViewSeparator"
-                    android:layout_marginLeft="72dp" />
-
-                <odoo.controls.OField
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:fieldName="email"
-                    app:controlLabel="@string/label_email2"
-                    app:fieldTextAppearance="?android:textAppearanceMedium"
-                    app:iconResource="@drawable/ic_action_message"></odoo.controls.OField>
-
-                <odoo.controls.OField
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:fieldName="edad"
-                    app:controlLabel="@string/label_edad"
-                    app:fieldTextAppearance="?android:textAppearanceMedium"
-                    app:iconResource="@drawable/ic_action_search"></odoo.controls.OField>
-
-                <odoo.controls.OField
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:fieldName="distrito"
-                    app:controlLabel="@string/label_distrito"
-                    app:fieldTextAppearance="?android:textAppearanceMedium"
-                    app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
-
-                <odoo.controls.OField
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:fieldName="direccion"
-                    app:controlLabel="@string/label_direccion"
-                    app:fieldTextAppearance="?android:textAppearanceMedium"
-                    app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
 
 
             </LinearLayout>

@@ -82,12 +82,12 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
-        OControls.setText(view, android.R.id.text1, row.getString("nombres"));
-        OControls.setText(view, R.id.text0, row.getString("suministro"));
-        OControls.setText(view, android.R.id.text2, row.getString("apellido_paterno"));
-        OControls.setText(view, R.id.text3, row.getString("apellido_materno"));
-        OControls.setText(view, R.id.text4, row.getString("dni"));
-        OControls.setText(view, R.id.text5, row.getString("telefono_fijo"));
+        OControls.setText(view, R.id.suministroview, row.getString("suministro"));
+        OControls.setText(view, R.id.nombresview, row.getString("nombres"));
+        OControls.setText(view, R.id.apellido_paternoview, row.getString("apellido_paterno"));
+        OControls.setText(view, R.id.apellido_maternoview, row.getString("apellido_materno"));
+        OControls.setText(view, R.id.dniview, row.getString("dni"));
+        OControls.setText(view, R.id.telefono_fijoview, row.getString("telefono_fijo"));
         Bitmap img;
         if (row.getString("image_small").equals("false")) {
             img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("nombres"));

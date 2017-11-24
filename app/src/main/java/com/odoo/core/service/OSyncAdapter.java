@@ -87,6 +87,13 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
     public OSyncAdapter(Context context, Class<? extends OModel> model, OSyncService service,
+                        boolean autoInitialize, Integer limit) {
+        super(context, autoInitialize);
+        init(context, model, service);
+        this.mSyncDataLimit = limit;
+    }
+
+    public OSyncAdapter(Context context, Class<? extends OModel> model, OSyncService service,
                         boolean autoInitialize) {
         super(context, autoInitialize);
         init(context, model, service);
@@ -130,7 +137,8 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public OSyncAdapter syncDataLimit(Integer dataLimit) {
-        mSyncDataLimit = dataLimit;
+        this.mSyncDataLimit = dataLimit;
+        //mSyncDataLimit = 3;
         return this;
     }
 
@@ -150,6 +158,8 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.i(TAG, "Model       : " + mModel.getModelName());
                 Log.i(TAG, "Database    : " + mModel.getDatabaseName());
                 Log.i(TAG, "Odoo Version: " + mUser.getOdooVersion().getServerSerie());
+                Log.i(TAG, "Limit record: " + mSyncDataLimit);
+
                 // Calling service callback
                 if (mService != null)
                     mService.performDataSync(this, extras, mUser);
@@ -205,6 +215,7 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             }
             // Getting data
+            // En este punto tenemos que verificar el limit de sincronización
             OdooResult response = mOdoo
                     .withRetryPolicy(OConstants.RPC_REQUEST_TIME_OUT, OConstants.RPC_REQUEST_RETRIES)
                     .searchRead(model.getModelName(), getFields(model)
