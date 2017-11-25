@@ -224,6 +224,7 @@ public class OEditNumberField extends LinearLayout implements IOControlData,
     public void onFocusChange(View v, boolean hasFocus) {
         if (!hasFocus && edtText.getText().length() > 0) {
             setValue(getValue());
+
         }
     }
 

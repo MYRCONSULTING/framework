@@ -95,9 +95,12 @@ public class OEditTextField extends LinearLayout implements IOControlData,
             edtText.setTypeface(OControlHelper.lightFont());
             edtText.setFilters(new InputFilter[] {new InputFilter.LengthFilter((int)textSize)});
             edtText.setLayoutParams(params);
+            edtText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
             edtText.setBackgroundColor(Color.TRANSPARENT);
             edtText.setPadding(0, 10, 10, 10);
             edtText.setHint(getLabel());
+
+
             edtText.setOnFocusChangeListener(this);
             if (textSize > -1) {
                 edtText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
