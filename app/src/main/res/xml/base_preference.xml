@@ -21,7 +21,7 @@
         android:key="sync_interval_settings"
         android:title="@string/title_sync_interval">
         <ListPreference
-            android:defaultValue="1440"
+            android:defaultValue="10"
             android:entries="@array/syncInterval"
             android:entryValues="@array/syncIntervalValues"
             android:key="sync_interval"
@@ -32,7 +32,7 @@
         android:key="sync_data_limit_settings"
         android:title="@string/label_data_sync_limit">
         <ListPreference
-            android:defaultValue="60"
+            android:defaultValue="30"
             android:entries="@array/syncDataLimit"
             android:entryValues="@array/syncDataLimitValues"
             android:key="sync_data_limit"

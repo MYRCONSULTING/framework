@@ -174,6 +174,7 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.e(TAG, "Unable to connect with Odoo Server.");
             }
         }
+
     }
 
     private void syncData(OModel model, OUser user, ODomain domain_filter,
@@ -200,7 +201,7 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
                                 && createRelationRecords && model.getLastSyncDateTime() != null)
                             domain.add("&");
                     }
-                    int data_limit = preferenceManager.getInt("sync_data_limit", 60);
+                    int data_limit = preferenceManager.getInt("sync_data_limit", 30);
                     domain.add("create_date", ">=", ODateUtils.getDateBefore(data_limit));
                     if (serverIds.size() > 0) {
                         domain.add("id", "not in", serverIds);

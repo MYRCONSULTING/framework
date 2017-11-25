@@ -66,9 +66,7 @@ public class Encuesta extends OModel {
 
     @Override
     public void onSyncFinished(){
-
         Log.e(TAG, "Limpio 1" );
-
         int id = 0;
         String type = String.valueOf(id);
         Encuesta encuesta = new Encuesta(getContext(),null);
@@ -76,5 +74,6 @@ public class Encuesta extends OModel {
         Log.e(TAG, "Limpio 2" );
 
     }
+
 
 }

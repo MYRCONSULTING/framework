@@ -1101,7 +1101,7 @@ public class OModel implements ISyncServiceListener {
         OSyncAdapter syncAdapter = new OSyncAdapter(mContext, getClass(), null, true);
         syncAdapter.setModel(this);
         syncAdapter.setDomain(domain);
-        syncAdapter.checkForWriteCreateDate(false);
+        //syncAdapter.checkForWriteCreateDate(false);
         syncAdapter.onPerformSync(getUser().getAccount(), null, authority(), null, new SyncResult());
     }
 
@@ -1111,7 +1111,7 @@ public class OModel implements ISyncServiceListener {
         ODomain domain = new ODomain();
         domain.add("id", "=", record.getFloat("id").intValue());
         syncAdapter.setDomain(domain);
-        syncAdapter.checkForWriteCreateDate(false);
+        //syncAdapter.checkForWriteCreateDate(false);
         syncAdapter.onPerformSync(getUser().getAccount(), null, authority(), null, new SyncResult());
         return browse(null, "id = ?", new String[]{record.getString("id")});
     }
