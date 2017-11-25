@@ -49,3 +49,4 @@ captures/
 framework.iml
 intro-slider-lib/intro-slider-lib.iml
 /intro-slider-lib/
+.idea/libraries
