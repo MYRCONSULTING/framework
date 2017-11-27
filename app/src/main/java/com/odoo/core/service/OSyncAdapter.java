@@ -29,6 +29,7 @@ import android.util.Log;
 
 import com.odoo.App;
 import com.odoo.R;
+import com.odoo.addons.alfalaval.models.Vibracionregular;
 import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
@@ -122,7 +123,8 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
         //SyncUtils.get(mContext).setAutoSync(SurveyUserInput.AUTHORITY,true);
         //SyncUtils.get(mContext).setAutoSync(SurveyUserInputLine.AUTHORITY,true);
         //SyncUtils.get(mContext).setAutoSync(SurveyLabel.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(Encuesta.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(Encuesta.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(Vibracionregular.AUTHORITY,true);
 
     }
 

@@ -1,4 +1,4 @@
-package com.odoo.addons.enel;
+package com.odoo.addons.alfalaval;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.odoo.R;
+import com.odoo.addons.alfalaval.models.Vibracionregular;
 import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.support.addons.fragment.BaseFragment;
@@ -40,12 +41,12 @@ import java.util.List;
  * Created by Ricardo Livelli on 20/11/2017.
  */
 
-public class EncuestaF extends BaseFragment implements ISyncStatusObserverListener,
+public class VibracionregularF extends BaseFragment implements ISyncStatusObserverListener,
         LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
         OCursorListAdapter.OnViewBindListener, IOnSearchViewChangeListener, View.OnClickListener,
         AdapterView.OnItemClickListener {
 
-    public static final String KEY = EncuestaF.class.getSimpleName();
+    public static final String KEY = VibracionregularF.class.getSimpleName();
     private View mView;
     private String mCurFilter = null;
     private ListView listView;
@@ -67,29 +68,30 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
         listView = (ListView) mView.findViewById(R.id.listview);
-        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.enel_encuesta_row_item);
+        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.alfalaval_vibracionregular_row_item);
         mAdapter.setOnViewBindListener(this);
-        mAdapter.setHasSectionIndexers(true, "nombres");
+        mAdapter.setHasSectionIndexers(true, "cliente");
         listView.setAdapter(mAdapter);
         listView.setFastScrollAlwaysVisible(true);
         listView.setOnItemClickListener(this);
         setHasSyncStatusObserver(KEY, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(0, null, this);
-        setTitle(OResource.string(getContext(),R.string.sync_label_encuesta));
+        setTitle(OResource.string(getContext(),R.string.sync_label_alfalaval));
     }
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
-        OControls.setText(view, R.id.suministroview, row.getString("suministro"));
-        OControls.setText(view, R.id.nombresview, row.getString("nombres"));
-        OControls.setText(view, R.id.apellido_paternoview, row.getString("apellido_paterno"));
-        OControls.setText(view, R.id.apellido_maternoview, row.getString("apellido_materno"));
-        OControls.setText(view, R.id.dniview, row.getString("dni"));
-        OControls.setText(view, R.id.telefono_fijoview, row.getString("telefono_fijo"));
+        OControls.setText(view, R.id.clienteview, row.getString("cliente"));
+        OControls.setText(view, R.id.codigoclienteview, row.getString("codigocliente"));
+        OControls.setText(view, R.id.numeroosview, row.getString("numeroos"));
+        OControls.setText(view, R.id.equipoview, row.getString("equipo"));
+        OControls.setText(view, R.id.prodnview, row.getString("prodn"));
+        OControls.setText(view, R.id.flujoview, row.getString("flujo"));
+        OControls.setText(view, R.id.precisionview, row.getString("precision"));
         Bitmap img;
         if (row.getString("image_small").equals("false")) {
-            img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("nombres"));
+            img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("cliente"));
         } else {
             img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image_small"));
         }
@@ -98,14 +100,14 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle data) {
-        String where = "suministro != ?";
+        String where = "codigocliente != ?";
         List<String> args = new ArrayList<>();
         args.add("");
         if (id > 0)
             args.add(String.valueOf(id));
 
         if (mCurFilter != null) {
-            where += " and nombres like ? ";
+            where += " and cliente like ? ";
             args.add("%" + mCurFilter + "%");
         }
         String selection = (args.size() > 0) ? where : where;
@@ -123,7 +125,7 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
                     OControls.setGone(mView, R.id.loadingProgress);
                     OControls.setVisible(mView, R.id.swipe_container);
                     OControls.setGone(mView, R.id.data_list_no_item);
-                    setHasSwipeRefreshView(mView, R.id.swipe_container, EncuestaF.this);
+                    setHasSwipeRefreshView(mView, R.id.swipe_container, VibracionregularF.this);
                 }
             }, 500);
         } else {
@@ -133,10 +135,10 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
                     OControls.setGone(mView, R.id.loadingProgress);
                     OControls.setGone(mView, R.id.swipe_container);
                     OControls.setVisible(mView, R.id.data_list_no_item);
-                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, EncuestaF.this);
-                    OControls.setImage(mView, R.id.icon, R.drawable.ic_action_universe);
-                    OControls.setText(mView, R.id.title, _s(R.string.label_no_encuesta_found));
-                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_encuesta_found_swipe));
+                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, VibracionregularF.this);
+                    OControls.setImage(mView, R.id.icon, R.drawable.vibraciones_regulares);
+                    OControls.setText(mView, R.id.title, _s(R.string.label_no_vibracionregular_found));
+                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_vibracionregular_found_swipe));
 
                 }
             }, 500);
@@ -153,16 +155,16 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
     }
 
     @Override
-    public Class<Encuesta> database() {
-        return Encuesta.class;
+    public Class<Vibracionregular> database() {
+        return Vibracionregular.class;
     }
 
     @Override
     public List<ODrawerItem> drawerMenus(Context context) {
         List<ODrawerItem> menu = new ArrayList<>();
-        menu.add(new ODrawerItem(KEY).setTitle(OResource.string(context, R.string.sync_label_encuesta))
+        menu.add(new ODrawerItem(KEY).setTitle(OResource.string(context, R.string.sync_label_alfalaval))
                 .setIcon(R.drawable.ic_action_universe)
-                .setInstance(new EncuestaF()));
+                .setInstance(new VibracionregularF()));
         return menu;
     }
 
@@ -175,7 +177,7 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
     @Override
     public void onRefresh() {
         if (inNetwork()) {
-            parent().sync().requestSync(Encuesta.AUTHORITY);
+            parent().sync().requestSync(Vibracionregular.AUTHORITY);
             setSwipeRefreshing(true);
         } else {
             hideRefreshingProgress();
@@ -227,11 +229,11 @@ public class EncuestaF extends BaseFragment implements ISyncStatusObserverListen
         Bundle data = new Bundle();
         if (row != null) {
             data = row.getPrimaryBundleData();
-            data.putString(EXTRA_KEY_PROJECT, row.getString("nombres"));
+            data.putString(EXTRA_KEY_PROJECT, row.getString("cliente"));
         }
 
 
-        IntentUtils.startActivity(getActivity(), EncuestaDetails.class, data);
+        IntentUtils.startActivity(getActivity(), VibracionregularDetails.class, data);
     }
 
     @Override

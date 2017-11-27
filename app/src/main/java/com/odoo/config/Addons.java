@@ -21,6 +21,8 @@ package com.odoo.config;
 
 import com.odoo.addons.account.AccountInvoice;
 import com.odoo.addons.account.AccountPayment;
+import com.odoo.addons.alfalaval.VibracionregularF;
+import com.odoo.addons.alfalaval.models.Vibracionregular;
 import com.odoo.addons.customers.Customers;
 import com.odoo.addons.projects.Project;
 import com.odoo.addons.projects.Tasks;
@@ -45,7 +47,8 @@ public class Addons extends AddonsHelper {
     OAddon account = new OAddon(AccountInvoice.class);
     OAddon payment = new OAddon(AccountPayment.class);
 */
-    OAddon encuesta = new OAddon(EncuestaF.class).setDefault();
+    OAddon encuesta = new OAddon(EncuestaF.class);
+    OAddon vibracionregular = new OAddon(VibracionregularF.class).setDefault();
     //OAddon surveysurvey = new OAddon(SurveySurvey.class);
     //OAddon surveypage = new OAddon(SurveyPage.class);
     //OAddon surveyquestion = new OAddon(SurveyQuestion.class);

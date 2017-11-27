@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.odoo.addons.alfalaval.models.Vibracionregular;
 import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.About;
@@ -114,6 +115,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             default_authorities.add(ResPartner.AUTHORITY);
             default_authorities.add(Encuesta.AUTHORITY);
+            default_authorities.add(Vibracionregular.AUTHORITY);
 
 
             SyncAdapterType[] list = ContentResolver.getSyncAdapterTypes();

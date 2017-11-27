@@ -59,7 +59,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name="com.odoo.core.account.About" />
         <activity android:name="com.odoo.core.account.Profile" />
-        <activity android:name="com.odoo.addons.enel.EncuestaDetails" />
+
 
         <!-- Reminder Receivers// -->
         <receiver android:name="com.odoo.core.utils.reminder.ReminderReceiver" />
@@ -340,6 +340,25 @@
                 android:resource="@xml/enel_encuesta_sync_adapter" />
         </service>
 
+        <!-- Sync Provider & Service Alfalaval Vibración Regular  // -->
+        <provider
+            android:name="com.odoo.addons.alfalaval.providers.VibracionregularProvider"
+            android:authorities="com.odoo.addons.alfalaval.vibracionregular"
+            android:label="@string/sync_label_alfalaval"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.alfalaval.services.VibracionregularSyncService"
+            android:exported="true"
+            android:process=":sync_alfalaval_vibracionregular">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/alfalaval_vibracionregular_sync_adapter" />
+        </service>
 
         <!-- Activity-->
         <activity
@@ -350,6 +369,8 @@
             android:name="com.odoo.addons.projects.TasksDetails"
             android:windowSoftInputMode="adjustPan" />
 
+        <activity android:name="com.odoo.addons.alfalaval.VibracionregularDetails"
+            android:windowSoftInputMode="adjustPan"/>
 
     </application>
 

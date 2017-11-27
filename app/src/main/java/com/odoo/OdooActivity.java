@@ -54,6 +54,7 @@ import android.widget.Toast;
 
 import com.odoo.addons.account.models.AccountInvoice;
 import com.odoo.addons.account.models.AccountPayment;
+import com.odoo.addons.alfalaval.models.Vibracionregular;
 import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.addons.projects.TasksDetails;
 import com.odoo.addons.projects.models.ProjectProject;
@@ -373,6 +374,7 @@ public class OdooActivity extends OdooCompatActivity {
          */
 
         Encuesta encuesta = new Encuesta(getBaseContext(),OUser.current(getBaseContext()));
+        Vibracionregular vibracionregular = new Vibracionregular(getBaseContext(),OUser.current(getBaseContext()));
 
         ODomain oDomain = new ODomain();
         resPartner.quickSyncRecords(oDomain);
@@ -390,7 +392,8 @@ public class OdooActivity extends OdooCompatActivity {
         accountPayment.quickSyncRecords(oDomain);
          */
 
-        encuesta.quickSyncRecords(oDomain);
+        //encuesta.quickSyncRecords(oDomain);
+        vibracionregular.quickSyncRecords(oDomain);
 
         /*
         resPartner.sync().requestSync(ResPartner.AUTHORITY);

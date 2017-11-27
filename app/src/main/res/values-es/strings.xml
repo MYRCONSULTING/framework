@@ -179,6 +179,7 @@
     <string name="label_no_payment_found">No existen pagos</string>
     <string name="label_no_payment_found_swipe">Deslizar para comprobar nuevos pagos</string>
     <string name="sync_label_encuesta">Encuestas</string>
+    <string name="sync_label_alfalaval">Vibracion Regular</string>
     <string name="label_no_encuesta_found">No existen encuestas</string>
     <string name="label_no_encuesta_found_swipe">Deslizar para comprobar nuevas encuestas</string>
     <string name="label_suministro">No. Suministro</string>
@@ -192,5 +193,16 @@
     <string name="label_edad">Edad</string>
     <string name="label_distrito">Distrito</string>
     <string name="label_direccion">Dirección residencial</string>
+    <string name="label_cliente">Datos del cliente</string>
+    <string name="label_codigocliente">Código del cliente</string>
+    <string name="label_numeroos">OS No</string>
+    <string name="label_equipo">Equipo</string>
+    <string name="label_prodn">Prod No</string>
+    <string name="label_flujo">Flujo m3/h</string>
+    <string name="label_precision">Precisión</string>
+    <string name="label_valormaximo">Valor máximo medido en mm/s</string>
+
+    <string name="label_no_vibracionregular_found">No existen informes</string>
+    <string name="label_no_vibracionregular_found_swipe">Deslizar para comprobar nuevos informes</string>
 
 </resources>
