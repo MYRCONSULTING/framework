@@ -231,6 +231,64 @@
                 <odoo.controls.OField
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:fieldName="precision"
+                    app:controlLabel="@string/label_precision"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fieldName="mrvaciomm1"
+
+                    android:layout_weight="1"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fieldName="mrvaciomm2"
+
+                    android:layout_weight="1"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fieldName="mrvaciomm3"
+
+                    android:layout_weight="1"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fieldName="mrvaciomm4"
+
+                    android:layout_weight="1"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fieldName="mrvaciomm5"
+
+                    android:layout_weight="1"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fieldName="mrvaciomm6"
+                    
+                    android:layout_weight="1"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+
+
+
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:fieldName="valormaximo"
                     app:controlLabel="@string/label_valormaximo"
                     app:fieldTextAppearance="?android:textAppearanceMedium"
@@ -238,6 +296,49 @@
 
 
             </LinearLayout>
+
+            <!--
+            <TableLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TableRow>
+                    <odoo.controls.OField
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fieldName="mrvaciomm4"
+                        app:controlLabel="@string/label_mrvaciomm"
+                        app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+                    <odoo.controls.OField
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fieldName="mrvaciomm4"
+                        app:controlLabel="@string/label_mrvaciomm"
+                        app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+                    <odoo.controls.OField
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fieldName="mrvaciomm4"
+                        app:controlLabel="@string/label_mrvaciomm"
+                        app:fieldTextAppearance="?android:textAppearanceMedium"></odoo.controls.OField>
+                </TableRow>
+
+                <TableRow>
+                    <TextView android:text="Celda 2.1" />
+                    <TextView android:text="Celda 2.2" />
+                    <TextView android:text="Celda 2.3" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView android:text="Celda 3.1"
+                        android:layout_span="2" />
+                    <TextView android:text="Celda 3.2" />
+                </TableRow>
+            </TableLayout>
+
+            -->
+
         </odoo.controls.OForm>
 
     </LinearLayout>
