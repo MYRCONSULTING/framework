@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <!--View Layout-->
+    <LinearLayout
+        android:id="@+id/servicesorder_view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <odoo.controls.OForm
+            android:id="@+id/servicesorderForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:modelName="services.order">
+
+
+            <odoo.controls.OField
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:controlLabel="@string/label_name_os_vista"
+                app:fieldName="name"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_universe"></odoo.controls.OField>
+
+            <View
+                style="@style/ViewSeparator"
+                android:layout_marginLeft="72dp" />
+
+            <odoo.controls.OField
+                android:id="@+id/order_ref"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="order_ref"
+                app:controlLabel="@string/label_os_order_ref"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
+
+        </odoo.controls.OForm>
+    </LinearLayout>
+    <!--Edit Layout-->
+    <LinearLayout
+        android:id="@+id/servicesorder_edit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/statusBarHeight"
+        android:visibility="gone">
+
+        <odoo.controls.OForm
+            android:id="@+id/servicesorderFormEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:orientation="vertical"
+            app:modelName="services.order">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/parallax_view_edit"
+                android:orientation="vertical">
+
+                <odoo.controls.OField
+                    android:id="@android:id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/default_8dp"
+                    app:fieldName="name"
+                    app:controlLabel="@string/label_os_editar"
+                    app:fieldTextAppearance="?android:textAppearanceLarge"
+                    app:showIcon="false"
+                    app:showLabel="true"></odoo.controls.OField>
+
+                <View
+                    style="@style/ViewSeparator"
+                    android:layout_marginLeft="72dp" />
+
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:fieldName="order_ref"
+                    app:controlLabel="@string/label_os_order_ref"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
+
+            </LinearLayout>
+        </odoo.controls.OForm>
+
+    </LinearLayout>
+</LinearLayout>

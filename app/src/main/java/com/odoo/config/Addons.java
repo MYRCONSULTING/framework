@@ -24,6 +24,8 @@ import com.odoo.addons.account.AccountPayment;
 import com.odoo.addons.customers.Customers;
 import com.odoo.addons.projects.Project;
 import com.odoo.addons.projects.Tasks;
+import com.odoo.addons.servicesorder.ServicesOrderF;
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.support.addons.AddonsHelper;
 import com.odoo.core.support.addons.OAddon;
 import com.odoo.addons.enel.*;
@@ -45,7 +47,10 @@ public class Addons extends AddonsHelper {
     OAddon account = new OAddon(AccountInvoice.class);
     OAddon payment = new OAddon(AccountPayment.class);
 */
-    OAddon encuesta = new OAddon(EncuestaF.class).setDefault();
+
+    OAddon customers = new OAddon(Customers.class);
+    OAddon orderservices = new OAddon(ServicesOrderF.class).setDefault();
+    OAddon encuesta = new OAddon(EncuestaF.class);
     //OAddon surveysurvey = new OAddon(SurveySurvey.class);
     //OAddon surveypage = new OAddon(SurveyPage.class);
     //OAddon surveyquestion = new OAddon(SurveyQuestion.class);

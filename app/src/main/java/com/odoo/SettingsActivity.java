@@ -33,6 +33,7 @@ import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.projects.models.ProjectTaskType;
+import com.odoo.addons.servicesorder.models.ServicesOrder;
 import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveyQuestion;
 import com.odoo.addons.survey.models.SurveyUserInput;
@@ -121,6 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             default_authorities.add(ResPartner.AUTHORITY);
             default_authorities.add(Encuesta.AUTHORITY);
+            default_authorities.add(ServicesOrder.AUTHORITY);
 
 
             SyncAdapterType[] list = ContentResolver.getSyncAdapterTypes();

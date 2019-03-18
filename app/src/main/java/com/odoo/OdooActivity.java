@@ -60,6 +60,7 @@ import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.projects.models.ProjectTaskType;
 import com.odoo.addons.projects.models.TypeTask;
+import com.odoo.addons.servicesorder.models.ServicesOrder;
 import com.odoo.addons.survey.models.SurveyLabel;
 import com.odoo.addons.survey.models.SurveyPage;
 import com.odoo.addons.survey.models.SurveyQuestion;
@@ -367,6 +368,7 @@ public class OdooActivity extends OdooCompatActivity {
          */
 
         Encuesta encuesta = new Encuesta(getBaseContext(),OUser.current(getBaseContext()));
+        ServicesOrder servicesorder = new ServicesOrder(getBaseContext(),OUser.current(getBaseContext()));
 
         ODomain oDomain = new ODomain();
         resPartner.quickSyncRecords(oDomain);
@@ -385,6 +387,7 @@ public class OdooActivity extends OdooCompatActivity {
          */
 
         encuesta.quickSyncRecords(oDomain);
+        servicesorder.quickSyncRecords(oDomain);
 
         /*
         resPartner.sync().requestSync(ResPartner.AUTHORITY);

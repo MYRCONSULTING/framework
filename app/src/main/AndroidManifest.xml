@@ -60,6 +60,7 @@
         <activity android:name="com.odoo.core.account.About" />
         <activity android:name="com.odoo.core.account.Profile" />
         <activity android:name="com.odoo.addons.enel.EncuestaDetails" />
+        <activity android:name="com.odoo.addons.servicesorder.ServicesOrderDetails" />
 
         <!-- Reminder Receivers// -->
         <receiver android:name="com.odoo.core.utils.reminder.ReminderReceiver" />
@@ -340,6 +341,28 @@
                 android:resource="@xml/enel_encuesta_sync_adapter" />
         </service>
 
+
+        <!-- Inicio - Sync Provider & Service Services Order  // -->
+        <provider
+            android:name="com.odoo.addons.servicesorder.providers.ServicesOrderProvider"
+            android:authorities="com.odoo.addons.servicesorder.services_order"
+            android:label="@string/sync_label_OSMenu"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.servicesorder.services.ServicesOrderSyncService"
+            android:exported="true"
+            android:process=":sync_services_order">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/orders_service_sync_adapter" />
+        </service>
+
+        <!-- Fin - Sync Provider & Service Services Order  // -->
 
         <!-- Activity-->
         <activity
