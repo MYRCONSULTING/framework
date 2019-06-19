@@ -40,7 +40,7 @@ import com.odoo.R;
  * image contents, but is also flexible enough for use with other desired
  * aesthetics.
  */
-public class BezelImageView extends ImageView {
+public class BezelImageView extends android.support.v7.widget.AppCompatImageView {
     private Paint mBlackPaint;
     private Paint mMaskedPaint;
 
@@ -176,8 +176,8 @@ public class BezelImageView extends ImageView {
                         .setColorFilter((mDesaturateOnPress && isPressed()) ? mDesaturateColorFilter
                                 : null);
                 cacheCanvas.saveLayer(mBoundsF, mMaskedPaint,
-                        Canvas.HAS_ALPHA_LAYER_SAVE_FLAG
-                                | Canvas.FULL_COLOR_LAYER_SAVE_FLAG);
+                        Canvas.ALL_SAVE_FLAG
+                                | Canvas.ALL_SAVE_FLAG);
                 super.onDraw(cacheCanvas);
                 cacheCanvas.restoreToCount(sc);
             } else if (mDesaturateOnPress && isPressed()) {
@@ -186,8 +186,8 @@ public class BezelImageView extends ImageView {
                         mBlackPaint);
                 mMaskedPaint.setColorFilter(mDesaturateColorFilter);
                 cacheCanvas.saveLayer(mBoundsF, mMaskedPaint,
-                        Canvas.HAS_ALPHA_LAYER_SAVE_FLAG
-                                | Canvas.FULL_COLOR_LAYER_SAVE_FLAG);
+                        Canvas.ALL_SAVE_FLAG
+                                | Canvas.ALL_SAVE_FLAG);
                 super.onDraw(cacheCanvas);
                 cacheCanvas.restoreToCount(sc);
             } else {

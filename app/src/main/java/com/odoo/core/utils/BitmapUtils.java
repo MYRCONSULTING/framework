@@ -117,7 +117,9 @@ public class BitmapUtils {
 
     public static Bitmap getAlphabetImage(Context context, String content) {
         Resources res = context.getResources();
-        Bitmap mDefaultBitmap = BitmapFactory.decodeResource(res, android.R.drawable.sym_def_app_icon);
+        //Bitmap mDefaultBitmap = BitmapFactory.decodeResource(res, android.R.drawable.sym_def_app_icon);
+        Bitmap mDefaultBitmap = BitmapFactory.decodeResource(res, android.R.drawable.alert_dark_frame);
+
         int width = mDefaultBitmap.getWidth();
         int height = mDefaultBitmap.getHeight();
         TextPaint mPaint = new TextPaint();

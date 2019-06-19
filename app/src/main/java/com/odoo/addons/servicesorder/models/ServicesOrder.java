@@ -3,6 +3,7 @@ package com.odoo.addons.servicesorder.models;
 import android.content.Context;
 import android.net.Uri;
 
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.fields.OColumn;
@@ -20,6 +21,8 @@ public class ServicesOrder extends OModel {
     public static final String AUTHORITY = "com.odoo.addons.servicesorder.services_order";
 
     OColumn name = new OColumn("No. OS", OVarchar.class).setSize(100);
+    OColumn partner_id = new OColumn("partner_id", ResPartner.class, OColumn.RelationType.ManyToOne);
+    OColumn partner_delivery_id = new OColumn("partner_delivery_id", ResPartner.class, OColumn.RelationType.ManyToOne);
     OColumn order_ref = new OColumn("No. de Pedido", OVarchar.class).setSize(100);
 
 

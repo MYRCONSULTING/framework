@@ -178,4 +178,26 @@
     <string name="sync_label_accountpayment">Pagos</string>
     <string name="label_no_payment_found">No existen pagos</string>
     <string name="label_no_payment_found_swipe">Deslizar para comprobar nuevos pagos</string>
+    <string name="sync_label_encuesta">Encuestas</string>
+    <string name="sync_label_OSMenu">Ordenes de Servicios</string>
+    <string name="label_edad">Edad</string>
+    <string name="label_no_so_found_swipe">Deslizar para comprobar nuevos Ordenes de Servicio</string>
+    <string name="sync_label_os">Orden de Servicio</string>
+    <string name="label_no_encuesta_found">No existen encuestas</string>
+    <string name="label_no_os_found">No existen Ordenes de Servicio</string>
+    <string name="label_no_encuesta_found_swipe">Deslizar para comprobar nuevas encuestas</string>
+    <string name="label_suministro_vista">No. Suministro Vista</string>
+    <string name="label_name_os_vista">No. OS Vista</string>
+    <string name="label_suministro_editar">No. Suministro Editar</string>
+    <string name="label_os_editar">No. OS Editar</string>
+    <string name="label_nombres">Nombres</string>
+    <string name="label_os_order_ref">No. Pedido</string>
+    <string name="label_apellido_paterno">Apellido Paterno</string>
+    <string name="label_apellido_materno">Apellido Materno</string>
+    <string name="label_dni">No. DNI</string>
+    <string name="label_telefono_fijo">Teléfono fijo</string>
+    <string name="label_telefono_celular">Teléfono celular</string>
+    <string name="label_email2">Correo electrónico</string>
+    <string name="label_distrito">Distrito</string>
+    <string name="label_direccion">Dirección residencial</string>
 </resources>
