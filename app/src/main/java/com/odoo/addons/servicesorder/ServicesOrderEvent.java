@@ -21,8 +21,8 @@ import android.widget.Toast;
 
 import com.odoo.R;
 import com.odoo.addons.servicesorder.models.ServicesOrder;
+import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
 import com.odoo.core.orm.ODataRow;
-import com.odoo.core.support.OUser;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -41,12 +41,12 @@ import java.util.List;
  * Created by Ricardo Livelli on 20/11/2017.
  */
 
-public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverListener,
+public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObserverListener,
         LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
         OCursorListAdapter.OnViewBindListener, IOnSearchViewChangeListener, View.OnClickListener,
         AdapterView.OnItemClickListener {
 
-    public static final String KEY = ServicesOrderF.class.getSimpleName();
+    public static final String KEY = ServicesOrderEvent.class.getSimpleName();
     private View mView;
     private String mCurFilter = null;
     private ListView listView;
@@ -68,26 +68,72 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
         listView = (ListView) mView.findViewById(R.id.listview);
-        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.services_order_row_item);
+        mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.services_order_event_row_item);
         mAdapter.setOnViewBindListener(this);
-        mAdapter.setHasSectionIndexers(true, "name");
+        mAdapter.setHasSectionIndexers(true, "os_id");
         listView.setAdapter(mAdapter);
         listView.setFastScrollAlwaysVisible(true);
         listView.setOnItemClickListener(this);
         setHasSyncStatusObserver(KEY, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
         getLoaderManager().initLoader(0, null, this);
-        setTitle(OResource.string(getContext(),R.string.sync_label_os));
-        hideFab();
+        setTitle(OResource.string(getContext(),R.string.label_event));
+        //hideFab();
     }
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
-        OControls.setText(view, R.id.text0, row.getString("name"));
-        OControls.setText(view, android.R.id.text1, row.getString("order_ref"));
+
+        ServicesOrderEventType servicesOrderEventType = new ServicesOrderEventType(getContext(),null);
+        ServicesOrder servicesOrder = new ServicesOrder(getContext(),null);
+        String nameServicesOrderEventType = "";
+        String nameServicesOrder = "";
+
+        if (row.getString("os_id")!=null && !row.getString("os_id").equals("false")){
+            try {
+                ODataRow oDataRow =  servicesOrder.browse(Integer.valueOf(row.getString("os_id")));
+                if (oDataRow != null)
+                    nameServicesOrder = oDataRow.getString("name");
+                if (nameServicesOrder.equals("false"))
+                    nameServicesOrder = "";
+
+                if (nameServicesOrder.isEmpty())
+                {
+                    OControls.setGone(view,R.id.text0);
+                }else{
+                    OControls.setText(view, R.id.text0, nameServicesOrder);
+                }
+
+            }catch (Exception e){
+
+            }
+
+        }
+
+        if (row.getString("state")!=null && !row.getString("state").equals("false")){
+            try {
+                nameServicesOrderEventType = servicesOrderEventType.browse(Integer.valueOf(row.getString("state"))).getString("name");
+                if (nameServicesOrderEventType.equals("false"))
+                    nameServicesOrderEventType = "";
+
+                if (nameServicesOrderEventType.isEmpty())
+                {
+                    OControls.setGone(view,R.id.txtTypeEvent);
+                }else{
+                    OControls.setText(view, R.id.txtTypeEvent, nameServicesOrderEventType);
+                }
+
+            }catch (Exception e){
+
+            }
+
+        }
+
+        OControls.setText(view, android.R.id.text1, row.getString("comment"));
+
         Bitmap img;
         if (row.getString("image_small").equals("false")) {
-            img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("name"));
+            img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("_id"));
         } else {
             img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image_small"));
         }
@@ -96,14 +142,14 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle data) {
-        String where = "name != ?";
+        String where = "os_id != ?";
         List<String> args = new ArrayList<>();
         args.add("");
         if (id > 0)
             args.add(String.valueOf(id));
 
         if (mCurFilter != null) {
-            where += " and order_ref like ? ";
+            where += " and comment like ? ";
             args.add("%" + mCurFilter + "%");
         }
         String selection = (args.size() > 0) ? where : where;
@@ -121,7 +167,7 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                     OControls.setGone(mView, R.id.loadingProgress);
                     OControls.setVisible(mView, R.id.swipe_container);
                     OControls.setGone(mView, R.id.data_list_no_item);
-                    setHasSwipeRefreshView(mView, R.id.swipe_container, ServicesOrderF.this);
+                    setHasSwipeRefreshView(mView, R.id.swipe_container, ServicesOrderEvent.this);
                 }
             }, 500);
         } else {
@@ -131,10 +177,10 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                     OControls.setGone(mView, R.id.loadingProgress);
                     OControls.setGone(mView, R.id.swipe_container);
                     OControls.setVisible(mView, R.id.data_list_no_item);
-                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, ServicesOrderF.this);
+                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, ServicesOrderEvent.this);
                     OControls.setImage(mView, R.id.icon, R.drawable.ic_action_universe);
-                    OControls.setText(mView, R.id.title, _s(R.string.label_no_os_found));
-                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_so_found_swipe));
+                    OControls.setText(mView, R.id.title, _s(R.string.label_no_os_event_found));
+                    OControls.setText(mView, R.id.subTitle, _s(R.string.label_no_so_event_found_swipe));
 
                 }
             }, 500);
@@ -151,16 +197,16 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
     }
 
     @Override
-    public Class<ServicesOrder> database() {
-        return ServicesOrder.class;
+    public Class<com.odoo.addons.servicesorder.models.ServicesOrderEvent> database() {
+        return com.odoo.addons.servicesorder.models.ServicesOrderEvent.class;
     }
 
     @Override
     public List<ODrawerItem> drawerMenus(Context context) {
         List<ODrawerItem> menu = new ArrayList<>();
-        menu.add(new ODrawerItem(KEY).setTitle(OResource.string(context, R.string.sync_label_OSMenu))
+        menu.add(new ODrawerItem(KEY).setTitle(OResource.string(context, R.string.label_event))
                 .setIcon(R.drawable.ic_action_universe)
-                .setInstance(new ServicesOrderF()));
+                .setInstance(new ServicesOrderEvent()));
         return menu;
     }
 
@@ -225,11 +271,11 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         Bundle data = new Bundle();
         if (row != null) {
             data = row.getPrimaryBundleData();
-            data.putString(EXTRA_KEY_PROJECT, row.getString("name"));
+            data.putString(EXTRA_KEY_PROJECT, row.getString("os_id"));
         }
 
 
-        IntentUtils.startActivity(getActivity(), ServicesOrderDetails.class, data);
+        IntentUtils.startActivity(getActivity(), ServicesOrderEventDetails.class, data);
     }
 
     @Override

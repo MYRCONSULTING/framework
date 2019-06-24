@@ -187,11 +187,11 @@
     <string name="label_no_os_found">No existen Ordenes de Servicio</string>
     <string name="label_no_encuesta_found_swipe">Deslizar para comprobar nuevas encuestas</string>
     <string name="label_suministro_vista">No. Suministro Vista</string>
-    <string name="label_name_os_vista">No. OS Vista</string>
+    <string name="label_name_os_vista">No. de Orden</string>
     <string name="label_suministro_editar">No. Suministro Editar</string>
-    <string name="label_os_editar">No. OS Editar</string>
+    <string name="label_os_editar">No. Orden Editar</string>
     <string name="label_nombres">Nombres</string>
-    <string name="label_os_order_ref">No. Pedido</string>
+    <string name="label_os_order_ref">Pedido</string>
     <string name="label_apellido_paterno">Apellido Paterno</string>
     <string name="label_apellido_materno">Apellido Materno</string>
     <string name="label_dni">No. DNI</string>
@@ -200,5 +200,12 @@
     <string name="label_email2">Correo electrónico</string>
     <string name="label_distrito">Distrito</string>
     <string name="label_direccion">Dirección residencial</string>
+    <string name="fecha">Fecha</string>
+    <string name="label_event">Eventos</string>
+    <string name="label_direccionrecojo">Dirección recojo</string>
+    <string name="sync_label_Event_Type">Tipo de Eventos</string>
+    <string name="sync_label_OSEvent_Type">Ordenes de Servicio Eventos</string>
+    <string name="label_no_os_event_found">No existen Eventos</string>
+    <string name="label_no_so_event_found_swipe">Deslizar para comprobar nuevos Eventos</string>
 
 </resources>

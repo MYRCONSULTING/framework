@@ -2,20 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_services_order_edit"
+        android:id="@+id/menu_services_order_event_edit"
         android:icon="@drawable/ic_action_edit"
         android:title="@string/label_edit"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_services_order_save"
+        android:id="@+id/menu_services_order_event_save"
         android:title="@string/label_save"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_services_order_cancel"
+        android:id="@+id/menu_services_order_event_cancel"
         android:title="@string/label_cancel"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_services_order_detail_more"
+        android:id="@+id/menu_services_order_event_detail_more"
         android:icon="@drawable/ic_action_more"
         android:title="@string/label_more"
         app:showAsAction="always">
@@ -25,13 +25,13 @@
                 android:title="@string/label_event" />
             <!-- -->
             <item
-                android:id="@+id/menu_services_order_share"
+                android:id="@+id/menu_services_order_evento_share"
                 android:title="@string/label_share" />
             <item
-                android:id="@+id/menu_services_order_import"
+                android:id="@+id/menu_services_order_evento_import"
                 android:title="@string/label_import_contact" />
             <item
-                android:id="@+id/menu_services_order_delete"
+                android:id="@+id/menu_services_order_evento_delete"
                 android:title="@string/label_delete" />
         </menu>
     </item>

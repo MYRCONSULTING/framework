@@ -8,13 +8,13 @@
 
     <!--View Layout-->
     <LinearLayout
-        android:id="@+id/servicesorder_view_layout"
+        android:id="@+id/servicesorderevent_view_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <odoo.controls.OForm
-            android:id="@+id/servicesorderForm"
+            android:id="@+id/servicesorderEventForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -36,7 +36,7 @@
                 android:layout_marginLeft="72dp" />
 
             <odoo.controls.OField
-                android:id="@+id/order_ref"
+                android:id="@+id/order_event_ref"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:fieldLabelColor="@color/theme_secondary"
@@ -80,7 +80,7 @@
     </LinearLayout>
     <!--Edit Layout-->
     <LinearLayout
-        android:id="@+id/servicesorder_edit_layout"
+        android:id="@+id/servicesorderEvent_edit_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
@@ -88,7 +88,7 @@
         android:visibility="gone">
 
         <odoo.controls.OForm
-            android:id="@+id/servicesorderFormEdit"
+            android:id="@+id/servicesorderEventFormEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"

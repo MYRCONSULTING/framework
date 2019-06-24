@@ -1,5 +1,5 @@
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
     android:accountType="com.odoo.auth"
-    android:contentAuthority="com.odoo.addons.account.account_invoice"
+    android:contentAuthority="com.odoo.addons.servicesorder.services_order_event"
     android:supportsUploading="true"
-    android:userVisible="false" />
+    android:userVisible="true" />

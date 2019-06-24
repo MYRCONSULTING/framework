@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.odoo.App;
 import com.odoo.R;
 import com.odoo.addons.customers.utils.ShareUtil;
-import com.odoo.addons.servicesorder.models.ServicesOrder;
+import com.odoo.addons.servicesorder.models.ServicesOrderEvent;
 import com.odoo.base.addons.ir.feature.OFileManager;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
@@ -37,13 +37,13 @@ import odoo.controls.OForm;
  * Created by Ricardo Livelli on 21/11/2017.
  */
 
-public class ServicesOrderDetails extends OdooCompatActivity
+public class ServicesOrderEventDetails extends OdooCompatActivity
         implements View.OnClickListener, OField.IOnFieldValueChangeListener {
-    public static final String TAG = ServicesOrderDetails.class.getSimpleName();
+    public static final String TAG = ServicesOrderEventDetails.class.getSimpleName();
     private final String KEY_MODE = "key_edit_mode";
     private final String KEY_NEW_IMAGE = "key_new_image";
     private Bundle extras;
-    private ServicesOrder orderservices;
+    private ServicesOrderEvent orderservices;
     private ODataRow record = null;
     private ImageView servicesorderImage = null;
     private OForm mForm;
@@ -58,7 +58,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.services_order_detail);
+        setContentView(R.layout.services_order_event_detail);
 
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.servicesorder_collapsing_toolbar);
 
@@ -67,7 +67,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        servicesorderImage = (ImageView) findViewById(R.id.servicesorder_image);
+        servicesorderImage = (ImageView) findViewById(R.id.servicesorder_event_image);
         findViewById(R.id.captureImage).setOnClickListener(this);
 
         fileManager = new OFileManager(this);
@@ -78,7 +78,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
             newImage = savedInstanceState.getString(KEY_NEW_IMAGE);
         }
         app = (App) getApplicationContext();
-        orderservices = new ServicesOrder(this,null);
+        orderservices = new ServicesOrderEvent(this,null);
         extras = getIntent().getExtras();
         if (hasRecordInExtra())
             mEditMode = false;
@@ -97,11 +97,11 @@ public class ServicesOrderDetails extends OdooCompatActivity
     private void setMode(Boolean edit) {
         findViewById(R.id.captureImage).setVisibility(edit ? View.VISIBLE : View.GONE);
         if (mMenu != null) {
-            mMenu.findItem(R.id.menu_services_order_detail_more).setVisible(!edit);
+            mMenu.findItem(R.id.menu_services_order_event_detail_more).setVisible(!edit);
             //mMenu.findItem(R.id.menu_services_order_edit).setVisible(!edit);
-            mMenu.findItem(R.id.menu_services_order_edit).setVisible(false);
-            mMenu.findItem(R.id.menu_services_order_save).setVisible(edit);
-            mMenu.findItem(R.id.menu_services_order_cancel).setVisible(edit);
+            mMenu.findItem(R.id.menu_services_order_event_edit).setVisible(false);
+            mMenu.findItem(R.id.menu_services_order_event_save).setVisible(edit);
+            mMenu.findItem(R.id.menu_services_order_event_cancel).setVisible(edit);
         }
         int color = Color.DKGRAY;
         if (record != null) {
@@ -111,13 +111,13 @@ public class ServicesOrderDetails extends OdooCompatActivity
             if (!hasRecordInExtra()) {
                 collapsingToolbarLayout.setTitle(OResource.string(this,R.string.label_create_new));
             }
-            mForm = (OForm) findViewById(R.id.servicesorderFormEdit);
-            findViewById(R.id.servicesorder_view_layout).setVisibility(View.GONE);
-            findViewById(R.id.servicesorder_edit_layout).setVisibility(View.VISIBLE);
+            mForm = (OForm) findViewById(R.id.servicesorderEventFormEdit);
+            findViewById(R.id.servicesorderevent_view_layout).setVisibility(View.GONE);
+            findViewById(R.id.servicesorderEvent_edit_layout).setVisibility(View.VISIBLE);
         } else {
-            mForm = (OForm) findViewById(R.id.servicesorderForm);
-            findViewById(R.id.servicesorder_edit_layout).setVisibility(View.GONE);
-            findViewById(R.id.servicesorder_view_layout).setVisibility(View.VISIBLE);
+            mForm = (OForm) findViewById(R.id.servicesorderEventForm);
+            findViewById(R.id.servicesorderEvent_edit_layout).setVisibility(View.GONE);
+            findViewById(R.id.servicesorderevent_view_layout).setVisibility(View.VISIBLE);
         }
         setColor(color);
     }
@@ -132,15 +132,15 @@ public class ServicesOrderDetails extends OdooCompatActivity
         } else {
             int rowId = extras.getInt(OColumn.ROW_ID);
             record = orderservices.browse(rowId);
-            record.put("order_ref", orderservices.getOrder_Ref(record));
+            record.put("os_id", orderservices.getOrder_Ref(record));
             checkControls();
             setMode(mEditMode);
             mForm.setEditable(mEditMode);
             mForm.initForm(record);
-            collapsingToolbarLayout.setTitle(record.getString("name"));
+            collapsingToolbarLayout.setTitle(record.getString("os_id"));
             setOrderServiceImage();
             if (record.getInt("id") != 0 && record.getString("large_image").equals("false")) {
-                ServicesOrderDetails.BigImageLoader bigImageLoader = new ServicesOrderDetails.BigImageLoader();
+                ServicesOrderEventDetails.BigImageLoader bigImageLoader = new ServicesOrderEventDetails.BigImageLoader();
                 bigImageLoader.execute(record.getInt("id"));
             }
         }
@@ -149,8 +149,8 @@ public class ServicesOrderDetails extends OdooCompatActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.order_ref:
-                IntentUtils.requestMessage(this, record.getString("order_ref"));
+            case R.id.order_event_ref:
+                IntentUtils.requestMessage(this, record.getString("os_id"));
                 break;
             /*
             case R.id.telefono_fijo:
@@ -165,7 +165,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
     }
 
     private void checkControls() {
-        findViewById(R.id.order_ref).setOnClickListener(this);
+        findViewById(R.id.order_event_ref).setOnClickListener(this);
         //findViewById(R.id.telefono_fijo).setOnClickListener(this);
         //findViewById(R.id.telefono_celular).setOnClickListener(this);
     }
@@ -186,7 +186,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
         } else {
             servicesorderImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             servicesorderImage.setColorFilter(Color.WHITE);
-            int color = OStringColorUtil.getStringColor(this, record.getString("name"));
+            int color = OStringColorUtil.getStringColor(this, record.getString("os_id"));
             servicesorderImage.setBackgroundColor(color);
         }
     }
@@ -201,7 +201,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.menu_services_order_save:
+            case R.id.menu_services_order_event_save:
                 OValues values = mForm.getValues();
                 if (values != null) {
                     if (newImage != null) {
@@ -221,8 +221,8 @@ public class ServicesOrderDetails extends OdooCompatActivity
                     }
                 }
                 break;
-            case R.id.menu_services_order_cancel:
-            case R.id.menu_services_order_edit:
+            case R.id.menu_services_order_event_cancel:
+            case R.id.menu_services_order_event_edit:
                 if (hasRecordInExtra()) {
                     mEditMode = !mEditMode;
                     setMode(mEditMode);
@@ -233,13 +233,13 @@ public class ServicesOrderDetails extends OdooCompatActivity
                     finish();
                 }
                 break;
-            case R.id.menu_services_order_share:
+            case R.id.menu_services_order_evento_share:
                 ShareUtil.shareContact(this, record, true);
                 break;
-            case R.id.menu_services_order_import:
+            case R.id.menu_services_order_evento_import:
                 ShareUtil.shareContact(this, record, false);
                 break;
-            case R.id.menu_services_order_delete:
+            case R.id.menu_services_order_evento_delete:
                 OAlert.showConfirm(this, OResource.string(this,
                         R.string.confirm_are_you_sure_want_to_delete),
                         new OAlert.OnAlertConfirmListener() {
@@ -248,7 +248,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
                                 if (type == OAlert.ConfirmType.POSITIVE) {
                                     // Deleting record and finishing activity if success.
                                     if (orderservices.delete(record.getInt(OColumn.ROW_ID))) {
-                                        Toast.makeText(ServicesOrderDetails.this, R.string.toast_record_deleted,
+                                        Toast.makeText(ServicesOrderEventDetails.this, R.string.toast_record_deleted,
                                                 Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
@@ -263,7 +263,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_services_order_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_services_order_event_detail, menu);
         mMenu = menu;
         setMode(mEditMode);
         return true;

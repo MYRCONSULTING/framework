@@ -67,6 +67,7 @@
         <activity android:name="com.odoo.core.account.Profile" />
         <activity android:name="com.odoo.addons.enel.EncuestaDetails" />
         <activity android:name="com.odoo.addons.servicesorder.ServicesOrderDetails" />
+        <activity android:name="com.odoo.addons.servicesorder.ServicesOrderEventDetails" />
 
         <!-- Reminder Receivers// -->
         <receiver android:name="com.odoo.core.utils.reminder.ReminderReceiver" />
@@ -83,8 +84,19 @@
         </service>
 
         <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.myapp.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
+        <provider
             android:name="com.odoo.core.orm.provider.BaseModelProvider"
             android:authorities="${applicationId}.core.provider.content"
+            android:exported="true"
             android:multiprocess="true" />
 
         <!-- Sync Provider & Service Customer  // -->
@@ -347,6 +359,29 @@
                 android:resource="@xml/enel_encuesta_sync_adapter" />
         </service>
 
+        <!-- Inicio - Sync Provider & Service Services Event   // -->
+        <!-- -->
+        <provider
+            android:name="com.odoo.addons.servicesorder.providers.ServicesOrderEventProvider"
+            android:authorities="com.odoo.addons.servicesorder.services_order_event"
+            android:label="@string/sync_label_OSEvent_Type"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.servicesorder.services.ServicesOrderEventSyncService"
+            android:exported="true"
+            android:process=":sync_services_order_event">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/orders_service_event_sync_adapter" />
+        </service>
+
+
+        <!-- Fin - Sync Provider & Service Services Order  // -->
 
         <!-- Inicio - Sync Provider & Service Services Order  // -->
         <provider
@@ -366,6 +401,30 @@
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/orders_service_sync_adapter" />
+        </service>
+
+        <!-- Fin - Sync Provider & Service Services Order  // -->
+
+
+
+        <!-- Inicio - Sync Provider & Service Services Event Type  // -->
+        <provider
+            android:name="com.odoo.addons.servicesorder.providers.ServicesOrderEventTypeProvider"
+            android:authorities="com.odoo.addons.servicesorder.services_order_event_type"
+            android:label="@string/sync_label_Event_Type"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.servicesorder.services.ServicesOrderEventTypeSyncService"
+            android:exported="true"
+            android:process=":sync_services_order_event_type">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/orders_service_event_type_sync_adapter" />
         </service>
 
         <!-- Fin - Sync Provider & Service Services Order  // -->

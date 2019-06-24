@@ -2,11 +2,15 @@ package com.odoo.addons.servicesorder.models;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
+import com.odoo.core.orm.OValues;
+import com.odoo.core.orm.annotation.Odoo;
 import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.orm.fields.types.ODate;
 import com.odoo.core.orm.fields.types.OInteger;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.rpc.helper.ODomain;
@@ -21,10 +25,15 @@ public class ServicesOrder extends OModel {
     public static final String AUTHORITY = "com.odoo.addons.servicesorder.services_order";
 
     OColumn name = new OColumn("No. OS", OVarchar.class).setSize(100);
-    OColumn partner_id = new OColumn("partner_id", ResPartner.class, OColumn.RelationType.ManyToOne);
-    OColumn partner_delivery_id = new OColumn("partner_delivery_id", ResPartner.class, OColumn.RelationType.ManyToOne);
-    OColumn order_ref = new OColumn("No. de Pedido", OVarchar.class).setSize(100);
 
+    OColumn partner_delivery_id = new OColumn("partner_delivery_id", ResPartner.class, OColumn.RelationType.ManyToOne);
+    OColumn driver_id = new OColumn("driver_id", ResPartner.class, OColumn.RelationType.ManyToOne);
+    OColumn order_ref = new OColumn("No. de Pedido", OVarchar.class).setSize(100);
+    OColumn date = new OColumn("Fecha", ODate.class);
+    OColumn partner_delivery = new OColumn("Dirección Recojo", OVarchar.class).setSize(200);
+    OColumn partner_id = new OColumn("partner_id", ResPartner.class, OColumn.RelationType.ManyToOne);
+    @Odoo.Functional(method = "storePartnerName", store = true, depends = {"partner_id"})
+    OColumn partner_name = new OColumn("partner_name", OVarchar.class).setLocalColumn();
 
 
     public ServicesOrder(Context context, OUser user) {
@@ -39,7 +48,10 @@ public class ServicesOrder extends OModel {
     @Override
     public ODomain defaultDomain() {
         ODomain domain = new ODomain();
-        //domain.add("user_id", "=", getUser().getUserId());
+        Log.i(TAG,  " Usuario X >> " + getUser().getUserId());
+        Log.i(TAG,  " Usuario X >> " + getUser().getPartnerId());
+        Log.i(TAG,  " Usuario Y >> " + getUser().getName());
+        //domain.add("driver_id", "=", getUser().getPartnerId());
         return domain;
     }
 
@@ -47,4 +59,24 @@ public class ServicesOrder extends OModel {
         String add = row.getString("order_ref");
         return add;
     }
+
+    public String storePartnerName(OValues values) {
+        String partner = "";
+        try {
+            if (!values.getString("partner_id").equals("false")) {
+                //JSONArray partner_id = new JSONArray(values.getString("partner_id").toString().split(","));
+                String partnerArray[]  = values.getString("partner_id").toString().split(",");
+
+                if (partnerArray.length>0){
+                    String xpartner = partnerArray[1].substring(0,partnerArray[1].length()-1).toString();
+                    partner =  xpartner;
+                }
+                return partner;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "false";
+    }
+
 }

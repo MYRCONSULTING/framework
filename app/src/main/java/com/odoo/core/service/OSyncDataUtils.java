@@ -275,7 +275,7 @@ public class OSyncDataUtils {
                                         break;
                                 }
                             }else{ // Hack By MYR - Para campos relacionados que devuelven false ya que no son campos obligatorios en algunos casos
-                                Log.i(TAG, mModel.getModelName() + " 5.- >>>>>>>>>>>>>> " + name + " " + lName + " >> " + record.get(column.getName()));
+                                //Log.i(TAG, mModel.getModelName() + " 5.- >>>>>>>>>>>>>> " + name + " " + lName + " >> " + record.get(column.getName()));
                                 values.put(name, record.get(column.getName()));
                             }
                         }

@@ -2,4 +2,4 @@
 android:accountType="com.odoo.auth"
 android:contentAuthority="com.odoo.addons.projects.project_tasks"
 android:supportsUploading="true"
-android:userVisible="true" />
+android:userVisible="false" />

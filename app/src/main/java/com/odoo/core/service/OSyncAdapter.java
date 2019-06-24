@@ -33,6 +33,9 @@ import com.odoo.addons.enel.models.Encuesta;
 import com.odoo.addons.projects.models.ProjectProject;
 import com.odoo.addons.projects.models.ProjectTask;
 import com.odoo.addons.projects.models.ProjectTaskType;
+import com.odoo.addons.servicesorder.models.ServicesOrder;
+import com.odoo.addons.servicesorder.models.ServicesOrderEvent;
+import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
 import com.odoo.addons.survey.SurveySurvey;
 import com.odoo.addons.survey.models.SurveyLabel;
 import com.odoo.addons.survey.models.SurveyPage;
@@ -115,7 +118,10 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
         //SyncUtils.get(mContext).setAutoSync(SurveyUserInput.AUTHORITY,true);
         //SyncUtils.get(mContext).setAutoSync(SurveyUserInputLine.AUTHORITY,true);
         //SyncUtils.get(mContext).setAutoSync(SurveyLabel.AUTHORITY,true);
-        SyncUtils.get(mContext).setAutoSync(Encuesta.AUTHORITY,true);
+        //SyncUtils.get(mContext).setAutoSync(Encuesta.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(ServicesOrder.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(ServicesOrderEvent.AUTHORITY,true);
+        SyncUtils.get(mContext).setAutoSync(ServicesOrderEventType.AUTHORITY,true);
 
     }
 

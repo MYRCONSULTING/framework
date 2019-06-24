@@ -74,6 +74,8 @@ public class ResPartner extends OModel {
     OColumn child_ids = new OColumn("Contacts", ResPartner.class, OColumn.RelationType.OneToMany)
             .setRelatedColumn("parent_id");
 
+    OColumn driver = new OColumn("driver", OBoolean.class).setDefaultValue(false);
+
     public ResPartner(Context context, OUser user) {
         super(context, "res.partner", user);
         setHasMailChatter(true);

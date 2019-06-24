@@ -67,7 +67,10 @@ public class ODataRow implements Parcelable {
     }
 
     public Boolean getBoolean(String key) {
-        return Boolean.parseBoolean(_data.get(key).toString());
+        if (_data.get(key)!= null)
+            return Boolean.parseBoolean(_data.get(key).toString());
+        else
+            return false;
     }
 
 

@@ -38,6 +38,7 @@ public class OUser {
     private String username, name, timezone, avatar, database, host, password;
     private Integer userId, partnerId, companyId;
     private Boolean isActive = false, allowForceConnect = false;
+
     private OdooVersion odooVersion;
 
     public static OUser current(Context context) {

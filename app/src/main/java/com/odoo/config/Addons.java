@@ -25,6 +25,7 @@ import com.odoo.addons.customers.Customers;
 import com.odoo.addons.projects.Project;
 import com.odoo.addons.projects.Tasks;
 import com.odoo.addons.servicesorder.ServicesOrderF;
+import com.odoo.addons.servicesorder.ServicesOrderEvent;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.support.addons.AddonsHelper;
 import com.odoo.core.support.addons.OAddon;
@@ -46,13 +47,15 @@ public class Addons extends AddonsHelper {
     OAddon customers = new OAddon(Customers.class);
     OAddon account = new OAddon(AccountInvoice.class);
     OAddon payment = new OAddon(AccountPayment.class);
+    OAddon encuesta = new OAddon(EncuestaF.class);
+    OAddon surveysurvey = new OAddon(SurveySurvey.class);
+    OAddon surveypage = new OAddon(SurveyPage.class);
+    OAddon surveyquestion = new OAddon(SurveyQuestion.class);
+    OAddon survey = new OAddon(Project.class);
 */
 
     OAddon customers = new OAddon(Customers.class);
     OAddon orderservices = new OAddon(ServicesOrderF.class).setDefault();
-    OAddon encuesta = new OAddon(EncuestaF.class);
-    //OAddon surveysurvey = new OAddon(SurveySurvey.class);
-    //OAddon surveypage = new OAddon(SurveyPage.class);
-    //OAddon surveyquestion = new OAddon(SurveyQuestion.class);
-    //OAddon survey = new OAddon(Project.class);
+    OAddon ordereventservices = new OAddon(ServicesOrderEvent.class).setDefault();
+
 }

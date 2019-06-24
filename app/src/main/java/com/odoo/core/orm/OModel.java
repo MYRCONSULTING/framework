@@ -25,6 +25,7 @@ import android.content.SyncResult;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -340,48 +341,60 @@ public class OModel implements ISyncServiceListener {
     }
 
     private boolean compatibleField(Field field) {
+        //Log.i(TAG,  " Campo >> " + field.getName().toString());
         if (mOdooVersion != null) {
             Annotation[] annotations = field.getDeclaredAnnotations();
             if (annotations.length > 0) {
                 int version = 0;
                 for (Annotation annotation : annotations) {
+
                     // Check for odoo api annotation
                     Class<? extends Annotation> type = annotation.annotationType();
-                    if (type.getDeclaringClass().isAssignableFrom(Odoo.api.class)) {
-                        switch (mOdooVersion.getVersionNumber()) {
-                            case 11:
-                                if (type.isAssignableFrom(Odoo.api.v11alpha.class)) {
-                                    version++;
-                                }
-                                break;
-                            case 10:
-                                if (type.isAssignableFrom(Odoo.api.v10.class)) {
-                                    version++;
-                                }
-                                break;
-                            case 9:
-                                if (type.isAssignableFrom(Odoo.api.v9.class)) {
-                                    version++;
-                                }
-                                break;
-                            case 8:
-                                if (type.isAssignableFrom(Odoo.api.v8.class)) {
-                                    version++;
-                                }
-                                break;
-                            case 7:
-                                if (type.isAssignableFrom(Odoo.api.v7.class)) {
-                                    version++;
-                                }
-                                break;
+                    //Log.i(TAG,  " Error 1 >> " + annotation.annotationType().getName().toString());
+                    //Log.i(TAG,  " Error 2 >> " + type.getName().toString());
+
+                    if (type.getDeclaringClass()!= null){
+                        //Log.i(TAG,  " Error 3 >> " + type.getDeclaringClass().getName().toString());
+                        //Log.i(TAG,  " Error 4 >> " + type.getDeclaringClass().isAssignableFrom(Odoo.api.class));
+                        boolean retval = (type.getDeclaringClass().isAssignableFrom(Odoo.api.class));
+                        if (retval) {
+                            switch (mOdooVersion.getVersionNumber()) {
+                                case 11:
+                                    if (type.isAssignableFrom(Odoo.api.v11alpha.class)) {
+                                        version++;
+                                    }
+                                    break;
+                                case 10:
+                                    if (type.isAssignableFrom(Odoo.api.v10.class)) {
+                                        version++;
+                                    }
+                                    break;
+                                case 9:
+                                    if (type.isAssignableFrom(Odoo.api.v9.class)) {
+                                        version++;
+                                    }
+                                    break;
+                                case 8:
+                                    if (type.isAssignableFrom(Odoo.api.v8.class)) {
+                                        version++;
+                                    }
+                                    break;
+                                case 7:
+                                    if (type.isAssignableFrom(Odoo.api.v7.class)) {
+                                        version++;
+                                    }
+                                    break;
+                            }
                         }
                     }
+
                     // Check for functional annotation
                     if (type.isAssignableFrom(Odoo.Functional.class)
                             || type.isAssignableFrom(Odoo.onChange.class)
                             || type.isAssignableFrom(Odoo.Domain.class)
                             || type.isAssignableFrom(Odoo.SyncColumnName.class)) {
                         version++;
+                        //Log.i(TAG,  " Error 5 >> " + type.isAssignableFrom(Odoo.Functional.class));
                     }
                 }
                 return (version > 0);
@@ -1164,6 +1177,15 @@ public class OModel implements ISyncServiceListener {
             destination.close();
             String subject = "Database Export: " + getDatabaseName();
             Uri uri = Uri.fromFile(backupDB);
+
+            //
+            if (Build.VERSION.SDK_INT < 24) {
+                uri = Uri.fromFile(backupDB);
+            } else {
+                uri = Uri.parse(backupDB.getPath()); // My work-around for new SDKs, causes ActivityNotFoundException in API 10.
+            }
+            //
+
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.putExtra(Intent.EXTRA_STREAM, uri);
             intent.putExtra(Intent.EXTRA_SUBJECT, subject);
