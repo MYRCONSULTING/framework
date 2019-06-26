@@ -19,12 +19,18 @@
  */
 package com.odoo.core.utils;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+
 public class IntentUtils {
+
+    private static final int PERMISSIONS_REQUEST_PHONE_CALL = 100;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_PHONECALL = {Manifest.permission.CALL_PHONE};
 
     public static void openURLInBrowser(Context context, String url) {
         if (!url.equals("false") && !url.equals("")) {

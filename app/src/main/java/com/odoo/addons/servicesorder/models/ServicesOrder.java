@@ -11,7 +11,7 @@ import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.annotation.Odoo;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.ODate;
-import com.odoo.core.orm.fields.types.OInteger;
+import com.odoo.core.orm.fields.types.OFloat;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
@@ -34,7 +34,13 @@ public class ServicesOrder extends OModel {
     OColumn partner_id = new OColumn("partner_id", ResPartner.class, OColumn.RelationType.ManyToOne);
     @Odoo.Functional(method = "storePartnerName", store = true, depends = {"partner_id"})
     OColumn partner_name = new OColumn("partner_name", OVarchar.class).setLocalColumn();
-
+    OColumn last_state = new OColumn("Ultimo Evento", ServicesOrderEventType.class, OColumn.RelationType.ManyToOne);
+    OColumn client_contact_name = new OColumn("client_contact_name", OVarchar.class).setSize(200);
+    OColumn client_contact_phone = new OColumn("client_contact_phone", OVarchar.class).setSize(200);
+    OColumn address_delivery = new OColumn("address_delivery", OVarchar.class).setSize(250);
+    OColumn client_ubigeo = new OColumn("client_ubigeo", OVarchar.class).setSize(100);
+    OColumn product_description = new OColumn("product_description", OVarchar.class).setSize(250);
+    OColumn amount = new OColumn("product_description", OFloat.class);
 
     public ServicesOrder(Context context, OUser user) {
         super(context, "services.order", user);

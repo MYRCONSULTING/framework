@@ -207,5 +207,11 @@
     <string name="sync_label_OSEvent_Type">Ordenes de Servicio Eventos</string>
     <string name="label_no_os_event_found">No existen Eventos</string>
     <string name="label_no_so_event_found_swipe">Deslizar para comprobar nuevos Eventos</string>
+    <string name="label_destinatario">Destinatario</string>
+    <string name="label_direccion_entrega">Dirección de Entrega</string>
+    <string name="label_ubigeo">Ubigeo</string>
+    <string name="label_descripcion_producto">Descripción</string>
+    <string name="client_contact_phone">Teléfono</string>
+    <string name="amount">COD</string>
 
 </resources>

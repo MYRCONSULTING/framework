@@ -39,35 +39,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.odoo.addons.account.models.AccountInvoice;
-import com.odoo.addons.account.models.AccountPayment;
-import com.odoo.addons.enel.models.Encuesta;
-import com.odoo.addons.projects.TasksDetails;
-import com.odoo.addons.projects.models.ProjectProject;
-import com.odoo.addons.projects.models.ProjectTask;
-import com.odoo.addons.projects.models.ProjectTaskType;
-import com.odoo.addons.projects.models.TypeTask;
 import com.odoo.addons.servicesorder.models.ServicesOrder;
 import com.odoo.addons.servicesorder.models.ServicesOrderEvent;
-import com.odoo.addons.survey.models.SurveyLabel;
-import com.odoo.addons.survey.models.SurveyPage;
-import com.odoo.addons.survey.models.SurveyQuestion;
-import com.odoo.addons.survey.models.SurveySurvey;
-import com.odoo.addons.survey.models.SurveyUserInput;
-import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.AppIntro;
 import com.odoo.core.account.ManageAccounts;
@@ -76,8 +61,6 @@ import com.odoo.core.account.OdooUserAskPassword;
 import com.odoo.core.account.OdooUserObjectUpdater;
 import com.odoo.core.auth.OdooAccountManager;
 import com.odoo.core.auth.OdooAuthenticator;
-import com.odoo.core.orm.ODataRow;
-import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
 import com.odoo.core.support.OdooCompatActivity;
@@ -339,11 +322,11 @@ public class OdooActivity extends OdooCompatActivity {
 
 
     public void clean(){
-        SurveyUserInput surveyUserInput = new SurveyUserInput(getBaseContext(),null);
-        SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(getBaseContext(),null);
+        //SurveyUserInput surveyUserInput = new SurveyUserInput(getBaseContext(),null);
+        //SurveyUserInputLine surveyUserInputLine = new SurveyUserInputLine(getBaseContext(),null);
         //Elimina encabezado de respuestas
-        surveyUserInput.delete("state = ? ",new String[]{"done"},true);
-        surveyUserInputLine.delete("x_state = ? ",new String[]{"done"},true);
+        //surveyUserInput.delete("state = ? ",new String[]{"done"},true);
+        //surveyUserInputLine.delete("x_state = ? ",new String[]{"done"},true);
     }
 
     public boolean inNetwork() {

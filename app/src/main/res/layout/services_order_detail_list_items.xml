@@ -53,7 +53,7 @@
                 app:fieldName="date"
                 app:controlLabel="@string/fecha"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
+                app:iconResource="@drawable/ic_date_range_black_24dp"></odoo.controls.OField>
 
             <odoo.controls.OField
                 android:id="@+id/direccionrecojo"
@@ -63,7 +63,7 @@
                 app:fieldName="partner_delivery"
                 app:controlLabel="@string/label_direccionrecojo"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
+                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
 
             <odoo.controls.OField
                 android:id="@+id/nameCustomer"
@@ -73,7 +73,67 @@
                 app:fieldName="partner_id"
                 app:controlLabel="@string/sync_label_customers"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_add_location_black_24dp"></odoo.controls.OField>
+                app:iconResource="@drawable/ic_action_customers"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/client_contact_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/label_destinatario"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="client_contact_name"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_user"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/client_contact_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/client_contact_phone"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="client_contact_phone"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_phone"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/address_delivery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/label_direccion_entrega"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="address_delivery"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/client_ubigeo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/label_ubigeo"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="client_ubigeo"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_location"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/product_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/label_descripcion_producto"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="product_description"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_assignment_black_24dp"></odoo.controls.OField>
+
+            <odoo.controls.OField
+                android:id="@+id/amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:controlLabel="@string/amount"
+                app:fieldLabelColor="@color/theme_secondary"
+                app:fieldName="amount"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_lock"></odoo.controls.OField>
 
 
         </odoo.controls.OForm>

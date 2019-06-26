@@ -39,6 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:fontFamily="@string/font_normal"
+                    android:textStyle="bold"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/body_text_1"></TextView>
                 <TextView
@@ -49,6 +50,63 @@
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"></TextView>
+
+                <TextView
+                    android:id="@+id/txtTypeEvent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"></TextView>
+
+                <TextView
+                    android:id="@+id/direccionrecojo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"></TextView>
+
+                <TextView
+                    android:id="@+id/nameCustomer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"
+                    android:textStyle="bold|italic"></TextView>
+
+                <TextView
+                    android:id="@+id/client_contact_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"
+                    android:textStyle="bold|italic"></TextView>
+
+                <TextView
+                    android:id="@+id/client_contact_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"
+                    android:textStyle="bold|italic"></TextView>
+
+                <TextView
+                    android:id="@+id/address_delivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"></TextView>
 
 
             </LinearLayout>

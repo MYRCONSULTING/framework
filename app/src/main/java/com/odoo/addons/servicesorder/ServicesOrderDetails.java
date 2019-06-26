@@ -1,10 +1,14 @@
 package com.odoo.addons.servicesorder;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +58,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
     private String newImage = null;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
+    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,25 +154,50 @@ public class ServicesOrderDetails extends OdooCompatActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.order_ref:
-                IntentUtils.requestMessage(this, record.getString("order_ref"));
+            case R.id.direccionrecojo:
+                IntentUtils.redirectToMap(this, record.getString("partner_delivery"));
+                break;
+
+            case R.id.client_contact_phone:
+                // Here, thisActivity is the current activity
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+
+                        // Show an expanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        // sees the explanation, try again to request the permission.
+
+                    } else {
+
+                        // No explanation needed, we can request the permission.
+
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+
+                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                        // app-defined int constant. The callback method gets the
+                        // result of the request.
+
+                    }
+                }
+
+                IntentUtils.requestCall(this, record.getString("client_contact_phone"));
+
+                break;
+            case R.id.address_delivery:
+                IntentUtils.redirectToMap(this, record.getString("address_delivery"));
                 break;
             /*
-            case R.id.telefono_fijo:
-                IntentUtils.requestCall(this, record.getString("telefono_fijo"));
-                break;
-            case R.id.telefono_celular:
-                IntentUtils.requestCall(this, record.getString("telefono_celular"));
-                break;
              */
 
         }
     }
 
     private void checkControls() {
-        findViewById(R.id.order_ref).setOnClickListener(this);
-        //findViewById(R.id.telefono_fijo).setOnClickListener(this);
-        //findViewById(R.id.telefono_celular).setOnClickListener(this);
+        findViewById(R.id.direccionrecojo).setOnClickListener(this);
+        findViewById(R.id.client_contact_phone).setOnClickListener(this);
+        findViewById(R.id.address_delivery).setOnClickListener(this);
     }
 
     private void setOrderServiceImage() {
@@ -288,9 +318,12 @@ public class ServicesOrderDetails extends OdooCompatActivity
                 OdooFields fields = new OdooFields();
                 fields.addAll(new String[]{"image_medium"});
                 OdooResult record = orderservices.getServerDataHelper().read(null, params[0]);
-                if (record != null && !record.getString("image_medium").equals("false")) {
-                    image = record.getString("image_medium");
+                if (record.has("image_medium")) {
+                    if (record != null && !record.getString("image_medium").equals("false")) {
+                        image = record.getString("image_medium");
+                    }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

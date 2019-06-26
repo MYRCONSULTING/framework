@@ -65,7 +65,9 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name="com.odoo.core.account.About" />
         <activity android:name="com.odoo.core.account.Profile" />
+        <!--
         <activity android:name="com.odoo.addons.enel.EncuestaDetails" />
+        -->
         <activity android:name="com.odoo.addons.servicesorder.ServicesOrderDetails" />
         <activity android:name="com.odoo.addons.servicesorder.ServicesOrderEventDetails" />
 
@@ -120,6 +122,7 @@
         </service>
 
         <!-- Sync Provider & Service Project Project  // -->
+        <!--
 
         <provider
             android:name="com.odoo.addons.projects.providers.ProjectProjectProvider"
@@ -139,7 +142,9 @@
                 android:resource="@xml/project_sync_adapter" />
         </service>
 
+        -->
         <!-- Sync Provider & Service Project Task  // -->
+        <!--
         <provider
             android:name="com.odoo.addons.projects.providers.ProjectTaskProvider"
             android:authorities="com.odoo.addons.projects.project_tasks"
@@ -158,8 +163,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/task_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Project Task Type  // -->
+        <!--
         <provider
             android:name="com.odoo.addons.projects.providers.ProjectTaskTypeProvider"
             android:authorities="com.odoo.addons.projects.project_task_type"
@@ -178,8 +185,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/task_type_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Survey Survey  // -->
+        <!--
 
         <provider
             android:name="com.odoo.addons.survey.providers.SurveySurveyProvider"
@@ -198,8 +207,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/survey_survey_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Survey Page  // -->
+        <!--
 
         <provider
             android:name="com.odoo.addons.survey.providers.SurveyPageProvider"
@@ -218,8 +229,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/survey_page_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Survey Question  // -->
+        <!--
 
         <provider
             android:name="com.odoo.addons.survey.providers.SurveyQuestionProvider"
@@ -238,8 +251,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/survey_question_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Survey User Input  // -->
+        <!--
 
         <provider
             android:name="com.odoo.addons.survey.providers.SurveyUserInputProvider"
@@ -258,8 +273,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/survey_user_input_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Survey User Input Line  // -->
+        <!--
 
         <provider
             android:name="com.odoo.addons.survey.providers.SurveyUserInputLineProvider"
@@ -278,8 +295,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/survey_user_input_line_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Survey Label  // -->
+        <!--
 
         <provider
             android:name="com.odoo.addons.survey.providers.SurveyLabelProvider"
@@ -298,8 +317,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/survey_label_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Account Invoice  // -->
+        <!--
         <provider
             android:name="com.odoo.addons.account.providers.AccountInvoiceProvider"
             android:authorities="com.odoo.addons.account.account_invoice"
@@ -318,8 +339,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/account_invoice_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Account Payment  // -->
+        <!--
         <provider
             android:name="com.odoo.addons.account.providers.AccountPaymentProvider"
             android:authorities="com.odoo.addons.account.account_payment"
@@ -338,8 +361,10 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/account_payment_sync_adapter" />
         </service>
+        -->
 
         <!-- Sync Provider & Service Enel EncuestaF  // -->
+        <!--
         <provider
             android:name="com.odoo.addons.enel.providers.EncuestaProvider"
             android:authorities="com.odoo.addons.enel.enel100k_enel100k"
@@ -358,6 +383,30 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/enel_encuesta_sync_adapter" />
         </service>
+        -->
+
+
+        <!-- Inicio - Sync Provider & Service Services Order  // -->
+        <provider
+            android:name="com.odoo.addons.servicesorder.providers.ServicesOrderProvider"
+            android:authorities="com.odoo.addons.servicesorder.services_order"
+            android:label="@string/sync_label_OSMenu"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.servicesorder.services.ServicesOrderSyncService"
+            android:exported="true"
+            android:process=":sync_services_order">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/orders_service_sync_adapter" />
+        </service>
+
+        <!-- Fin - Sync Provider & Service Services Order  // -->
 
         <!-- Inicio - Sync Provider & Service Services Event   // -->
         <!-- -->
@@ -382,30 +431,6 @@
 
 
         <!-- Fin - Sync Provider & Service Services Order  // -->
-
-        <!-- Inicio - Sync Provider & Service Services Order  // -->
-        <provider
-            android:name="com.odoo.addons.servicesorder.providers.ServicesOrderProvider"
-            android:authorities="com.odoo.addons.servicesorder.services_order"
-            android:label="@string/sync_label_OSMenu"
-            android:multiprocess="true" />
-
-        <service
-            android:name=".addons.servicesorder.services.ServicesOrderSyncService"
-            android:exported="true"
-            android:process=":sync_services_order">
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/orders_service_sync_adapter" />
-        </service>
-
-        <!-- Fin - Sync Provider & Service Services Order  // -->
-
-
 
         <!-- Inicio - Sync Provider & Service Services Event Type  // -->
         <provider
@@ -434,10 +459,11 @@
             android:name="com.odoo.addons.customers.CustomerDetails"
             android:windowSoftInputMode="adjustPan" />
 
+        <!--
         <activity
             android:name="com.odoo.addons.projects.TasksDetails"
             android:windowSoftInputMode="adjustPan" />
-
+        -->
 
     </application>
 

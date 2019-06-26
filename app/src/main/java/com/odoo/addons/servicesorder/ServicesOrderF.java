@@ -21,8 +21,9 @@ import android.widget.Toast;
 
 import com.odoo.R;
 import com.odoo.addons.servicesorder.models.ServicesOrder;
+import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
+import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
-import com.odoo.core.support.OUser;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -83,11 +84,49 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
 
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
+        ServicesOrderEventType servicesOrderEventType = new ServicesOrderEventType(getContext(), null);
+        ResPartner resPartner = new ResPartner(getContext(), null);
+        String nameServicesOrderEventType = "";
+        String nameCustomer = "";
         OControls.setText(view, R.id.text0, row.getString("name"));
         OControls.setText(view, android.R.id.text1, row.getString("order_ref"));
+
+        if (row.getString("last_state") != null && !row.getString("last_state").equals("false")) {
+            try {
+                nameServicesOrderEventType = servicesOrderEventType.browse(Integer.valueOf(row.getString("last_state"))).getString("name");
+                if (nameServicesOrderEventType.equals("false"))
+                    nameServicesOrderEventType = "";
+
+                if (nameServicesOrderEventType.isEmpty()) {
+                    OControls.setGone(view, R.id.txtTypeEvent);
+                } else {
+                    OControls.setText(view, R.id.txtTypeEvent, nameServicesOrderEventType);
+                }
+
+            } catch (Exception e) {
+
+            }
+
+        }
+
+        OControls.setText(view, R.id.txtTypeEvent, nameServicesOrderEventType);
+        if (row.getString("partner_delivery") != null && !row.getString("partner_delivery").equals("false") && !row.getString("partner_delivery").isEmpty()) {
+            OControls.setText(view, R.id.direccionrecojo, row.getString("partner_delivery"));
+        } else {
+            OControls.setGone(view, R.id.direccionrecojo);
+        }
+
+        nameCustomer = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("name");
+        OControls.setText(view, R.id.nameCustomer, nameCustomer);
+        OControls.setText(view, R.id.client_contact_name, row.getString("client_contact_name"));
+        OControls.setText(view, R.id.client_contact_phone, row.getString("client_contact_phone"));
+        OControls.setText(view, R.id.address_delivery, row.getString("address_delivery"));
+
         Bitmap img;
         if (row.getString("image_small").equals("false")) {
-            img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("name"));
+            String strName = row.getString("name");
+            strName = strName.substring(strName.length() - 1);
+            img = BitmapUtils.getAlphabetImage(getActivity(), strName);
         } else {
             img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image_small"));
         }
@@ -103,12 +142,12 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
             args.add(String.valueOf(id));
 
         if (mCurFilter != null) {
-            where += " and order_ref like ? ";
+            where += " and name like ? ";
             args.add("%" + mCurFilter + "%");
         }
         String selection = (args.size() > 0) ? where : where;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
-        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "_id");
+        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "id");
     }
 
     @Override
