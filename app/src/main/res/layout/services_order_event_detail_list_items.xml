@@ -124,6 +124,14 @@
                     app:fieldTextAppearance="?android:textAppearanceMedium"
                     app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
 
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:controlLabel="@string/state"
+                    app:fieldName="state"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
+
             </LinearLayout>
         </odoo.controls.OForm>
 

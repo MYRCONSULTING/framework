@@ -44,6 +44,7 @@ public class ServicesOrder extends OModel {
 
     public ServicesOrder(Context context, OUser user) {
         super(context, "services.order", user);
+        setHasMailChatter(true);
     }
 
     @Override
@@ -83,6 +84,13 @@ public class ServicesOrder extends OModel {
             e.printStackTrace();
         }
         return "false";
+    }
+
+    @Override
+    public void onSyncFinished() {
+        ServicesOrderEvent servicesOrderEvent = new ServicesOrderEvent(this.getContext(), OUser.current(this.getContext()));
+        ODomain oDomain = new ODomain();
+        servicesOrderEvent.quickSyncRecords(oDomain);
     }
 
 }

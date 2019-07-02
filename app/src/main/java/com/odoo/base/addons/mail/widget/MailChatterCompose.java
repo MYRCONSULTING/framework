@@ -44,6 +44,8 @@ import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.rpc.helper.OArguments;
+import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.OControls;
@@ -54,9 +56,6 @@ import com.odoo.core.utils.logger.OLog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import com.odoo.core.rpc.helper.OArguments;
-import com.odoo.core.rpc.helper.ORecordValues;
 
 
 public class MailChatterCompose extends OdooCompatActivity implements View.OnClickListener {
@@ -329,8 +328,12 @@ public class MailChatterCompose extends OdooCompatActivity implements View.OnCli
                 data.put("type", "comment");
                 data.put("content_subtype", "plaintext");
                 data.put("subtype", (mType == MessageType.Message) ? "mail.mt_comment" : false);
-                Double newId = (double)
-                        mModel.getServerDataHelper().callMethod("message_post", args, null, data);
+                Boolean rpta = (Boolean) mModel.getServerDataHelper().callMethod("message_post", args, null, data);
+                Double newId = (double) 0;
+                if (rpta) {
+                    newId = (double) mModel.getServerDataHelper().callMethod("message_post", args, null, data);
+                }
+
                 Thread.sleep(500);
                 ODataRow row = new ODataRow();
                 row.put("id", newId.intValue());

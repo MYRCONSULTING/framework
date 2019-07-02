@@ -213,5 +213,5 @@
     <string name="label_descripcion_producto">Descripción</string>
     <string name="client_contact_phone">Teléfono</string>
     <string name="amount">COD</string>
-
+    <string name="state">Tipo de Evento</string>
 </resources>
