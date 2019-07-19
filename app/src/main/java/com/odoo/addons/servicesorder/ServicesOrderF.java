@@ -45,7 +45,7 @@ import java.util.List;
 public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverListener,
         LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
         OCursorListAdapter.OnViewBindListener, IOnSearchViewChangeListener, View.OnClickListener,
-        AdapterView.OnItemClickListener {
+        AdapterView.OnItemClickListener, OCursorListAdapter.OnRowViewClickListener {
 
     public static final String KEY = ServicesOrderF.class.getSimpleName();
     private View mView;
@@ -70,6 +70,7 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         mView = view;
         listView = (ListView) mView.findViewById(R.id.listview);
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.services_order_row_item);
+        mAdapter.setOnRowViewClickListener(R.id.btnFormulario, this);
         mAdapter.setOnViewBindListener(this);
         mAdapter.setHasSectionIndexers(true, "name");
         listView.setAdapter(mAdapter);
@@ -276,6 +277,25 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
         //OUser.current(getContext());
         loadActivity(row);
+    }
+
+    @Override
+    public void onRowViewClick(int position, Cursor cursor, View view,
+                               final View parent) {
+        ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
+        switch (view.getId()) {
+            case R.id.btnFormulario:
+                Bundle data = new Bundle();
+                if (row != null) {
+                    data = row.getPrimaryBundleData();
+                    data.putString(EXTRA_KEY_PROJECT, row.getString("_id"));
+                }
+                startFragment(new ServicesOrderEvent(), true, data);
+                break;
+            default:
+                break;
+        }
+
     }
 
 }

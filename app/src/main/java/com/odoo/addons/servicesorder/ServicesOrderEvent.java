@@ -51,6 +51,7 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
     private String mCurFilter = null;
     private ListView listView;
     private OCursorListAdapter mAdapter = null;
+    private Bundle extra = null;
     private boolean syncRequested = false;
     public static final String EXTRA_KEY_PROJECT = "extra_key_project";
 
@@ -67,6 +68,7 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
         super.onViewCreated(view, savedInstanceState);
         setHasSwipeRefreshView(view, R.id.swipe_container, this);
         mView = view;
+        extra = getArguments();
         listView = (ListView) mView.findViewById(R.id.listview);
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.services_order_event_row_item);
         mAdapter.setOnViewBindListener(this);
@@ -76,7 +78,10 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
         listView.setOnItemClickListener(this);
         setHasSyncStatusObserver(KEY, this, db());
         setHasFloatingButton(view, R.id.fabButton, listView, this);
-        getLoaderManager().initLoader(0, null, this);
+        if (extra.containsKey(EXTRA_KEY_PROJECT))
+            getLoaderManager().initLoader(Integer.valueOf(extra.getString(EXTRA_KEY_PROJECT)), extra, this);
+        else
+            getLoaderManager().initLoader(0, null, this);
         setTitle(OResource.string(getContext(),R.string.label_event));
         //hideFab();
     }
@@ -142,19 +147,23 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle data) {
-        String where = "os_id != ?";
+        String where = "os_id = ?";
         List<String> args = new ArrayList<>();
-        args.add("");
+        //args.add("");
         if (id > 0)
             args.add(String.valueOf(id));
 
+        //args.add("true");
         if (mCurFilter != null) {
             where += " and comment like ? ";
             args.add("%" + mCurFilter + "%");
         }
-        String selection = (args.size() > 0) ? where : where;
+        //String selection = (args.size() > 0) ? where : where;
+        String selection = (args.size() > 0) ? where : null;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
-        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "_id");
+
+        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "id");
+
     }
 
     @Override
@@ -213,7 +222,10 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
     @Override
     public void onStatusChange(Boolean refreshing) {
         // Sync Status
-        getLoaderManager().restartLoader(0, null, this);
+        try {
+            //getLoaderManager().restartLoader(0, null, this);
+        } catch (Exception e) {
+        }
     }
 
     @Override

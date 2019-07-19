@@ -1,6 +1,7 @@
 package com.odoo.addons.servicesorder;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -59,6 +60,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
     private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1;
+    public static final String EXTRA_KEY_PROJECT = "extra_key_project";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -225,6 +227,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
         mForm.setIconTintColor(color);
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
