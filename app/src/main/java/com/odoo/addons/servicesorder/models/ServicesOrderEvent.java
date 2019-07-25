@@ -4,10 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.odoo.addons.survey.models.SurveySurvey;
-import com.odoo.base.addons.ir.IrAttachment;
-import com.odoo.base.addons.res.ResPartner;
-import com.odoo.base.addons.res.ResUsers;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.fields.OColumn;
@@ -32,7 +28,8 @@ public class ServicesOrderEvent extends OModel {
     OColumn display_name = new OColumn("display_name", OVarchar.class).setSize(100);
     OColumn state = new OColumn("Tipo de Evento", ServicesOrderEventType.class,OColumn.RelationType.ManyToOne);
     OColumn os_id = new OColumn("Orden de servicio", ServicesOrder.class,OColumn.RelationType.ManyToOne);
-    OColumn x_attachment_ids = new OColumn("Attachments", IrAttachment.class,OColumn.RelationType.ManyToMany);
+    //OColumn x_attachment_ids = new OColumn("Attachments", IrAttachment.class,OColumn.RelationType.ManyToMany);
+    //OColumn x_date_create_user = new OColumn("date_create_user", OVarchar.class).setDefaultValue(ODateUtils.getUTCDate());
     OColumn decoration = new OColumn("Decoracion", OSelection.class)
             .addSelection("danger","Rojo")
             .addSelection("success","Verde")
@@ -104,7 +101,8 @@ public class ServicesOrderEvent extends OModel {
             System.out.println("\nUsing ListIterator Cliente:\n");
             Log.i(TAG,  " Iter X1 >> " );
             while (iterator.hasNext()) {
-                int xid = iterator.next().getInt("id");
+                //int xid = iterator.next().getInt("id");
+                int xid = iterator.next().getInt("_id");
                 Log.i(TAG,  " Iter X2 >> " + xid );
                 list.add(xid);
 
@@ -116,9 +114,14 @@ public class ServicesOrderEvent extends OModel {
 
 
         ODomain domain = new ODomain();
+
+        ServicesOrderEventType servicesOrderEventType = new ServicesOrderEventType(getContext(), null);
+        int stage_id_In_Preparation = servicesOrderEventType.getCodEventType_Id("RUTA");
+        //domain.add("state","=",stage_id_In_Preparation);
+
         //domain.add("|");
         //domain.add("|");
-        domain.add("os_id", "=", list);
+        //domain.add("os_id", "in", list);
         //domain.add("os_id", "=", 2);
         //domain.add("os_id", "=", 3);
         return domain;
@@ -129,6 +132,11 @@ public class ServicesOrderEvent extends OModel {
     public String getOrder_Ref(ODataRow row) {
         String add = row.getString("os_id");
         return add;
+    }
+
+    @Override
+    public boolean allowCreateRecordOnServer() {
+        return true;
     }
 
 

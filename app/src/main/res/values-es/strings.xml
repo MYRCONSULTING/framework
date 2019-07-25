@@ -214,4 +214,5 @@
     <string name="client_contact_phone">Teléfono</string>
     <string name="amount">COD</string>
     <string name="state">Tipo de Evento</string>
+    <string name="event_comment">Observaciones</string>
 </resources>

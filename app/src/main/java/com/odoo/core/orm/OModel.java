@@ -428,6 +428,7 @@ public class OModel implements ISyncServiceListener {
                             mFunctionalColumns.add(column);
                         } else {
                             mColumns.add(column);
+                            //Log.i(TAG,  " Agrega columna >> " + column.getName());
                         }
                     }
                 } catch (Exception e) {

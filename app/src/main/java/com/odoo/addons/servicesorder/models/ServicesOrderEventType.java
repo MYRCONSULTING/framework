@@ -3,17 +3,15 @@ package com.odoo.addons.servicesorder.models;
 import android.content.Context;
 import android.net.Uri;
 
-import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
-import com.odoo.core.orm.OValues;
-import com.odoo.core.orm.annotation.Odoo;
 import com.odoo.core.orm.fields.OColumn;
-import com.odoo.core.orm.fields.types.ODate;
 import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
+
+import java.util.List;
 
 /**
  * Created by Ricardo Livelli on 20/11/2017.
@@ -48,6 +46,26 @@ public class ServicesOrderEventType extends OModel {
         ODomain domain = new ODomain();
         //domain.add("user_id", "=", getUser().getUserId());
         return domain;
+    }
+
+
+    public int getCodEventType_Id(String val) {
+        int rpta = -1;
+        if (val != "") {
+            ServicesOrderEventType servicesOrderEventType = new ServicesOrderEventType(getContext(), null);
+            try {
+                List<ODataRow> rowProjectTaskType = servicesOrderEventType.select(null, "name = ?", new String[]{String.valueOf(val)}, "id asc");
+                if (!rowProjectTaskType.isEmpty()) {
+                    rpta = rowProjectTaskType.get(0).getInt("id");
+                }
+
+            } catch (Exception e) {
+
+            }
+
+            return rpta;
+        }
+        return rpta;
     }
 
 

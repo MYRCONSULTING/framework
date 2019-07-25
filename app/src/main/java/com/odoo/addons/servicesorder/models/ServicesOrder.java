@@ -25,8 +25,6 @@ public class ServicesOrder extends OModel {
     public static final String AUTHORITY = "com.odoo.addons.servicesorder.services_order";
 
     OColumn name = new OColumn("No. OS", OVarchar.class).setSize(100);
-
-    OColumn partner_delivery_id = new OColumn("partner_delivery_id", ResPartner.class, OColumn.RelationType.ManyToOne);
     OColumn driver_id = new OColumn("driver_id", ResPartner.class, OColumn.RelationType.ManyToOne);
     OColumn order_ref = new OColumn("No. de Pedido", OVarchar.class).setSize(100);
     OColumn date = new OColumn("Fecha", ODate.class);
@@ -58,7 +56,15 @@ public class ServicesOrder extends OModel {
         Log.i(TAG,  " Usuario X >> " + getUser().getUserId());
         Log.i(TAG,  " Usuario X >> " + getUser().getPartnerId());
         Log.i(TAG,  " Usuario Y >> " + getUser().getName());
+        ResPartner resPartner = new ResPartner(getContext(), null);
+        int idUser = resPartner.selectRowId(getUser().getPartnerId());
+        Log.i(TAG, " Usuario Y22 >> " + idUser);
+
         //domain.add("driver_id", "=", getUser().getPartnerId());
+        //domain.add("driver_id", "=", idUser);
+        //ServicesOrderEventType servicesOrderEventType = new ServicesOrderEventType(getContext(),null);
+        //int stage_id_In_Preparation =  servicesOrderEventType.getCodEventType_Id("RUTA");
+        //domain.add("last_state","=",stage_id_In_Preparation);
         return domain;
     }
 
@@ -88,9 +94,9 @@ public class ServicesOrder extends OModel {
 
     @Override
     public void onSyncFinished() {
-        ServicesOrderEvent servicesOrderEvent = new ServicesOrderEvent(this.getContext(), OUser.current(this.getContext()));
-        ODomain oDomain = new ODomain();
-        servicesOrderEvent.quickSyncRecords(oDomain);
+        //ServicesOrderEvent servicesOrderEvent = new ServicesOrderEvent(this.getContext(), OUser.current(this.getContext()));
+        //ODomain oDomain = new ODomain();
+        //servicesOrderEvent.quickSyncRecords(oDomain);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.odoo.addons.servicesorder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -260,7 +261,7 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
     @Override
     public boolean onSearchViewTextChange(String newFilter) {
         mCurFilter = newFilter;
-        getLoaderManager().restartLoader(0, null, this);
+        //getLoaderManager().restartLoader(0, null, this);
         return true;
     }
 
@@ -281,13 +282,19 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
 
     private void loadActivity(ODataRow row) {
         Bundle data = new Bundle();
+
         if (row != null) {
             data = row.getPrimaryBundleData();
             data.putString(EXTRA_KEY_PROJECT, row.getString("os_id"));
+            IntentUtils.startActivity(getActivity(), ServicesOrderEventDetails.class, data);
+        } else {
+            data.putString(EXTRA_KEY_PROJECT, extra.getString(EXTRA_KEY_PROJECT));
+            Intent intent = new Intent(getActivity(), ServicesOrderEventDetails.class);
+            String name = extra.getString(EXTRA_KEY_PROJECT);
+            intent.putExtra("os_id", name);
+            startActivity(intent);
         }
 
-
-        IntentUtils.startActivity(getActivity(), ServicesOrderEventDetails.class, data);
     }
 
     @Override

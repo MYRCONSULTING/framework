@@ -29,24 +29,13 @@ import android.util.Log;
 
 import com.odoo.App;
 import com.odoo.R;
-import com.odoo.addons.enel.models.Encuesta;
-import com.odoo.addons.projects.models.ProjectProject;
-import com.odoo.addons.projects.models.ProjectTask;
-import com.odoo.addons.projects.models.ProjectTaskType;
 import com.odoo.addons.servicesorder.models.ServicesOrder;
 import com.odoo.addons.servicesorder.models.ServicesOrderEvent;
 import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
-import com.odoo.addons.survey.SurveySurvey;
-import com.odoo.addons.survey.models.SurveyLabel;
-import com.odoo.addons.survey.models.SurveyPage;
-import com.odoo.addons.survey.models.SurveyQuestion;
-import com.odoo.addons.survey.models.SurveyUserInput;
-import com.odoo.addons.survey.models.SurveyUserInputLine;
 import com.odoo.base.addons.ir.IrModel;
 import com.odoo.base.addons.res.ResCompany;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.account.About;
-import com.odoo.core.account.OdooAccountQuickManage;
 import com.odoo.core.auth.OdooAccountManager;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
@@ -66,7 +55,6 @@ import com.odoo.core.utils.OPreferenceManager;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OdooRecordUtils;
 import com.odoo.core.utils.logger.OLog;
-import com.odoo.core.utils.notification.ONotificationBuilder;
 import com.odoo.datas.OConstants;
 
 import java.util.ArrayList;
@@ -370,14 +358,30 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
         List<ODataRow> records = model.select(null,
                 "(id = ? or id = ?)", new String[]{"0", "false"});
         int counter = 0;
+        if (model.getModelName() == "services.order.events") {
+            Log.e(TAG, "Creando registro en servidor A1 >>> ." + model.getModelName() + " registros >> " + records.size());
+        }
+        Log.e(TAG, "Creando registro en servidor >>> . Q1 " + records.size());
         for (ODataRow record : records) {
+            if (model.getModelName() == "services.order.events") {
+                Log.e(TAG, "Creando registro en servidor >>> . X1 " + model.getModelName());
+            }
+            Log.e(TAG, "Creando registro en servidor >>> . Z1 " + model.getModelName());
             if (validateRelationRecords(model, record)) {
+                if (model.getModelName() == "services.order.events") {
+                    Log.e(TAG, "Creando registro en servidor >>> . X2 " + model.getModelName());
+                    Log.e(TAG, "Creando registro en servidor >>> . X21 " + model.getModelName() + " >> " + record.get("comment"));
+                }
+
                 /*
                  Need to check server id for record.
                  It is possible that record created on server by validating main record.
                  */
+                Log.e(TAG, "Creando registro en servidor >>> . R1 " + model.getModelName());
                 if (model.selectServerId(record.getInt(OColumn.ROW_ID)) == 0) {
+                    Log.e(TAG, "Creando registro en servidor >>> . R2 " + model.getModelName());
                     int id = createOnServer(model, OdooRecordUtils.createRecordValues(model, record));
+                    Log.e(TAG, "Creando registro en servidor >>> . R3 " + id);
                     if (id != OModel.INVALID_ROW_ID) {
                         OValues values = new OValues();
                         values.put("id", id);

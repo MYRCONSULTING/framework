@@ -18,62 +18,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:modelName="services.order">
+            app:modelName="services.order.events">
 
 
             <odoo.controls.OField
-                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:controlLabel="@string/label_name_os_vista"
-                app:fieldName="name"
+                app:controlLabel="@string/state"
+                app:fieldName="state"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_universe"></odoo.controls.OField>
-
-            <View
-                style="@style/ViewSeparator"
-                android:layout_marginLeft="72dp" />
+                app:iconResource="@drawable/ic_action_content_add"
+                app:widgetType="SearchableLive"></odoo.controls.OField>
 
             <odoo.controls.OField
-                android:id="@+id/order_event_ref"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="order_ref"
-                app:controlLabel="@string/label_os_order_ref"
+                app:controlLabel="@string/event_comment"
+                app:fieldName="comment"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="date"
-                app:controlLabel="@string/fecha"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/direccionrecojo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="partner_delivery"
-                app:controlLabel="@string/label_direccionrecojo"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
-
-            <odoo.controls.OField
-                android:id="@+id/nameCustomer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fieldLabelColor="@color/theme_secondary"
-                app:fieldName="partner_id"
-                app:controlLabel="@string/sync_label_customers"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_add_location_black_24dp"></odoo.controls.OField>
+                app:iconResource="@drawable/ic_action_notes_content"></odoo.controls.OField>
 
 
         </odoo.controls.OForm>
@@ -93,7 +56,7 @@
             android:layout_height="wrap_content"
             android:background="#ffffff"
             android:orientation="vertical"
-            app:modelName="services.order">
+            app:modelName="services.order.events">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -102,35 +65,22 @@
                 android:orientation="vertical">
 
                 <odoo.controls.OField
-                    android:id="@android:id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/default_8dp"
-                    app:fieldName="name"
-                    app:controlLabel="@string/label_os_editar"
-                    app:fieldTextAppearance="?android:textAppearanceLarge"
-                    app:showIcon="false"
-                    app:showLabel="true"></odoo.controls.OField>
-
-                <View
-                    style="@style/ViewSeparator"
-                    android:layout_marginLeft="72dp" />
-
-                <odoo.controls.OField
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:fieldName="order_ref"
-                    app:controlLabel="@string/label_os_order_ref"
-                    app:fieldTextAppearance="?android:textAppearanceMedium"
-                    app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
-
-                <odoo.controls.OField
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:controlLabel="@string/state"
                     app:fieldName="state"
                     app:fieldTextAppearance="?android:textAppearanceMedium"
-                    app:iconResource="@drawable/ic_action_content_add"></odoo.controls.OField>
+                    app:iconResource="@drawable/ic_action_content_add"
+                    app:widgetType="SearchableLive"></odoo.controls.OField>
+
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:controlLabel="@string/event_comment"
+                    app:fieldName="comment"
+                    app:fieldTextAppearance="?android:textAppearanceMedium"
+                    app:iconResource="@drawable/ic_action_notes_content"></odoo.controls.OField>
+
 
             </LinearLayout>
         </odoo.controls.OForm>

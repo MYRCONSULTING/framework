@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.odoo.addons.servicesorder.models.ServicesOrderEvent;
-import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
 import com.odoo.core.service.OSyncAdapter;
 import com.odoo.core.service.OSyncService;
 import com.odoo.core.support.OUser;
@@ -24,7 +23,7 @@ public class ServicesOrderEventSyncService extends OSyncService {
 
     @Override
     public void performDataSync(OSyncAdapter adapter, Bundle extras, OUser user) {
-        adapter.syncDataLimit(500);
+        adapter.syncDataLimit(6000);
     }
 
 

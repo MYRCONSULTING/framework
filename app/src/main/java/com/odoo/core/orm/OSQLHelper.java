@@ -61,6 +61,9 @@ public class OSQLHelper {
     }
 
     private String generateColumnStatement(OModel model, List<OColumn> columns) {
+        if (model.getModelName() == "services.order.events") {
+
+        }
         StringBuffer column_statement = new StringBuffer();
         List<String> finishedColumns = new ArrayList<>();
         for (OColumn column : columns) {

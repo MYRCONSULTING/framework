@@ -309,6 +309,7 @@ public class OSyncDataUtils {
             int counter = 0;
             for (String key : updateToServerRecords.keySet()) {
                 OModel model = OModel.get(mContext, key, mUser.getAndroidName());
+                Log.i(TAG, " Base updated on server" + model.getModelName());
                 List<String> ids = OListUtils.toStringList(updateToServerRecords.get(key));
                 counter += ids.size();
                 for (ODataRow record : model.select(null,
@@ -326,7 +327,9 @@ public class OSyncDataUtils {
                         model.close();
                     }
                 }
+
             }
+
             Log.i(TAG, counter + " records updated on server");
         } catch (Exception e) {
             e.printStackTrace();

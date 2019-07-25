@@ -25,7 +25,6 @@ import com.odoo.core.rpc.helper.OdooFields;
 import com.odoo.core.rpc.helper.utils.gson.OdooResult;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.utils.BitmapUtils;
-import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OStringColorUtil;
@@ -43,7 +42,7 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
     private final String KEY_MODE = "key_edit_mode";
     private final String KEY_NEW_IMAGE = "key_new_image";
     private Bundle extras;
-    private ServicesOrderEvent orderservices;
+    private ServicesOrderEvent orderservicesevent;
     private ODataRow record = null;
     private ImageView servicesorderImage = null;
     private OForm mForm;
@@ -54,6 +53,7 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
     private String newImage = null;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
+    private String xos_id = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,9 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
             newImage = savedInstanceState.getString(KEY_NEW_IMAGE);
         }
         app = (App) getApplicationContext();
-        orderservices = new ServicesOrderEvent(this,null);
+        orderservicesevent = new ServicesOrderEvent(this, null);
+        Intent intent = getIntent();
+        xos_id = intent.getStringExtra("os_id");
         extras = getIntent().getExtras();
         if (hasRecordInExtra())
             mEditMode = false;
@@ -131,8 +133,8 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
             mForm.initForm(null);
         } else {
             int rowId = extras.getInt(OColumn.ROW_ID);
-            record = orderservices.browse(rowId);
-            record.put("os_id", orderservices.getOrder_Ref(record));
+            record = orderservicesevent.browse(rowId);
+            record.put("os_id", orderservicesevent.getOrder_Ref(record));
             checkControls();
             setMode(mEditMode);
             mForm.setEditable(mEditMode);
@@ -149,10 +151,11 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            /*
             case R.id.order_event_ref:
                 IntentUtils.requestMessage(this, record.getString("os_id"));
                 break;
-            /*
+
             case R.id.telefono_fijo:
                 IntentUtils.requestCall(this, record.getString("telefono_fijo"));
                 break;
@@ -165,7 +168,7 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
     }
 
     private void checkControls() {
-        findViewById(R.id.order_event_ref).setOnClickListener(this);
+        //findViewById(R.id.order_event_ref).setOnClickListener(this);
         //findViewById(R.id.telefono_fijo).setOnClickListener(this);
         //findViewById(R.id.telefono_celular).setOnClickListener(this);
     }
@@ -209,15 +212,23 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
                         values.put("large_image", newImage);
                     }
                     if (record != null) {
-                        orderservices.update(record.getInt(OColumn.ROW_ID), values);
+                        orderservicesevent.update(record.getInt(OColumn.ROW_ID), values);
                         Toast.makeText(this, R.string.toast_information_saved, Toast.LENGTH_LONG).show();
                         mEditMode = !mEditMode;
                         setupToolbar();
                     } else {
-                        final int row_id = orderservices.insert(values);
-                        if (row_id != OModel.INVALID_ROW_ID) {
-                            finish();
+
+                        if (Integer.parseInt(xos_id) > 0) {
+                            values.put("os_id", xos_id);
+                            //values.put("os_id",record.getString("os_id"));
+                            values.put("decoration", "success");
+                            //values.put("date_create_user","2019-07-19 16:00:17");
+                            final int row_id = orderservicesevent.insert(values);
+                            if (row_id != OModel.INVALID_ROW_ID) {
+                                finish();
+                            }
                         }
+
                     }
                 }
                 break;
@@ -247,7 +258,7 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
                             public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
                                 if (type == OAlert.ConfirmType.POSITIVE) {
                                     // Deleting record and finishing activity if success.
-                                    if (orderservices.delete(record.getInt(OColumn.ROW_ID))) {
+                                    if (orderservicesevent.delete(record.getInt(OColumn.ROW_ID))) {
                                         Toast.makeText(ServicesOrderEventDetails.this, R.string.toast_record_deleted,
                                                 Toast.LENGTH_SHORT).show();
                                         finish();
@@ -287,7 +298,7 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
                 Thread.sleep(300);
                 OdooFields fields = new OdooFields();
                 fields.addAll(new String[]{"image_medium"});
-                OdooResult record = orderservices.getServerDataHelper().read(null, params[0]);
+                OdooResult record = orderservicesevent.getServerDataHelper().read(null, params[0]);
                 if (record != null && !record.getString("image_medium").equals("false")) {
                     image = record.getString("image_medium");
                 }
@@ -304,7 +315,7 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
                 if (!result.equals("false")) {
                     OValues values = new OValues();
                     values.put("large_image", result);
-                    orderservices.update(record.getInt(OColumn.ROW_ID), values);
+                    orderservicesevent.update(record.getInt(OColumn.ROW_ID), values);
                     record.put("large_image", result);
                     setOrderServiceImage();
                 }

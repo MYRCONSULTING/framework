@@ -71,6 +71,7 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         listView = (ListView) mView.findViewById(R.id.listview);
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.services_order_row_item);
         mAdapter.setOnRowViewClickListener(R.id.btnFormulario, this);
+        mAdapter.setOnRowViewClickListener(R.id.btnDetailTask, this);
         mAdapter.setOnViewBindListener(this);
         mAdapter.setHasSectionIndexers(true, "name");
         listView.setAdapter(mAdapter);
@@ -117,8 +118,20 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
             OControls.setGone(view, R.id.direccionrecojo);
         }
 
-        nameCustomer = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("name");
-        OControls.setText(view, R.id.nameCustomer, nameCustomer);
+        if (row.getString("partner_id") != null && !row.getString("partner_id").equals("false") && !row.getString("partner_id").isEmpty()) {
+            nameCustomer = resPartner.browse(Integer.valueOf(row.getString("partner_id"))).getString("name");
+            if (nameCustomer == "false") {
+                OControls.setGone(view, R.id.nameCustomer);
+            } else {
+                OControls.setText(view, R.id.nameCustomer, nameCustomer);
+            }
+
+        } else {
+            OControls.setGone(view, R.id.nameCustomer);
+        }
+
+
+
         OControls.setText(view, R.id.client_contact_name, row.getString("client_contact_name"));
         OControls.setText(view, R.id.client_contact_phone, row.getString("client_contact_phone"));
         OControls.setText(view, R.id.address_delivery, row.getString("address_delivery"));
@@ -283,14 +296,19 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
     public void onRowViewClick(int position, Cursor cursor, View view,
                                final View parent) {
         ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
+        Bundle data = new Bundle();
         switch (view.getId()) {
             case R.id.btnFormulario:
-                Bundle data = new Bundle();
                 if (row != null) {
                     data = row.getPrimaryBundleData();
                     data.putString(EXTRA_KEY_PROJECT, row.getString("_id"));
                 }
                 startFragment(new ServicesOrderEvent(), true, data);
+                break;
+            case R.id.btnDetailTask:
+                if (row != null) {
+                    loadActivity(row);
+                }
                 break;
             default:
                 break;
