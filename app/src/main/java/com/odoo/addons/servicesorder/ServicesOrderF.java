@@ -28,7 +28,7 @@ import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
-import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
@@ -323,7 +323,15 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                 break;
             case R.id.btnEndTask:
                 if (row != null) {
-                    saveServiceOrderF(row);
+                    if (inNetwork()) {
+                        //parent().sync().requestSync(com.odoo.addons.servicesorder.models.ServicesOrderEvent.AUTHORITY);
+                        saveServiceOrderF(row);
+                    } else {
+                        Toast.makeText(getActivity(), _s(R.string.toast_network_required), Toast.LENGTH_LONG)
+                                .show();
+                    }
+
+
                 }
                 break;
 
@@ -338,27 +346,6 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         ServicesOrderF.UpdateServicesOrder updateServicesOrder = new ServicesOrderF.UpdateServicesOrder();
         //updateServicesOrder.execute(row.getInt(OColumn.ROW_ID));
         updateServicesOrder.execute(row.getInt("id"));
-
-        servicesOrder = new ServicesOrder(getActivity(), null);
-        servicesOrderEvent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getActivity(), null);
-
-        servicesOrder.delete("_id = ?", new String[]{row.getInt(OColumn.ROW_ID).toString()}, true);
-        servicesOrderEvent.delete("os_id = ?", new String[]{row.getInt(OColumn.ROW_ID).toString()}, true);
-
-        //boolean flag = false;
-        //OValues values = new OValues();
-        //values.put("x_phone",false);
-        //values.put("driver_id",false);
-        //servicesOrder.update(row.getInt(OColumn.ROW_ID),values);
-        //ORecordValues data = new ORecordValues();
-        //data.put("driver_id", false);
-        //data.put("x_phone", false);
-
-        //int record = servicesOrder.getServerDataHelper().updateOnServer(data,row.getInt(OColumn.ROW_ID));
-        //Log.i(TAG, " Actualizo registro en el servidor >> " + record);
-        //boolean count = servicesOrder.delete(row.getInt(OColumn.ROW_ID));
-        //servicesOrder.delete("_id = ?",new String[]{row.getInt(OColumn.ROW_ID).toString()},true);
-
     }
 
     private class UpdateServicesOrder extends AsyncTask<Integer, Void, String> {
@@ -381,6 +368,9 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         protected String doInBackground(Integer... params) {
             try {
                 servicesOrder = new ServicesOrder(getActivity(), null);
+                servicesOrderEvent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getActivity(), null);
+                ODomain oDomain = new ODomain();
+                servicesOrderEvent.quickSyncRecords(oDomain);
                 ORecordValues data = new ORecordValues();
                 data.put("x_phone", false);
                 int record = servicesOrder.getServerDataHelper().updateOnServer(data, params[0]);
@@ -397,6 +387,12 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
             progressDialog.dismiss();
 
             if (record != null) {
+
+                servicesOrder = new ServicesOrder(getActivity(), null);
+                servicesOrderEvent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getActivity(), null);
+
+                servicesOrder.delete("_id = ?", new String[]{record}, true);
+                servicesOrderEvent.delete("os_id = ?", new String[]{record}, true);
 
             }
 

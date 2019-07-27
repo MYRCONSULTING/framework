@@ -2,7 +2,6 @@ package com.odoo.addons.servicesorder.models;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
@@ -55,12 +54,12 @@ public class ServicesOrder extends OModel {
     @Override
     public ODomain defaultDomain() {
         ODomain domain = new ODomain();
-        Log.i(TAG,  " Usuario X >> " + getUser().getUserId());
-        Log.i(TAG,  " Usuario X >> " + getUser().getPartnerId());
-        Log.i(TAG,  " Usuario Y >> " + getUser().getName());
-        ResPartner resPartner = new ResPartner(getContext(), null);
-        int idUser = resPartner.selectRowId(getUser().getPartnerId());
-        Log.i(TAG, " Usuario Y22 >> " + idUser);
+        //Log.i(TAG,  " Usuario X >> " + getUser().getUserId());
+        //Log.i(TAG,  " Usuario X >> " + getUser().getPartnerId());
+        //Log.i(TAG,  " Usuario Y >> " + getUser().getName());
+        //ResPartner resPartner = new ResPartner(getContext(), null);
+        //int idUser = resPartner.selectRowId(getUser().getPartnerId());
+        //Log.i(TAG, " Usuario Y22 >> " + idUser);
 
         //domain.add("driver_id", "=", getUser().getPartnerId());
         //domain.add("driver_id", "=", idUser);

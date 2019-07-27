@@ -2,7 +2,6 @@ package com.odoo.addons.servicesorder.models;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
@@ -11,10 +10,6 @@ import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by Ricardo Livelli on 20/11/2017.
@@ -91,7 +86,7 @@ public class ServicesOrderEvent extends OModel {
             }
 
         }
-        */
+
         List<Integer> list = new ArrayList<Integer>();
         ServicesOrder servicesOrder = new ServicesOrder(getContext(), null);
         List<ODataRow> listOS_ids = servicesOrder.select();
@@ -111,12 +106,12 @@ public class ServicesOrderEvent extends OModel {
             Log.i(TAG,  " Usuario XXX4777777 >> " + list);
         }
 
-
+        */
 
         ODomain domain = new ODomain();
 
-        ServicesOrderEventType servicesOrderEventType = new ServicesOrderEventType(getContext(), null);
-        int stage_id_In_Preparation = servicesOrderEventType.getCodEventType_Id("RUTA");
+        //ServicesOrderEventType servicesOrderEventType = new ServicesOrderEventType(getContext(), null);
+        //int stage_id_In_Preparation = servicesOrderEventType.getCodEventType_Id("RUTA");
         //domain.add("state","=",stage_id_In_Preparation);
 
         //domain.add("|");
