@@ -238,7 +238,7 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
     @Override
     public void onRefresh() {
         if (inNetwork()) {
-            parent().sync().requestSync(ServicesOrder.AUTHORITY);
+            parent().sync().requestSync(com.odoo.addons.servicesorder.models.ServicesOrderEvent.AUTHORITY);
             setSwipeRefreshing(true);
         } else {
             hideRefreshingProgress();
@@ -267,8 +267,10 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
     @Override
     public boolean onSearchViewTextChange(String newFilter) {
         mCurFilter = newFilter;
-        //getLoaderManager().restartLoader(0, null, this);
-        //getLoaderManager().restartLoader(0, null, this);
+        if (extra.containsKey(EXTRA_KEY_PROJECT))
+            getLoaderManager().restartLoader(Integer.valueOf(extra.getString(EXTRA_KEY_PROJECT)), extra, this);
+        else
+            getLoaderManager().restartLoader(0, null, this);
         return true;
     }
 
