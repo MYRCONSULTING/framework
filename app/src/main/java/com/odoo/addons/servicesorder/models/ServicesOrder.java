@@ -10,6 +10,7 @@ import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
 import com.odoo.core.orm.annotation.Odoo;
 import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.orm.fields.types.OBoolean;
 import com.odoo.core.orm.fields.types.ODate;
 import com.odoo.core.orm.fields.types.OFloat;
 import com.odoo.core.orm.fields.types.OVarchar;
@@ -39,6 +40,7 @@ public class ServicesOrder extends OModel {
     OColumn client_ubigeo = new OColumn("client_ubigeo", OVarchar.class).setSize(100);
     OColumn product_description = new OColumn("product_description", OVarchar.class).setSize(250);
     OColumn amount = new OColumn("product_description", OFloat.class);
+    OColumn x_phone = new OColumn("x_phone", OBoolean.class);
 
     public ServicesOrder(Context context, OUser user) {
         super(context, "services.order", user);
@@ -62,6 +64,8 @@ public class ServicesOrder extends OModel {
 
         //domain.add("driver_id", "=", getUser().getPartnerId());
         //domain.add("driver_id", "=", idUser);
+        domain.add("x_phone", "=", true);
+
         //ServicesOrderEventType servicesOrderEventType = new ServicesOrderEventType(getContext(),null);
         //int stage_id_In_Preparation =  servicesOrderEventType.getCodEventType_Id("RUTA");
         //domain.add("last_state","=",stage_id_In_Preparation);

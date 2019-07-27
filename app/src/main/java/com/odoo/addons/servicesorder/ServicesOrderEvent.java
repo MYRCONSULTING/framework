@@ -223,8 +223,14 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
     @Override
     public void onStatusChange(Boolean refreshing) {
         // Sync Status
+        if (extra.containsKey(EXTRA_KEY_PROJECT))
+            getLoaderManager().restartLoader(Integer.valueOf(extra.getString(EXTRA_KEY_PROJECT)), extra, this);
+        else
+            getLoaderManager().restartLoader(0, null, this);
+
         try {
             //getLoaderManager().restartLoader(0, null, this);
+
         } catch (Exception e) {
         }
     }
@@ -261,6 +267,7 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
     @Override
     public boolean onSearchViewTextChange(String newFilter) {
         mCurFilter = newFilter;
+        //getLoaderManager().restartLoader(0, null, this);
         //getLoaderManager().restartLoader(0, null, this);
         return true;
     }

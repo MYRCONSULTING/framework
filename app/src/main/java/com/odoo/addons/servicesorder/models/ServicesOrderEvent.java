@@ -123,7 +123,8 @@ public class ServicesOrderEvent extends OModel {
         //domain.add("|");
         //domain.add("os_id", "in", list);
         //domain.add("os_id", "=", 2);
-        //domain.add("os_id", "=", 3);
+        //domain.add("os_id", "=", 0);
+        domain.add("id", "=", 0);
         return domain;
     }
 

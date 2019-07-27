@@ -359,29 +359,30 @@ public class OSyncAdapter extends AbstractThreadedSyncAdapter {
                 "(id = ? or id = ?)", new String[]{"0", "false"});
         int counter = 0;
         if (model.getModelName() == "services.order.events") {
-            Log.e(TAG, "Creando registro en servidor A1 >>> ." + model.getModelName() + " registros >> " + records.size());
+            //Log.e(TAG, "Creando registro en servidor A1 >>> ." + model.getModelName() + " registros >> " + records.size());
         }
-        Log.e(TAG, "Creando registro en servidor >>> . Q1 " + records.size());
+        //Log.e(TAG, "Creando registro en servidor >>> . Q1 " + records.size());
         for (ODataRow record : records) {
             if (model.getModelName() == "services.order.events") {
-                Log.e(TAG, "Creando registro en servidor >>> . X1 " + model.getModelName());
+                //Log.e(TAG, "Creando registro en servidor >>> . X1 " + model.getModelName());
             }
-            Log.e(TAG, "Creando registro en servidor >>> . Z1 " + model.getModelName());
+            //Log.e(TAG, "Creando registro en servidor >>> . Z1 " + model.getModelName());
             if (validateRelationRecords(model, record)) {
                 if (model.getModelName() == "services.order.events") {
-                    Log.e(TAG, "Creando registro en servidor >>> . X2 " + model.getModelName());
-                    Log.e(TAG, "Creando registro en servidor >>> . X21 " + model.getModelName() + " >> " + record.get("comment"));
+                    //Log.e(TAG, "Creando registro en servidor >>> . X2 " + model.getModelName());
+
                 }
 
                 /*
                  Need to check server id for record.
                  It is possible that record created on server by validating main record.
                  */
-                Log.e(TAG, "Creando registro en servidor >>> . R1 " + model.getModelName());
+                //Log.e(TAG, "Creando registro en servidor >>> . R1 " + model.getModelName());
                 if (model.selectServerId(record.getInt(OColumn.ROW_ID)) == 0) {
-                    Log.e(TAG, "Creando registro en servidor >>> . R2 " + model.getModelName());
+                    //Log.e(TAG, "Creando registro en servidor >>> . R2 " + model.getModelName());
                     int id = createOnServer(model, OdooRecordUtils.createRecordValues(model, record));
-                    Log.e(TAG, "Creando registro en servidor >>> . R3 " + id);
+                    Log.e(TAG, "Creando registro en servidor >>> . Base " + model.getModelName() + " Comentario >> " + record.get("comment"));
+                    Log.e(TAG, "Registro sincronizado en servidor >>> . Id Server >> " + id);
                     if (id != OModel.INVALID_ROW_ID) {
                         OValues values = new OValues();
                         values.put("id", id);
