@@ -77,6 +77,11 @@ public class ServicesOrder extends OModel {
         return add;
     }
 
+    @Override
+    public boolean allowDeleteRecordOnServer() {
+        return false;
+    }
+
     public String storePartnerName(OValues values) {
         String partner = "";
         try {

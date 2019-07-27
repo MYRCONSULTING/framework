@@ -1,8 +1,10 @@
 package com.odoo.addons.servicesorder;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,6 +27,9 @@ import com.odoo.addons.servicesorder.models.ServicesOrder;
 import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
+import com.odoo.core.orm.OModel;
+import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -54,6 +60,10 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
     private OCursorListAdapter mAdapter = null;
     private boolean syncRequested = false;
     public static final String EXTRA_KEY_PROJECT = "extra_key_project";
+    public static final String TAG = OModel.class.getSimpleName();
+    private ServicesOrder servicesOrder;
+    private com.odoo.addons.servicesorder.models.ServicesOrderEvent servicesOrderEvent;
+    private LinearLayout horizontalScrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -72,6 +82,7 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.services_order_row_item);
         mAdapter.setOnRowViewClickListener(R.id.btnFormulario, this);
         mAdapter.setOnRowViewClickListener(R.id.btnDetailTask, this);
+        mAdapter.setOnRowViewClickListener(R.id.btnEndTask, this);
         mAdapter.setOnViewBindListener(this);
         mAdapter.setHasSectionIndexers(true, "name");
         listView.setAdapter(mAdapter);
@@ -310,10 +321,86 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                     loadActivity(row);
                 }
                 break;
+            case R.id.btnEndTask:
+                if (row != null) {
+                    saveServiceOrderF(row);
+                }
+                break;
+
             default:
                 break;
         }
 
+    }
+
+    public void saveServiceOrderF(ODataRow row) {
+
+        ServicesOrderF.UpdateServicesOrder updateServicesOrder = new ServicesOrderF.UpdateServicesOrder();
+        //updateServicesOrder.execute(row.getInt(OColumn.ROW_ID));
+        updateServicesOrder.execute(row.getInt("id"));
+
+        servicesOrder = new ServicesOrder(getActivity(), null);
+        servicesOrderEvent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getActivity(), null);
+
+        servicesOrder.delete("_id = ?", new String[]{row.getInt(OColumn.ROW_ID).toString()}, true);
+        servicesOrderEvent.delete("os_id = ?", new String[]{row.getInt(OColumn.ROW_ID).toString()}, true);
+
+        //boolean flag = false;
+        //OValues values = new OValues();
+        //values.put("x_phone",false);
+        //values.put("driver_id",false);
+        //servicesOrder.update(row.getInt(OColumn.ROW_ID),values);
+        //ORecordValues data = new ORecordValues();
+        //data.put("driver_id", false);
+        //data.put("x_phone", false);
+
+        //int record = servicesOrder.getServerDataHelper().updateOnServer(data,row.getInt(OColumn.ROW_ID));
+        //Log.i(TAG, " Actualizo registro en el servidor >> " + record);
+        //boolean count = servicesOrder.delete(row.getInt(OColumn.ROW_ID));
+        //servicesOrder.delete("_id = ?",new String[]{row.getInt(OColumn.ROW_ID).toString()},true);
+
+    }
+
+    private class UpdateServicesOrder extends AsyncTask<Integer, Void, String> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setTitle(R.string.title_working);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setMessage("Actualizando ...");
+            progressDialog.setMax(3);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgress(1);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            try {
+                servicesOrder = new ServicesOrder(getActivity(), null);
+                ORecordValues data = new ORecordValues();
+                data.put("x_phone", false);
+                int record = servicesOrder.getServerDataHelper().updateOnServer(data, params[0]);
+                return String.valueOf(record);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String record) {
+            super.onPostExecute(record);
+            progressDialog.dismiss();
+
+            if (record != null) {
+
+            }
+
+        }
     }
 
 }

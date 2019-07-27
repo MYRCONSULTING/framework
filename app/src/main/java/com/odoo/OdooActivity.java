@@ -358,6 +358,12 @@ public class OdooActivity extends OdooCompatActivity {
 
 
         ODomain oDomain = new ODomain();
+        /*
+        ODomain oDomainServicesOrder = new ODomain();
+        oDomainServicesOrder.add("|");
+        oDomainServicesOrder.add("x_phone", "=", false);
+        oDomainServicesOrder.add("x_phone", "=", true);
+        */
         resPartner.quickSyncRecords(oDomain);
         servicesOrder.quickSyncRecords(oDomain);
         servicesOrderEvent.quickSyncRecords(oDomain);

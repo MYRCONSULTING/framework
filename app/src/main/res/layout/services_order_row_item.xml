@@ -134,6 +134,16 @@
                     android:layout_alignParentRight="true"
                     android:layout_weight="1"
                     android:src="@drawable/ic_action_edit" />
+
+                <ImageButton
+                    android:id="@+id/btnEndTask"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_action_action_done_all" />
+
             </LinearLayout>
 
         </LinearLayout>

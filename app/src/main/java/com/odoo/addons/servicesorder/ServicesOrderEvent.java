@@ -163,7 +163,7 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
         String selection = (args.size() > 0) ? where : null;
         String[] selectionArgs = (args.size() > 0) ? args.toArray(new String[args.size()]) : null;
 
-        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "id");
+        return new CursorLoader(getActivity(), db().uri(), null, selection, selectionArgs, "_id desc");
 
     }
 
