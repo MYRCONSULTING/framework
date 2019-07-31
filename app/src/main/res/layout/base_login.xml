@@ -67,7 +67,6 @@
                         android:gravity="center_vertical"
                         android:hint="@string/label_your_self_hosted_url"
                         android:singleLine="true"
-                        android:text="34.200.15.124:8069"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColorHint="@color/body_text_3" />
 
@@ -121,8 +120,7 @@
                         android:hint="@string/label_username_or_email"
                         android:singleLine="true"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColorHint="@color/body_text_3"
-                        android:text="admin" />
+                        android:textColorHint="@color/body_text_3" />
                 </LinearLayout>
 
                 <View
@@ -207,6 +205,20 @@
                 android:text="@string/disclaimer_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColorLink="#ffffff"
+                android:visibility="gone"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:id="@+id/txvAddSelfHosted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:clickable="true"
+                android:fontFamily="@string/font_light"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/label_add_self_hosted_url"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#ffffff" />
 
             <Button
@@ -232,20 +244,10 @@
                 android:padding="5dp"
                 android:text="@string/label_forgot_password"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:visibility="gone"
                 android:textColor="#ebebeb" />
 
-            <TextView
-                android:id="@+id/txvAddSelfHosted"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:clickable="true"
-                android:fontFamily="@string/font_light"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="@string/label_add_self_hosted_url"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#ffffff" />
+
 
             <TextView
                 android:id="@+id/create_account"
@@ -257,6 +259,7 @@
                 android:text="@string/label_create_account"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#ffffff"
+                android:visibility="gone"
                 android:textStyle="bold" />
 
             <TextView

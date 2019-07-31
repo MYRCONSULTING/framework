@@ -14,16 +14,18 @@
         android:id="@+id/menu_services_order_cancel"
         android:title="@string/label_cancel"
         app:showAsAction="always" />
+
     <item
         android:id="@+id/menu_services_order_detail_more"
         android:icon="@drawable/ic_action_more"
         android:title="@string/label_more"
         app:showAsAction="always">
         <menu>
+            <!--
             <item
                 android:id="@+id/menu_services_evento"
                 android:title="@string/label_event" />
-            <!-- -->
+
             <item
                 android:id="@+id/menu_services_order_share"
                 android:title="@string/label_share" />
@@ -33,6 +35,7 @@
             <item
                 android:id="@+id/menu_services_order_delete"
                 android:title="@string/label_delete" />
+                -->
         </menu>
     </item>
 </menu>

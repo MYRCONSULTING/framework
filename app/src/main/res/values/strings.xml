@@ -100,7 +100,7 @@
     <string name="title_save">Recording</string>
     <string name="label_save_now">Recording information ...</string>
     <string name="label_edad">Edad</string>
-    <string name="label_no_so_found_swipe">Deslizar para comprobar nuevos Ordenes de Servicio</string>
+    <string name="label_no_so_found_swipe">Deslizar para comprobar nuevas Ordenes de Servicio</string>
     <string name="sync_label_os">Orden de Servicio</string>
     <string name="label_no_encuesta_found">No existen encuestas</string>
     <string name="label_no_os_found">No existen Ordenes de Servicio</string>

@@ -23,7 +23,7 @@ public class ServicesOrderEvent extends OModel {
 
     OColumn comment = new OColumn("Observaciones", OVarchar.class).setSize(100);
     OColumn display_name = new OColumn("display_name", OVarchar.class).setSize(100);
-    OColumn state = new OColumn("Tipo de Evento", ServicesOrderEventType.class,OColumn.RelationType.ManyToOne);
+    OColumn state = new OColumn("Tipo de Evento", ServicesOrderEventType.class, OColumn.RelationType.ManyToOne).setRequired();
     OColumn os_id = new OColumn("Orden de servicio", ServicesOrder.class,OColumn.RelationType.ManyToOne);
     //OColumn x_attachment_ids = new OColumn("Attachments", IrAttachment.class,OColumn.RelationType.ManyToMany);
     OColumn date_create_user = new OColumn("date_create_user", ODateTime.class).setDefaultValue(ODateUtils.getUTCDate());

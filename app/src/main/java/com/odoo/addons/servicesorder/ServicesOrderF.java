@@ -39,6 +39,7 @@ import com.odoo.core.support.drawer.ODrawerItem;
 import com.odoo.core.support.list.OCursorListAdapter;
 import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.IntentUtils;
+import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OControls;
 import com.odoo.core.utils.OCursorUtils;
 import com.odoo.core.utils.OResource;
@@ -327,21 +328,36 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                 }
                 break;
             case R.id.btnEndTask:
-                if (row != null) {
-                    OValues values = new OValues();
-                    values.put("x_phone", false);
-                    orderservicesevent.update(row.getInt(OColumn.ROW_ID), values);
+                final ODataRow xrow = row;
+                OAlert.showConfirm(getContext(), OResource.string(getContext(),
+                        R.string.confirm_are_you_sure_want_to_end),
+                        new OAlert.OnAlertConfirmListener() {
+                            @Override
+                            public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
+                                if (type == OAlert.ConfirmType.POSITIVE) {
+                                    // Deleting record and finishing activity if success.
+                                    if (xrow != null) {
+                                        OValues values = new OValues();
+                                        values.put("x_phone", false);
+                                        orderservicesevent.update(xrow.getInt(OColumn.ROW_ID), values);
 
-                    if (inNetwork()) {
-                        //parent().sync().requestSync(com.odoo.addons.servicesorder.models.ServicesOrderEvent.AUTHORITY);
-                        saveServiceOrderF(row);
-                    } else {
-                        Toast.makeText(getActivity(), _s(R.string.toast_network_required), Toast.LENGTH_LONG)
-                                .show();
-                    }
+                                        if (inNetwork()) {
+                                            //parent().sync().requestSync(com.odoo.addons.servicesorder.models.ServicesOrderEvent.AUTHORITY);
+                                            saveServiceOrderF(xrow);
+                                        } else {
+                                            Toast.makeText(getActivity(), _s(R.string.toast_network_required), Toast.LENGTH_LONG)
+                                                    .show();
+                                        }
 
 
-                }
+                                    }
+                                }
+                            }
+                        });
+
+
+
+
                 break;
 
             default:
@@ -366,9 +382,9 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
             progressDialog = new ProgressDialog(getContext());
             progressDialog.setTitle(R.string.title_working);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setMessage("Sincronizando ...");
-            progressDialog.setMax(3);
-            progressDialog.setCancelable(false);
+            progressDialog.setMessage("Enviando datos al servidor ...");
+            //progressDialog.setMax(horizontalScrollView.getChildCount());
+            progressDialog.setCancelable(true);
             progressDialog.setProgress(1);
             progressDialog.show();
 
@@ -382,7 +398,13 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                 servicesOrderEvent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getActivity(), null);
                 ODomain oDomain = new ODomain();
                 servicesOrderEvent.quickSyncRecords(oDomain);
-
+                Thread.sleep(300);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.setProgress(100);
+                    }
+                });
                 ORecordValues data = new ORecordValues();
                 data.put("x_phone", false);
                 int record = servicesOrder.getServerDataHelper().updateOnServer(data, params[0]);

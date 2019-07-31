@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.odoo.App;
 import com.odoo.R;
-import com.odoo.addons.customers.utils.ShareUtil;
 import com.odoo.addons.servicesorder.models.ServicesOrder;
 import com.odoo.base.addons.ir.feature.OFileManager;
 import com.odoo.core.orm.ODataRow;
@@ -31,7 +30,6 @@ import com.odoo.core.rpc.helper.utils.gson.OdooResult;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.IntentUtils;
-import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OStringColorUtil;
 
@@ -266,12 +264,14 @@ public class ServicesOrderDetails extends OdooCompatActivity
                     finish();
                 }
                 break;
+            /*
             case R.id.menu_services_order_share:
                 ShareUtil.shareContact(this, record, true);
                 break;
             case R.id.menu_services_order_import:
                 ShareUtil.shareContact(this, record, false);
                 break;
+
             case R.id.menu_services_order_delete:
                 OAlert.showConfirm(this, OResource.string(this,
                         R.string.confirm_are_you_sure_want_to_delete),
@@ -290,6 +290,7 @@ public class ServicesOrderDetails extends OdooCompatActivity
                         });
 
                 break;
+                */
         }
         return super.onOptionsItemSelected(item);
     }

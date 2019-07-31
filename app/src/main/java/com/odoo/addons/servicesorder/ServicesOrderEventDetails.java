@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.odoo.App;
 import com.odoo.R;
-import com.odoo.addons.customers.utils.ShareUtil;
 import com.odoo.addons.servicesorder.models.ServicesOrderEvent;
 import com.odoo.base.addons.ir.feature.OFileManager;
 import com.odoo.core.orm.ODataRow;
@@ -245,12 +244,14 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
                     finish();
                 }
                 break;
+            /*
             case R.id.menu_services_order_evento_share:
                 ShareUtil.shareContact(this, record, true);
                 break;
             case R.id.menu_services_order_evento_import:
                 ShareUtil.shareContact(this, record, false);
                 break;
+             */
             case R.id.menu_services_order_evento_delete:
                 OAlert.showConfirm(this, OResource.string(this,
                         R.string.confirm_are_you_sure_want_to_delete),

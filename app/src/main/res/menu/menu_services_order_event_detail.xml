@@ -20,16 +20,18 @@
         android:title="@string/label_more"
         app:showAsAction="always">
         <menu>
+            <!--
             <item
                 android:id="@+id/menu_services_evento"
                 android:title="@string/label_event" />
-            <!-- -->
+
             <item
                 android:id="@+id/menu_services_order_evento_share"
                 android:title="@string/label_share" />
             <item
                 android:id="@+id/menu_services_order_evento_import"
                 android:title="@string/label_import_contact" />
+                -->
             <item
                 android:id="@+id/menu_services_order_evento_delete"
                 android:title="@string/label_delete" />

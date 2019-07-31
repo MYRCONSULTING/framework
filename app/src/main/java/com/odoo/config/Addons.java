@@ -19,17 +19,9 @@
  */
 package com.odoo.config;
 
-import com.odoo.addons.account.AccountInvoice;
-import com.odoo.addons.account.AccountPayment;
-import com.odoo.addons.customers.Customers;
-import com.odoo.addons.projects.Project;
-import com.odoo.addons.projects.Tasks;
 import com.odoo.addons.servicesorder.ServicesOrderF;
-import com.odoo.addons.servicesorder.ServicesOrderEvent;
-import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.support.addons.AddonsHelper;
 import com.odoo.core.support.addons.OAddon;
-import com.odoo.addons.enel.*;
 
 public class Addons extends AddonsHelper {
 
@@ -54,8 +46,8 @@ public class Addons extends AddonsHelper {
     OAddon survey = new OAddon(Project.class);
 */
 
-    OAddon customers = new OAddon(Customers.class);
+    //OAddon customers = new OAddon(Customers.class);
     OAddon orderservices = new OAddon(ServicesOrderF.class).setDefault();
-    OAddon ordereventservices = new OAddon(ServicesOrderEvent.class).setDefault();
+    //OAddon ordereventservices = new OAddon(ServicesOrderEvent.class).setDefault();
 
 }

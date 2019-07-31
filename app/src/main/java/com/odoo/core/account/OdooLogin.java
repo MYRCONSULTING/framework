@@ -119,7 +119,9 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
                 loginUser();
                 break;
             case R.id.forgot_password:
-                IntentUtils.openURLInBrowser(this, OConstants.URL_ODOO_RESET_PASSWORD);
+                //IntentUtils.openURLInBrowser(this, OConstants.URL_ODOO_RESET_PASSWORD);
+                IntentUtils.openURLInBrowser(this, edtSelfHosted + OConstants.URL_ODOO_RESET_PASSWORD);
+
                 break;
             case R.id.create_account:
                 IntentUtils.openURLInBrowser(this, OConstants.URL_ODOO_SIGN_UP);
@@ -134,7 +136,8 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
             findViewById(R.id.layoutSelfHosted).setVisibility(View.VISIBLE);
             edtSelfHosted.setOnFocusChangeListener(this);
             edtSelfHosted.requestFocus();
-            txvAddSelfHosted.setText(R.string.label_login_with_odoo);
+            //txvAddSelfHosted.setText(R.string.label_login_with_odoo);
+            txvAddSelfHosted.setText(R.string.label_add_self_hosted_url);
         } else {
             findViewById(R.id.layoutBorderDB).setVisibility(View.GONE);
             findViewById(R.id.layoutDatabase).setVisibility(View.GONE);

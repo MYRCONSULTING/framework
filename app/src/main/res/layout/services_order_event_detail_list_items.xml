@@ -71,7 +71,7 @@
                     app:fieldName="state"
                     app:fieldTextAppearance="?android:textAppearanceMedium"
                     app:iconResource="@drawable/ic_action_content_add"
-                    app:widgetType="SearchableLive"></odoo.controls.OField>
+                    app:widgetType="Searchable"></odoo.controls.OField>
 
                 <odoo.controls.OField
                     android:layout_width="match_parent"
