@@ -23,7 +23,7 @@ public class ServicesOrderEventSyncService extends OSyncService {
 
     @Override
     public void performDataSync(OSyncAdapter adapter, Bundle extras, OUser user) {
-        adapter.syncDataLimit(6000);
+        adapter.syncDataLimit(500);
     }
 
 

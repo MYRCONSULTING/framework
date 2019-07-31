@@ -28,6 +28,8 @@ import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
+import com.odoo.core.orm.OValues;
+import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.support.addons.fragment.BaseFragment;
@@ -64,12 +66,15 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
     private ServicesOrder servicesOrder;
     private com.odoo.addons.servicesorder.models.ServicesOrderEvent servicesOrderEvent;
     private LinearLayout horizontalScrollView;
+    private com.odoo.addons.servicesorder.models.ServicesOrderEvent orderservicesevent;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         setHasSyncStatusObserver(KEY, this, db());
+        orderservicesevent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getContext(), null);
         return inflater.inflate(R.layout.common_listview, container, false);
     }
 
@@ -323,6 +328,10 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                 break;
             case R.id.btnEndTask:
                 if (row != null) {
+                    OValues values = new OValues();
+                    values.put("x_phone", false);
+                    orderservicesevent.update(row.getInt(OColumn.ROW_ID), values);
+
                     if (inNetwork()) {
                         //parent().sync().requestSync(com.odoo.addons.servicesorder.models.ServicesOrderEvent.AUTHORITY);
                         saveServiceOrderF(row);
@@ -357,20 +366,23 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
             progressDialog = new ProgressDialog(getContext());
             progressDialog.setTitle(R.string.title_working);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setMessage("Actualizando ...");
+            progressDialog.setMessage("Sincronizando ...");
             progressDialog.setMax(3);
             progressDialog.setCancelable(false);
             progressDialog.setProgress(1);
             progressDialog.show();
+
         }
 
         @Override
         protected String doInBackground(Integer... params) {
             try {
                 servicesOrder = new ServicesOrder(getActivity(), null);
+
                 servicesOrderEvent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getActivity(), null);
                 ODomain oDomain = new ODomain();
                 servicesOrderEvent.quickSyncRecords(oDomain);
+
                 ORecordValues data = new ORecordValues();
                 data.put("x_phone", false);
                 int record = servicesOrder.getServerDataHelper().updateOnServer(data, params[0]);

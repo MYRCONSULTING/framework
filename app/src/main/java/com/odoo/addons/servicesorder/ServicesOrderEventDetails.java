@@ -26,6 +26,7 @@ import com.odoo.core.rpc.helper.utils.gson.OdooResult;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.OAlert;
+import com.odoo.core.utils.ODateUtils;
 import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.OStringColorUtil;
 
@@ -222,7 +223,7 @@ public class ServicesOrderEventDetails extends OdooCompatActivity
                             values.put("os_id", xos_id);
                             //values.put("os_id",record.getString("os_id"));
                             values.put("decoration", "success");
-                            //values.put("date_create_user","2019-07-19 16:00:17");
+                            values.put("date_create_user", ODateUtils.getUTCDate());
                             final int row_id = orderservicesevent.insert(values);
                             if (row_id != OModel.INVALID_ROW_ID) {
                                 finish();

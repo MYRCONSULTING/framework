@@ -6,10 +6,12 @@ import android.net.Uri;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.fields.OColumn;
+import com.odoo.core.orm.fields.types.ODateTime;
 import com.odoo.core.orm.fields.types.OSelection;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.rpc.helper.ODomain;
 import com.odoo.core.support.OUser;
+import com.odoo.core.utils.ODateUtils;
 
 /**
  * Created by Ricardo Livelli on 20/11/2017.
@@ -24,7 +26,7 @@ public class ServicesOrderEvent extends OModel {
     OColumn state = new OColumn("Tipo de Evento", ServicesOrderEventType.class,OColumn.RelationType.ManyToOne);
     OColumn os_id = new OColumn("Orden de servicio", ServicesOrder.class,OColumn.RelationType.ManyToOne);
     //OColumn x_attachment_ids = new OColumn("Attachments", IrAttachment.class,OColumn.RelationType.ManyToMany);
-    //OColumn x_date_create_user = new OColumn("date_create_user", OVarchar.class).setDefaultValue(ODateUtils.getUTCDate());
+    OColumn date_create_user = new OColumn("date_create_user", ODateTime.class).setDefaultValue(ODateUtils.getUTCDate());
     OColumn decoration = new OColumn("Decoracion", OSelection.class)
             .addSelection("danger","Rojo")
             .addSelection("success","Verde")
