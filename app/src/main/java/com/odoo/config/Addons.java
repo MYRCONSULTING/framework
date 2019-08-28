@@ -19,6 +19,7 @@
  */
 package com.odoo.config;
 
+import com.odoo.addons.sale.Sales;
 import com.odoo.addons.servicesorder.ServicesOrderF;
 import com.odoo.core.support.addons.AddonsHelper;
 import com.odoo.core.support.addons.OAddon;
@@ -48,6 +49,7 @@ public class Addons extends AddonsHelper {
 
     //OAddon customers = new OAddon(Customers.class);
     OAddon orderservices = new OAddon(ServicesOrderF.class).setDefault();
+    OAddon sales = new OAddon(Sales.class);
     //OAddon ordereventservices = new OAddon(ServicesOrderEvent.class).setDefault();
 
 }
