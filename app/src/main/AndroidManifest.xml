@@ -50,7 +50,7 @@
             android:name="com.odoo.OdooActivity"
             android:windowSoftInputMode="adjustPan"
             android:label="${applicationName}" />
-        <!-- -->
+        <!-- La ultima milla-->
         <activity android:name="odoo.controls.SearchableItemActivity" />
 
         <activity android:name="com.odoo.SettingsActivity" />
