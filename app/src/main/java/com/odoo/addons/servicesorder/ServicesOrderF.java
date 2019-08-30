@@ -67,7 +67,7 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
     private ServicesOrder servicesOrder;
     private com.odoo.addons.servicesorder.models.ServicesOrderEvent servicesOrderEvent;
     private LinearLayout horizontalScrollView;
-    private com.odoo.addons.servicesorder.models.ServicesOrderEvent orderservicesevent;
+    private com.odoo.addons.servicesorder.models.ServicesOrder orderservices;
 
 
     @Override
@@ -75,7 +75,7 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         setHasSyncStatusObserver(KEY, this, db());
-        orderservicesevent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getContext(), null);
+        orderservices = new com.odoo.addons.servicesorder.models.ServicesOrder(getContext(), null);
         return inflater.inflate(R.layout.common_listview, container, false);
     }
 
@@ -152,6 +152,8 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         OControls.setText(view, R.id.client_contact_name, row.getString("client_contact_name"));
         OControls.setText(view, R.id.client_contact_phone, row.getString("client_contact_phone"));
         OControls.setText(view, R.id.address_delivery, row.getString("address_delivery"));
+        OControls.setText(view, R.id.cod_amount, row.getString("amount"));
+
 
         Bitmap img;
         if (row.getString("image_small").equals("false")) {
@@ -339,7 +341,7 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
                                     if (xrow != null) {
                                         OValues values = new OValues();
                                         values.put("x_phone", false);
-                                        orderservicesevent.update(xrow.getInt(OColumn.ROW_ID), values);
+                                        orderservices.update(xrow.getInt(OColumn.ROW_ID), values);
 
                                         if (inNetwork()) {
                                             //parent().sync().requestSync(com.odoo.addons.servicesorder.models.ServicesOrderEvent.AUTHORITY);

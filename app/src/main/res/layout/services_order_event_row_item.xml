@@ -70,8 +70,7 @@
                     android:layout_weight="1"
                     android:text="Visualizar"
                     android:drawableLeft="@drawable/ic_action_edit" />
-
-
+                 -->
                 <Button
                     android:id="@+id/btnEndTask"
                     android:layout_width="match_parent"
@@ -79,9 +78,8 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_weight="1"
-                    android:text="Finalizar"
-                    android:drawableLeft="@drawable/ic_action_action_done_all" />
-                 -->
+                    android:drawableLeft="@drawable/ic_action_action_done_all"
+                    android:text="Finalizar" />
 
 
             </LinearLayout>

@@ -108,6 +108,15 @@
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/body_text_1"></TextView>
 
+                <TextView
+                    android:id="@+id/cod_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"></TextView>
+
 
             </LinearLayout>
 

@@ -1,9 +1,11 @@
 package com.odoo.addons.servicesorder;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager;
@@ -24,6 +26,9 @@ import com.odoo.R;
 import com.odoo.addons.servicesorder.models.ServicesOrder;
 import com.odoo.addons.servicesorder.models.ServicesOrderEventType;
 import com.odoo.core.orm.ODataRow;
+import com.odoo.core.orm.OValues;
+import com.odoo.core.rpc.helper.ODomain;
+import com.odoo.core.rpc.helper.ORecordValues;
 import com.odoo.core.support.addons.fragment.BaseFragment;
 import com.odoo.core.support.addons.fragment.IOnSearchViewChangeListener;
 import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
@@ -31,6 +36,7 @@ import com.odoo.core.support.drawer.ODrawerItem;
 import com.odoo.core.support.list.OCursorListAdapter;
 import com.odoo.core.utils.BitmapUtils;
 import com.odoo.core.utils.IntentUtils;
+import com.odoo.core.utils.OAlert;
 import com.odoo.core.utils.OControls;
 import com.odoo.core.utils.OCursorUtils;
 import com.odoo.core.utils.OResource;
@@ -45,7 +51,7 @@ import java.util.List;
 public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObserverListener,
         LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
         OCursorListAdapter.OnViewBindListener, IOnSearchViewChangeListener, View.OnClickListener,
-        AdapterView.OnItemClickListener {
+        AdapterView.OnItemClickListener, OCursorListAdapter.OnRowViewClickListener {
 
     public static final String KEY = ServicesOrderEvent.class.getSimpleName();
     private View mView;
@@ -55,12 +61,16 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
     private Bundle extra = null;
     private boolean syncRequested = false;
     public static final String EXTRA_KEY_PROJECT = "extra_key_project";
+    private com.odoo.addons.servicesorder.models.ServicesOrder orderservices;
+    private ServicesOrder servicesOrder;
+    private com.odoo.addons.servicesorder.models.ServicesOrderEvent servicesOrderEvent;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         setHasSyncStatusObserver(KEY, this, db());
+        orderservices = new com.odoo.addons.servicesorder.models.ServicesOrder(getContext(), null);
         return inflater.inflate(R.layout.common_listview, container, false);
     }
 
@@ -74,6 +84,7 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.services_order_event_row_item);
         mAdapter.setOnViewBindListener(this);
         mAdapter.setHasSectionIndexers(true, "os_id");
+        mAdapter.setOnRowViewClickListener(R.id.btnEndTask, this);
         listView.setAdapter(mAdapter);
         listView.setFastScrollAlwaysVisible(true);
         listView.setOnItemClickListener(this);
@@ -144,6 +155,120 @@ public class ServicesOrderEvent extends BaseFragment implements ISyncStatusObser
             img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image_small"));
         }
         OControls.setImage(view, R.id.image_small, img);
+    }
+
+    @Override
+    public void onRowViewClick(int position, Cursor cursor, View view,
+                               final View parent) {
+        ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
+        Bundle data = new Bundle();
+        switch (view.getId()) {
+            case R.id.btnEndTask:
+                final ODataRow xrow = row;
+                OAlert.showConfirm(getContext(), OResource.string(getContext(),
+                        R.string.confirm_are_you_sure_want_to_end),
+                        new OAlert.OnAlertConfirmListener() {
+                            @Override
+                            public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
+                                if (type == OAlert.ConfirmType.POSITIVE) {
+                                    // Deleting record and finishing activity if success.
+                                    if (xrow != null) {
+                                        OValues values = new OValues();
+                                        values.put("x_phone", false);
+                                        orderservices.update(xrow.getInt("os_id"), values);
+
+                                        if (inNetwork()) {
+                                            //parent().sync().requestSync(com.odoo.addons.servicesorder.models.ServicesOrderEvent.AUTHORITY);
+                                            saveServiceOrderF(orderservices.browse(xrow.getInt("os_id")));
+                                        } else {
+                                            Toast.makeText(getActivity(), _s(R.string.toast_network_required), Toast.LENGTH_LONG)
+                                                    .show();
+                                        }
+
+
+                                    }
+                                }
+                            }
+                        });
+
+
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+    public void saveServiceOrderF(ODataRow row) {
+
+        ServicesOrderEvent.UpdateServicesOrder updateServicesOrder = new ServicesOrderEvent.UpdateServicesOrder();
+        //updateServicesOrder.execute(row.getInt(OColumn.ROW_ID));
+        updateServicesOrder.execute(row.getInt("id"));
+    }
+
+    private class UpdateServicesOrder extends AsyncTask<Integer, Void, String> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setTitle(R.string.title_working);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setMessage("Enviando datos al servidor ...");
+            //progressDialog.setMax(horizontalScrollView.getChildCount());
+            progressDialog.setCancelable(true);
+            progressDialog.setProgress(1);
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            try {
+                servicesOrder = new ServicesOrder(getActivity(), null);
+
+                servicesOrderEvent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getActivity(), null);
+                ODomain oDomain = new ODomain();
+                servicesOrderEvent.quickSyncRecords(oDomain);
+                Thread.sleep(300);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.setProgress(100);
+                    }
+                });
+                ORecordValues data = new ORecordValues();
+                data.put("x_phone", false);
+                int record = servicesOrder.getServerDataHelper().updateOnServer(data, params[0]);
+                return String.valueOf(record);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String record) {
+            super.onPostExecute(record);
+            progressDialog.dismiss();
+
+            if (record != null) {
+
+                servicesOrder = new ServicesOrder(getActivity(), null);
+                servicesOrderEvent = new com.odoo.addons.servicesorder.models.ServicesOrderEvent(getActivity(), null);
+
+                servicesOrder.delete("_id = ?", new String[]{record}, true);
+                servicesOrderEvent.delete("os_id = ?", new String[]{record}, true);
+                Bundle data = new Bundle();
+
+                startFragment(new ServicesOrderF(), true, data);
+
+            }
+
+        }
     }
 
     @Override
