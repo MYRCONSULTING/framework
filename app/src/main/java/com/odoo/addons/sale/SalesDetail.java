@@ -298,8 +298,10 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
                 if (data.getExtras().getFloat(key) > 0)
                     lineValues.put(key, data.getExtras().getFloat(key));
             }
+            /* */
             OnProductChange onProductChange = new OnProductChange();
             onProductChange.execute(lineValues);
+
         }
     }
 
@@ -455,37 +457,36 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
                 ProductProduct productProduct = new ProductProduct(SalesDetail.this, sale.getUser());
                 SalesOrderLine saleLine = new SalesOrderLine(SalesDetail.this, sale.getUser());
                 ResPartner partner = new ResPartner(SalesDetail.this, sale.getUser());
-                ODataRow customer = partner.browse(formValues[0].getInt("partner_id"));
+                //ODataRow customer = partner.browse(formValues[0].getInt("partner_id"));
+                ODataRow customer = partner.browse(5);
                 ServerDataHelper helper = saleLine.getServerDataHelper();
                 //boolean stockInstalled = saleLine.isInstalledOnServer("stock");
+
                 boolean stockInstalled = true;
                 for (String key : params[0].keySet()) {
                     ODataRow product = productProduct.browse(productProduct.selectRowId(Integer.parseInt(key)));
                     Float qty = params[0].get(key);
                     OArguments arguments = new OArguments();
-                    arguments.add(new JSONArray());
+                    //arguments.add(new JSONArray());
                     int pricelist = customer.getInt("property_product_pricelist");
-                    arguments.add(pricelist); // Price List for customer
+                    //arguments.add(pricelist); // Price List for customer
                     arguments.add(product.getInt("id")); // product id
-                    arguments.add(qty); // Quantity
-                    arguments.add(false); // UOM
-                    arguments.add(qty); // Qty_UOS
-                    arguments.add(false);// UOS
-                    arguments.add((product.getString("name").equals("false")) ? false
-                            : product.getString("name"));
-                    arguments.add(customer.getInt("id")); // Partner id
-                    arguments.add(false); // lang
-                    arguments.add(true); // update_tax
-                    arguments.add((customer.getString("date_order").equals("false")) ? false
-                            : customer.getString("date_order")); // date order
-                    arguments.add(false); // packaging
-                    Object fiscal_position = (customer.getString("fiscal_position").equals("false"))
-                            ? false : customer.getString("fiscal_position");
-                    arguments.add(fiscal_position);// fiscal position
-                    arguments.add(false); // flag
+                    //arguments.add(qty); // Quantity
+                    //arguments.add(false); // UOM
+                    //arguments.add(qty); // Qty_UOS
+                    //arguments.add(false);// UOS
+                    //arguments.add((product.getString("name").equals("false")) ? false : product.getString("name"));
+                    //arguments.add(customer.getInt("id")); // Partner id
+                    //arguments.add(false); // lang
+                    //arguments.add(true); // update_tax
+                    //arguments.add((customer.getString("date_order").equals("false")) ? false : customer.getString("date_order")); // date order
+                    //arguments.add(false); // packaging
+                    //Object fiscal_position = (customer.getString("fiscal_position").equals("false")) ? false : customer.getString("fiscal_position");
+                    //arguments.add(fiscal_position);// fiscal position
+                    //arguments.add(false); // flag
                     int version = saleLine.getOdooVersion().getVersionNumber();
                     if (stockInstalled && version > 7) {
-                        arguments.add(false);
+                        //arguments.add(false);
                     }
                     HashMap<String, Object> context = new HashMap<>();
                     context.put("partner_id", customer.getInt("id"));
@@ -493,6 +494,7 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
                     context.put("pricelist", pricelist);
 
                     // Fixed for Odoo 7.0 no product_id_change_with_wh available for v7
+                    /*
                     String method = (stockInstalled && version > 7) ? "product_id_change_with_wh" : "product_id_change";
                     JSONObject response = ((JSONObject) helper.callMethod(method, arguments, context));
                     JSONObject res = response.getJSONObject("value");
@@ -501,25 +503,32 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
                         if (warning_data.has("message"))
                             warning = warning_data.getString("message");
                     }
+                    */
                     OValues values = new OValues();
                     values.put("product_id", product.getInt("id"));
-                    values.put("name", res.get("name"));
-                    values.put("product_uom_qty", res.get("product_uos_qty"));
-                    values.put("product_uom", res.get("product_uom"));
-                    values.put("price_unit", res.get("price_unit"));
-                    values.put("product_uos_qty", res.getDouble("product_uos_qty"));
+                    //values.put("name", res.get("name"));
+                    values.put("name", (product.getString("name").equals("false")) ? false : product.getString("name"));
+                    //values.put("product_uom_qty", res.get("product_uos_qty"));
+                    values.put("product_uom_qty", qty);
+                    //values.put("product_uom", res.get("product_uom"));
+                    values.put("price_unit", 6.13);
+                    //values.put("price_unit", product.getInt("id"));
+
+                    //values.put("product_uos_qty", res.getDouble("product_uos_qty"));
+                    values.put("product_uos_qty", qty);
                     values.put("product_uos", false);
-                    values.put("price_subtotal", res.getDouble("price_unit") * res.getDouble("product_uos_qty"));
+                    //values.put("price_subtotal", res.getDouble("price_unit") * res.getDouble("product_uos_qty"));
+                    values.put("price_subtotal", 564);
                     JSONArray tax_id = new JSONArray();
                     tax_id.put(6);
                     tax_id.put(false);
-                    tax_id.put(res.getJSONArray("tax_id"));
-                    values.put("tax_id", new JSONArray().put(tax_id));
-                    values.put("th_weight", (res.has("th_weight")) ? res.get("th_weight") : 0);
-                    values.put("discount", (res.has("discount")) ? res.get("discount") : 0);
+                    //tax_id.put(res.getJSONArray("tax_id"));
+                    //values.put("tax_id", new JSONArray().put(tax_id));
+                    //values.put("th_weight", (res.has("th_weight")) ? res.get("th_weight") : 0);
+                    //values.put("discount", (res.has("discount")) ? res.get("discount") : 0);
                     if (stockInstalled) {
-                        values.put("route_id", (res.has("route_id")) ? res.get("route_id") : false);
-                        values.put("delay", res.get("delay"));
+                        //values.put("route_id", (res.has("route_id")) ? res.get("route_id") : false);
+                        //values.put("delay", res.get("delay"));
                     }
                     if (extra != null)
                         values.put("order_id", extra.getInt(OColumn.ROW_ID));
@@ -528,15 +537,21 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+
             return items;
         }
+
 
         @Override
         protected void onPostExecute(List<ODataRow> row) {
             super.onPostExecute(row);
+
+            /* */
             if (row != null) {
                 objects.clear();
                 objects.addAll(row);
+
                 mAdapter.notifyDataSetChanged(objects);
                 float total = 0.0f;
                 for (ODataRow rec : row) {
@@ -545,6 +560,7 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
                 total_amt.setText(String.format("%.2f", total));
                 untaxedAmt.setText(total_amt.getText());
             }
+
             progressDialog.dismiss();
             if (warning != null) {
                 OAlert.showWarning(SalesDetail.this, warning.trim());

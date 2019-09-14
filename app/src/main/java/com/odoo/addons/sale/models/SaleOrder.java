@@ -34,7 +34,6 @@ import com.odoo.base.addons.res.ResUsers;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
-import com.odoo.core.orm.ServerDataHelper;
 import com.odoo.core.orm.annotation.Odoo;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.ODate;
@@ -88,7 +87,7 @@ public class SaleOrder extends OModel {
             .setLocalColumn();
     OColumn partner_invoice_id = new OColumn("partner_invoice_id", OVarchar.class).setLocalColumn();
     OColumn partner_shipping_id = new OColumn("partner_shipping_id", OVarchar.class).setLocalColumn();
-    OColumn property_product_pricelist = new OColumn("property_product_pricelist", OVarchar.class);
+    OColumn pricelist_id = new OColumn("pricelist_id", OVarchar.class).setLocalColumn();
     OColumn fiscal_position = new OColumn("fiscal_position", OVarchar.class).setLocalColumn();
     private Context mContext;
 
@@ -115,6 +114,7 @@ public class SaleOrder extends OModel {
             ODataRow customer = partner.browse(row.getInt(OColumn.ROW_ID));
             App app = (App) mContext.getApplicationContext();
             if (app.inNetwork()) {
+                /*
                 ServerDataHelper helper = getServerDataHelper();
                 OArguments args = new OArguments();
                 args.add(new JSONArray());
@@ -133,6 +133,7 @@ public class SaleOrder extends OModel {
                     data.put("fiscal_position", res.get("fiscal_position"));
                 }
                 partner.update(customer.getInt(OColumn.ROW_ID), data.toValues());
+                */
             } else {
                 data.put("partner_invoice_id", customer.get("partner_invoice_id"));
                 data.put("partner_shipping_id", customer.get("partner_shipping_id"));

@@ -494,7 +494,7 @@
 
         <!--
         <activity
-            android:name="com.odoo.addons.projects.TasksDetails"
+            android:name="${applicationId}.addons.projects.TasksDetails"
             android:windowSoftInputMode="adjustPan" />
         -->
 

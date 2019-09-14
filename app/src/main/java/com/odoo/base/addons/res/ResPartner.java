@@ -75,7 +75,7 @@ public class ResPartner extends OModel {
     OColumn child_ids = new OColumn("Contacts", ResPartner.class, OColumn.RelationType.OneToMany)
             .setRelatedColumn("parent_id");
 
-    OColumn property_product_pricelist = new OColumn("property_product_pricelist", OVarchar.class);
+    OColumn property_product_pricelist = new OColumn("property_product_pricelist", OVarchar.class).setLocalColumn();
     OColumn fiscal_position = new OColumn("fiscal_position", OVarchar.class).setLocalColumn();
     OColumn payment_term = new OColumn("Payment Term", AccountPaymentTerm.class, OColumn.RelationType.ManyToOne).setLocalColumn();
 
