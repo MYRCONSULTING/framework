@@ -77,9 +77,9 @@ public class ResPartner extends OModel {
 
     OColumn property_product_pricelist = new OColumn("property_product_pricelist", OVarchar.class).setLocalColumn();
     OColumn fiscal_position = new OColumn("fiscal_position", OVarchar.class).setLocalColumn();
-    OColumn payment_term = new OColumn("Payment Term", AccountPaymentTerm.class, OColumn.RelationType.ManyToOne).setLocalColumn();
+    OColumn property_payment_term = new OColumn("Payment Term", AccountPaymentTerm.class, OColumn.RelationType.ManyToOne).setLocalColumn();
 
-    OColumn driver = new OColumn("driver", OBoolean.class).setDefaultValue(false);
+    //OColumn driver = new OColumn("driver", OBoolean.class).setDefaultValue(false);
 
     public ResPartner(Context context, OUser user) {
         super(context, "res.partner", user);

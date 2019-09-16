@@ -8,6 +8,8 @@ import java.util.List;
 
 public class RelValues implements Serializable {
 
+    private static final long serialVersionUID = 3076218693405765008L;
+
     private HashMap<RelCommands, List<Object>> columnValues = new HashMap<>();
 
     public RelValues append(List<Object> values) {

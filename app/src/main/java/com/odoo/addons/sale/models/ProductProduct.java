@@ -20,23 +20,32 @@
 package com.odoo.addons.sale.models;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.OBoolean;
-import com.odoo.core.orm.fields.types.OInteger;
+import com.odoo.core.orm.fields.types.OFloat;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.support.OUser;
 
 public class ProductProduct extends OModel {
     public static final String TAG = ProductProduct.class.getSimpleName();
-    OColumn name_template = new OColumn("Name", OVarchar.class).setSize(64);
+    public static final String AUTHORITY = "com.odoo.addons.sale.product_product";
+    OColumn name_template = new OColumn("Name Template", OVarchar.class).setSize(64);
     OColumn default_code = new OColumn("Internal Reference", OVarchar.class).setSize(64);
-    OColumn lst_price = new OColumn("Public price", OInteger.class);
+    OColumn lst_price = new OColumn("Public price", OFloat.class);
     OColumn sale_ok = new OColumn("Stock OK", OBoolean.class).setDefaultValue(false);
+    //OColumn product_tmpl_id = new OColumn("Product Template", ProductTemplate.class,OColumn.RelationType.ManyToOne).setRequired();
+
 
     public ProductProduct(Context context, OUser user) {
         super(context, "product.product", user);
         setDefaultNameColumn("name_template");
+    }
+
+    @Override
+    public Uri uri() {
+        return buildURI(AUTHORITY);
     }
 }

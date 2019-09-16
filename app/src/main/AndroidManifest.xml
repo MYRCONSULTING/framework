@@ -475,6 +475,27 @@
                 android:resource="@xml/orders_service_event_type_sync_adapter" />
         </service>
 
+        <!-- Inicio - Sync Provider & Service Services Product Product  // -->
+        <provider
+            android:name="com.odoo.addons.sale.providers.ProductProductProvider"
+            android:authorities="com.odoo.addons.sale.product_product"
+            android:label="@string/sync_label_Product_Product"
+            android:multiprocess="true" />
+
+        <service
+            android:name=".addons.sale.services.ProductProductSyncService"
+            android:exported="true"
+            android:process=":sync_product_product">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/product_product_sync_adapter" />
+        </service>
+
+
         <!-- Fin - Sync Provider & Service Services Order  // -->
 
         <!-- Activity-->

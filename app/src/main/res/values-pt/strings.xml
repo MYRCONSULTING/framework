@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Todoo</string>
     <string name="add_internal_note">Adicionar uma nota interna</string>
+    <string name="sync_label_Product_Product">Productos</string>
     <string name="app_version_name">Versao</string>
     <string name="error_invalid_odoo_url">URL do Odoo inválido</string>
     <string name="error_invalid_username_or_password">Nome de usuário ou senha inválida</string>

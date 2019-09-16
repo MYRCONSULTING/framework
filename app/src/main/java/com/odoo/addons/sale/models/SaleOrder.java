@@ -62,7 +62,7 @@ public class SaleOrder extends OModel {
     OColumn user_id = new OColumn("Salesperson", ResUsers.class,
             OColumn.RelationType.ManyToOne);
     OColumn amount_total = new OColumn("Total", OFloat.class);
-    OColumn payment_term = new OColumn("Payment Term", AccountPaymentTerm.class, OColumn.RelationType.ManyToOne);
+    OColumn payment_term_id = new OColumn("Payment Term", AccountPaymentTerm.class, OColumn.RelationType.ManyToOne);
     OColumn amount_untaxed = new OColumn("Untaxed", OInteger.class);
     OColumn amount_tax = new OColumn("Tax", OInteger.class);
     OColumn client_order_ref = new OColumn("Client Order Reference",
@@ -138,7 +138,7 @@ public class SaleOrder extends OModel {
                 data.put("partner_invoice_id", customer.get("partner_invoice_id"));
                 data.put("partner_shipping_id", customer.get("partner_shipping_id"));
                 data.put("property_product_pricelist", customer.get("property_product_pricelist"));
-                data.put("payment_term", customer.get("payment_term"));
+                data.put("payment_term_id", customer.get("payment_term_id"));
                 data.put("fiscal_position", customer.get("fiscal_position"));
             }
         } catch (Exception e) {
@@ -192,8 +192,10 @@ public class SaleOrder extends OModel {
     public String storePartnerName(OValues values) {
         try {
             if (!values.getString("partner_id").equals("false")) {
-                JSONArray partner_id = new JSONArray(values.getString("partner_id"));
-                return partner_id.getString(1);
+                String[] mArray = {values.getString("partner_id")};
+                return mArray[0].split(",")[1].substring(0, mArray[0].split(",")[1].length() - 1);
+                //JSONArray partner_id = new JSONArray(values.getString("partner_id"));
+                //return partner_id.getString(1);
             }
         } catch (Exception e) {
             e.printStackTrace();

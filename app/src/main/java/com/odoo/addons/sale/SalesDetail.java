@@ -353,10 +353,10 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
                 }
                 Thread.sleep(500);
                 ORecordValues data = new ORecordValues();
-                data.put("name", values.getString("name"));
+                //data.put("name", values.getString("name"));
                 data.put("partner_id", partner.selectServerId(values.getInt("partner_id")));
                 data.put("date_order", values.getString("date_order"));
-                data.put("payment_term", values.get("payment_term"));
+                data.put("payment_term_id", values.get("payment_term_id"));
                 data.put("order_line", order_line);
 
                 if (record == null) {
@@ -507,18 +507,18 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
                     OValues values = new OValues();
                     values.put("product_id", product.getInt("id"));
                     //values.put("name", res.get("name"));
-                    values.put("name", (product.getString("name").equals("false")) ? false : product.getString("name"));
+                    values.put("name", (product.getString("name_template").equals("false")) ? false : product.getString("name_template"));
                     //values.put("product_uom_qty", res.get("product_uos_qty"));
                     values.put("product_uom_qty", qty);
                     //values.put("product_uom", res.get("product_uom"));
-                    values.put("price_unit", 6.13);
+                    values.put("price_unit", product.getFloat("lst_price"));
                     //values.put("price_unit", product.getInt("id"));
 
                     //values.put("product_uos_qty", res.getDouble("product_uos_qty"));
-                    values.put("product_uos_qty", qty);
-                    values.put("product_uos", false);
+                    //values.put("product_uos_qty", qty);
+                    //values.put("product_uos", false);
                     //values.put("price_subtotal", res.getDouble("price_unit") * res.getDouble("product_uos_qty"));
-                    values.put("price_subtotal", 564);
+                    values.put("price_subtotal", product.getFloat("lst_price") * qty);
                     JSONArray tax_id = new JSONArray();
                     tax_id.put(6);
                     tax_id.put(false);

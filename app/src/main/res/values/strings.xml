@@ -3,6 +3,7 @@
     <string name="app_name">Todoo</string>
     <string name="sync_label_OSMenu">Ordenes de Servicios</string>
     <string name="sync_label_Event_Type">Tipo de Eventos</string>
+    <string name="sync_label_Product_Product">Productos</string>
     <string name="sync_label_OSEvent_Type">Ordenes de Servicio Eventos</string>
     <string name="sync_label_encuesta">Encuestas</string>
     <string name="sync_label_where">Where</string>

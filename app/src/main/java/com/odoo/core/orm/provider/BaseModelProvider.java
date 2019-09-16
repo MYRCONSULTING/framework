@@ -251,13 +251,25 @@ public class BaseModelProvider extends ContentProvider {
         for (String key : values.keySet()) {
             try {
                 OColumn column = model.getColumn(key);
-                RelValues relValues = (RelValues) OObjectUtils.byteToObject(
-                        (byte[]) values.get(key));
+                RelValues relValues = (RelValues) OObjectUtils.byteToObject((byte[]) values.get(key));
                 model.handleRelationValues(row_id, column, relValues);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public String toAscii(String hexInput) {
+        final int length = hexInput.length();
+        final StringBuilder ascii = new StringBuilder();
+        final StringBuilder integers = new StringBuilder();
+        for (int i = 0; i < length; i += 2) {
+            final String twoDigitHex = hexInput.substring(i, i + 2);
+            final int integer = Integer.parseInt(twoDigitHex, 16);
+            ascii.append((char) integer);
+            integers.append(String.format("%03d", integer)).append(" ");
+        }
+        return hexInput + " ==> " + integers.deleteCharAt(integers.length() - 1).toString() + " ==> " + ascii.toString();
     }
 
     private ContentValues[] generateValues(OModel model, ContentValues values) {

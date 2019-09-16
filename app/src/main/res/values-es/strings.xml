@@ -3,6 +3,7 @@
     <string name="app_name">Todoo</string>
     <string name="label_cancel">Cancelar</string>
     <string name="add_internal_note">Agregar nota inerna</string>
+    <string name="sync_label_Product_Product">Productos</string>
     <string name="app_version_name">Versión</string>
     <string name="error_invalid_odoo_url">URL de Odoo no válida.</string>
     <string name="error_invalid_username_or_password">Nombre de usuario o contraseña no válida</string>

@@ -783,7 +783,8 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
     private void createRecord(String model, ORecordValues values, IOdooResponse callback, OdooSyncResponse backResponse) {
         try {
             OArguments args = new OArguments();
-            args.add(new JSONObject(gson.toJson(values)));
+            //args.add(new JSONObject(gson.toJson(values)));
+            args.add(new JSONObject((values)));
             HashMap<String, Object> map = new HashMap<>();
             map.put("context", gson.fromJson(odooSession.getUserContext() + "",
                     HashMap.class));
@@ -823,7 +824,8 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
         try {
             OArguments args = new OArguments();
             args.add(new JSONArray(ids.toString()));
-            args.add(new JSONObject(gson.toJson(values)));
+            //args.add(new JSONObject(gson.toJson(values)));
+            args.add(new JSONObject((values)));
             HashMap<String, Object> map = new HashMap<>();
             map.put("context", gson.fromJson(odooSession.getUserContext() + "",
                     HashMap.class));
