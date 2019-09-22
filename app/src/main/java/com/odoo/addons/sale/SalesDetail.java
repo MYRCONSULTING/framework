@@ -324,7 +324,7 @@ public class SalesDetail extends OdooCompatActivity implements View.OnClickListe
             try {
                 Thread.sleep(500);
                 OValues values = params[0];
-                // Creating oneToMany order lines
+                // Creating oneToMany order linesx1
                 JSONArray order_line = new JSONArray();
                 for (Object line : objects) {
                     JSONArray o_line = new JSONArray();
