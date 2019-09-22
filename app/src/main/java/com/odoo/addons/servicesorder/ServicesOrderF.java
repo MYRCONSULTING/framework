@@ -152,7 +152,9 @@ public class ServicesOrderF extends BaseFragment implements ISyncStatusObserverL
         OControls.setText(view, R.id.client_contact_name, row.getString("client_contact_name"));
         OControls.setText(view, R.id.client_contact_phone, row.getString("client_contact_phone"));
         OControls.setText(view, R.id.address_delivery, row.getString("address_delivery"));
-        OControls.setText(view, R.id.cod_amount, row.getString("amount"));
+        OControls.setText(view, R.id.address_deliverycompuesto, row.getString("direccDestinario"));
+
+        OControls.setText(view, R.id.cod_amount, "COD : " + row.getString("amount"));
 
 
         Bitmap img;

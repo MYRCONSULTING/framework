@@ -58,6 +58,7 @@
                     android:layout_gravity="center_vertical"
                     android:fontFamily="@string/font_normal"
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:visibility="gone"
                     android:textColor="@color/body_text_1"></TextView>
 
                 <TextView
@@ -109,13 +110,25 @@
                     android:textColor="@color/body_text_1"></TextView>
 
                 <TextView
+                    android:id="@+id/address_deliverycompuesto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@string/font_normal"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"
+                    android:textStyle="bold|italic"></TextView>
+
+
+                <TextView
                     android:id="@+id/cod_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:fontFamily="@string/font_normal"
                     android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/body_text_1"></TextView>
+                    android:textColor="@color/body_text_1"
+                    android:textStyle="bold|italic"></TextView>
 
 
             </LinearLayout>
@@ -153,6 +166,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:drawableLeft="@drawable/ic_action_action_done_all"
                     android:text="Finalizar" />
 

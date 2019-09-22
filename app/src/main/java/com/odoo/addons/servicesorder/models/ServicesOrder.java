@@ -40,6 +40,7 @@ public class ServicesOrder extends OModel {
     OColumn product_description = new OColumn("product_description", OVarchar.class).setSize(250);
     OColumn amount = new OColumn("product_description", OFloat.class);
     OColumn x_phone = new OColumn("x_phone", OBoolean.class);
+    OColumn direccDestinario = new OColumn("direccDestinario", OVarchar.class);
 
     public ServicesOrder(Context context, OUser user) {
         super(context, "services.order", user);
